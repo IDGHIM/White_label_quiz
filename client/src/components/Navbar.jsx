@@ -13,7 +13,7 @@ const Navbar = () => {
 
       <div>
         <button
-          className="navbar-btn"
+          className="navbar-btn active"
           title="Accueil"
           aria-label="Accueil"
           onClick={() => navigate("/")}
@@ -21,7 +21,7 @@ const Navbar = () => {
           <FiHome />
         </button>
         <button
-          className="navbar-btn"
+          className="navbar-btn active"
           title="Inscription"
           aria-label="Inscription"
           onClick={() => navigate("/register")}
@@ -29,14 +29,14 @@ const Navbar = () => {
           <FaUserPlus />
         </button>
         <button
-          className="navbar-btn"
+          className="navbar-btn active"
           title="Déconnexion"
           aria-label="Déconnexion"
         >
           <FiLogOut />
         </button>
         <button 
-          className="navbar-btn" 
+          className="navbar-btn active" 
           title="Connexion" 
           aria-label="Connexion"
           onClick={() => navigate("/login")}
@@ -44,7 +44,7 @@ const Navbar = () => {
           <FiLogIn />
         </button>
         <button 
-          className="navbar-btn" 
+          className="navbar-btn active" 
           title="Profil" 
           aria-label="Profil"
         >
