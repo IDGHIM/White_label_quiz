@@ -1,3 +1,11 @@
+:root {
+  --blue-ocean: #137C8B;       /* Bleu profond, vibrant */
+  --blue-fog: #709CA7;         /* Bleu-gris doux */
+  --blue-ice: #B8CBD0;         /* Bleu très clair, presque givré */
+  --blue-stone: #7A90A4;       /* Bleu-gris moyen, pierreux */
+  --blue-night: #344D59;       /* Bleu foncé, tirant sur le noir */
+}
+
 * {
   margin: 0;
   padding: 0;
