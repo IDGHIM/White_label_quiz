@@ -1,6 +1,7 @@
 import "../styles/Navbar.css";
 import { FaUserCircle } from "react-icons/fa";
-import { FiLogIn, FiLogOut, FaUserPlus } from "react-icons/fi";
+import { FiLogIn, FiLogOut } from "react-icons/fi";
+import { FaUserPlus } from "react-icons/fa";
 
 const Navbar = () => {
   return (
