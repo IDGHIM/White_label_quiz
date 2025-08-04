@@ -1,0 +1,27 @@
+body {
+  background: #222;
+  color: #fff;
+  min-height: 100vh;
+}
+
+.body-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 80vh;
+}
+
+.body-title {
+  font-size: 2rem;
+  font-weight: bold;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.body-btn {
+  padding: 0.9rem 2.3rem;
+  border-radius: 10px;
+  font-size: 1rem;
+  border: none;
+}
