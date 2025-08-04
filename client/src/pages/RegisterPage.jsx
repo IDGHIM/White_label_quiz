@@ -1,10 +1,10 @@
 import React, { useState } from 'react';
-//import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 //import { useAuth } from '../context/authContext'; 
 
 const RegisterPage = () => {
   //const { register } = useAuth();
-  //const navigate = useNavigate();
+  const navigate = useNavigate();
 
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -16,7 +16,7 @@ const RegisterPage = () => {
     try {
       //await register(username, email, password);
       setMessage("Compte créé ! Vous pouvez maintenant vous connecter.");
-      //setTimeout(() => navigate('/login'), 1500);
+      setTimeout(() => navigate('/login'), 1500);
     } catch (error) {
       console.error('Erreur register:', error.response?.data || error.message);
       setMessage(`Erreur lors de la création du compte : ${error.response?.data?.message || error.message}`);
