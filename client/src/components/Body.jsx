@@ -1,10 +1,12 @@
-const Body = () => {
-    return (
-        <main>
-            <h1></h1>
-            <button>Commencer le quiz</button>
-        </main>
-    )
-}
+import "../styles/Body.css";
 
-export default Body
+const Body = () => {
+  return (
+    <main className="body-container">
+      <h1 className="body-title">Bienvenue sur le Hackathon Quiz !</h1>
+      <button className="body-btn">Commencer le Quiz</button>
+    </main>
+  );
+};
+
+export default Body;

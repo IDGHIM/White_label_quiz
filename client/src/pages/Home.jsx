@@ -1,9 +1,11 @@
-import Navbar from "../components/Navbar";
+import Body from "../components/Body";
 
 const Home = () => {
   return (
     <div className="app-container">
-      <main className="main-content"></main>
+      <main className="main-content">
+        <Body />
+      </main>
     </div>
   );
 };

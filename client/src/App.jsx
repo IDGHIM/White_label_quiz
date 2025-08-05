@@ -1,15 +1,14 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import Navbar from './components/Navbar';
+import Navbar from "./components/navbar";
 import Home from "./pages/Home";
 import RegisterPage from "./pages/RegisterPage";
-import LoginPage from './pages/LoginPage';
-import AdminPage from './pages/AdminPage'; 
-
+import LoginPage from "./pages/LoginPage";
+import Footer from "./components/Footer";
 
 const App = () => {
-   return (
+  return (
     <Router>
       <Navbar />
       <Routes>
@@ -20,6 +19,7 @@ const App = () => {
         {/*page 404 */}
         <Route path="*" element={<div>Page non trouvée</div>} />
       </Routes>
+      <Footer />
     </Router>
   );
 };
