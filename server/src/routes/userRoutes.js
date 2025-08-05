@@ -4,18 +4,18 @@ const User = require('../models/Users');
 const userController = require('../controllers/userController');
 
 // Route pour récupérer tous les utilisateurs
-router.get('/users', userController.index);
+router.get('/api/users', userController.index);
 
 // Route pour récupérer un utilisateur par son ID
-router.get('/users/:id', userController.show);
+router.get('/api/users/:id', userController.show);
 
 // Route pour créer un nouvel utilisateur
-router.post('/users/add', userController.create);
+router.post('/api/users', userController.create);
 
-// Route pour mettre à jour un utilisateur
-router.put('/users/update/:id', userController.update);
+// Route pour modifier un utilisateur
+router.put('/api/users/:id', userController.update);
 
 // Route pour supprimer un utilisateur
-router.delete('/users/delete/:id', userController.delete);
+router.delete('/api/users/:id', userController.delete);
 
 module.exports = router;

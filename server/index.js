@@ -14,7 +14,7 @@ app.use(cookieParser());
 
 
 
-//Tableau de questions pour initialiser la base de données
+// //Tableau de questions pour initialiser la base de données
 // const questions = [
 //     {
 //       question: "Quelle est la capitale de la France ?",
@@ -50,7 +50,7 @@ app.use(cookieParser());
 
 
 // //Création de connexion à MongoDB
-// mongoose.connect('mongodb://localhost:27017/hackathon_quiz')
+// mongoose.connect('mongodb+srv://dimitricoppet:Hackathon@cluster0.qzd4bho.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
 // .then( async () => {
 //   console.log('MongoDB connected successfully')
 //     // Insertion des questions dans la base de données
@@ -107,7 +107,7 @@ app.use(cookieParser());
 // const User = mongoose.model('User', UserSchema);
 
 // //Création de connexion à MongoDB
-// mongoose.connect('mongodb://localhost:27017/hackathon_quiz')
+// mongoose.connect('mongodb+srv://dimitricoppet:Hackathon@cluster0.qzd4bho.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
 //   .then(() => {
 //     console.log('MongoDB connected successfully');
 //     // Insertion des utilisateurs dans la base de données

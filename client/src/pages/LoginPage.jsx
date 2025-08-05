@@ -53,9 +53,9 @@ const LoginPage = () => {
           onChange={(e) => setPassword(e.target.value)}
           placeholder="Mot de passe"
         />
-        <button 
-          type="submit" 
-          disabled={loading} 
+        <button
+          type="submit"
+          disabled={loading}
           className="login-submit-button"
         >
           {loading ? 'Connexion...' : 'Se connecter'}

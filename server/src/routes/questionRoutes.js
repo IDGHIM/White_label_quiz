@@ -4,10 +4,10 @@ const Question = require('../models/Questions');
 const questionController = require('../controllers/questionController');
 
 // Route pour récupérer toutes les questions
-router.get('/questions', questionController.index);
+router.get('/api/questions', questionController.index);
  
 // Route pour récupérer une question par son ID
-router.get('/questions/:id', questionController.show);
+router.get('/api/questions/:id', questionController.show);
 
 // Route pour créer une nouvelle question
 //Model: POST /questions/add
@@ -18,14 +18,14 @@ router.get('/questions/:id', questionController.show);
 //   "correctAnswer": "Océan Pacifique",
 //   "category": "Géographie"
 // }
-router.post('/questions/add', questionController.create);
+router.post('/api/questions', questionController.create);
 
 
-// Route pour mettre à jour une question
-router.put('/questions/update/:id', questionController.update);
+// Route pour modifier une question
+router.put('/api/questions/:id', questionController.update);
 
 
 // Route pour supprimer une question
-router.delete('/questions/delete/:id', questionController.delete);
+router.delete('/api/questions/:id', questionController.delete);
 
 module.exports = router;
