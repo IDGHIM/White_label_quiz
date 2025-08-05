@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-//import { useAuth } from '../context/authContext'; 
+//import { useAuth } from '../context/authContext';
+import '../styles/RegisterPage.css';
 
 const RegisterPage = () => {
   //const { register } = useAuth();
   const navigate = useNavigate();
-
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -24,32 +24,37 @@ const RegisterPage = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Créer un compte</h2>
-      <input
-        type="text"
-        value={username}
-        onChange={e => setUsername(e.target.value)}
-        placeholder="Nom d'utilisateur"
-        required
-      />
-      <input
-        type="email"
-        value={email}
-        onChange={e => setEmail(e.target.value)}
-        placeholder="Adresse email"
-        required
-      />
-      <input
-        type="password"
-        value={password}
-        onChange={e => setPassword(e.target.value)}
-        placeholder="Mot de passe"
-        required
-      />
-      <button type="submit" className="start-button">S'inscrire</button>
-      {message && <p>{message}</p>}
-    </form>
+    <div className="register-page">
+      <form className="register-form" onSubmit={handleSubmit}>
+        <h2 className="register-title">Créer un compte</h2>
+        <input
+          className="register-input"
+          type="text"
+          value={username}
+          onChange={e => setUsername(e.target.value)}
+          placeholder="Nom d'utilisateur"
+          required
+        />
+        <input
+          className="register-input"
+          type="email"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          placeholder="Adresse email"
+          required
+        />
+        <input
+          className="register-input"
+          type="password"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+          placeholder="Mot de passe"
+          required
+        />
+        <button type="submit" className="register-submit-button">S'inscrire</button>
+        {message && <p className="register-message">{message}</p>}
+      </form>
+    </div>
   );
 };
 

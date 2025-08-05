@@ -1,10 +1,13 @@
 import "../styles/Navbar.css";
+import { useNavigate } from "react-router-dom";
 import { FaUserCircle } from "react-icons/fa";
-import { FiLogIn, FiLogOut } from "react-icons/fi";
+import { FiLogIn, FiLogOut, FiHome } from "react-icons/fi";
 import { FaUserPlus } from "react-icons/fa";
 import { Link } from "react-router-dom";
 
 const Navbar = () => {
+  const navigate = useNavigate();
+
   return (
     <nav className="navbar">
       <div className="navbar-logo">Hackathon Quizz</div>
@@ -14,7 +17,7 @@ const Navbar = () => {
           <FaUserPlus />
         </Link>
         <button
-          className="navbar-btn"
+          className="navbar-btn active"
           title="Déconnexion"
           aria-label="Déconnexion"
         >
