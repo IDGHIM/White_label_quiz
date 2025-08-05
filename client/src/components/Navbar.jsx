@@ -1,44 +1,68 @@
 import "../styles/Navbar.css";
-import { useNavigate } from "react-router-dom";
-import { FaUserCircle } from "react-icons/fa";
-import { FiLogIn, FiLogOut, FiHome } from "react-icons/fi";
-import { FaUserPlus } from "react-icons/fa";
 import { Link } from "react-router-dom";
+import { FaUserCircle, FaUserPlus } from "react-icons/fa";
+import { FiLogIn, FiLogOut, FiHome } from "react-icons/fi";
+
+// Simule l'état
+const isLoggedIn = false;
 
 const Navbar = () => {
-  const navigate = useNavigate();
-
   return (
     <nav className="navbar">
-      <div className="navbar-logo">Hackathon Quizz</div>
-
+      <Link to="/" className="navbar-logo">
+        Hackathon Quizz
+      </Link>
       <div>
-        <Link to="/register" title="Inscription" aria-label="Inscription">
-          <FaUserPlus />
-        </Link>
-        <button
+        <Link
           className="navbar-btn active"
-          title="Déconnexion"
-          aria-label="Déconnexion"
+          title="Accueil"
+          aria-label="Accueil"
+          to="/"
         >
-          <FiLogOut />
-        </button>
-        <Link
-          to="/login"
-          className="navbar-btn"
-          title="Connexion"
-          aria-label="Connexion"
-        >
-          <FiLogIn />
+          <FiHome />
         </Link>
-        <Link
-          to="/profil"
-          className="navbar-btn"
-          title="Profil"
-          aria-label="Profil"
-        >
-          <FaUserCircle />
-        </Link>
+
+        {!isLoggedIn && (
+          <>
+            <Link
+              className="navbar-btn active"
+              title="Inscription"
+              aria-label="Inscription"
+              to="/register"
+            >
+              <FaUserPlus />
+            </Link>
+            <Link
+              className="navbar-btn active"
+              title="Connexion"
+              aria-label="Connexion"
+              to="/login"
+            >
+              <FiLogIn />
+            </Link>
+          </>
+        )}
+
+        {isLoggedIn && (
+          <>
+            <Link
+              className="navbar-btn active"
+              title="Déconnexion"
+              aria-label="Déconnexion"
+              to="/logout"
+            >
+              <FiLogOut />
+            </Link>
+            <Link
+              className="navbar-btn active"
+              title="Profil"
+              aria-label="Profil"
+              to="/profil"
+            >
+              <FaUserCircle />
+            </Link>
+          </>
+        )}
       </div>
     </nav>
   );
