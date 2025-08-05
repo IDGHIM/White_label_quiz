@@ -7,7 +7,8 @@ import Home from "./pages/Home";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import AdminPage from "./pages/AdminPage";
-import ContactPage from "./pages/ContactPage";
+import Footer from "./components/Footer";
+import QuizPage from "./pages/QuizPage";
 
 const App = () => {
   return (
@@ -15,6 +16,7 @@ const App = () => {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/quiz" element={<QuizPage />} />
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
