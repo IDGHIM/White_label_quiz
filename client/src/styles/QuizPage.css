@@ -1,0 +1,339 @@
+/* Container principal du quiz */
+.quiz-container {
+  min-height: 100vh;
+  color: var(--blue-night);
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Page d'accueil du quiz */
+.quiz-welcome {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 600px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(52, 77, 89, 0.2);
+  border: 1px solid rgba(184, 203, 208, 0.3);
+}
+
+.quiz-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 30px;
+  background: linear-gradient(135deg, var(--blue-ocean), var(--blue-fog));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.quiz-info {
+  margin-bottom: 30px;
+}
+
+.info-card {
+  background: rgba(184, 203, 208, 0.1);
+  border: 1px solid var(--blue-ice);
+  border-radius: 15px;
+  padding: 20px;
+  text-align: left;
+}
+
+.info-card h3 {
+  color: var(--blue-night);
+  margin-bottom: 15px;
+  font-size: 1.2rem;
+}
+
+.info-card ul {
+  list-style: none;
+  padding: 0;
+}
+
+.info-card li {
+  padding: 8px 0;
+  font-size: 1rem;
+  color: var(--blue-stone);
+}
+
+.start-quiz-btn {
+  background: linear-gradient(135deg, var(--blue-ocean), var(--blue-fog));
+  color: white;
+  border: none;
+  padding: 18px 40px;
+  border-radius: 15px;
+  font-size: 1.2rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.start-quiz-btn:hover {
+  background: linear-gradient(135deg, var(--blue-night), var(--blue-ocean));
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(19, 124, 139, 0.3);
+}
+
+/* En-tête du quiz */
+.quiz-header {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 15px;
+  padding: 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 10px 30px rgba(52, 77, 89, 0.1);
+  border: 1px solid rgba(184, 203, 208, 0.3);
+  width: 100%;
+  max-width: 800px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.progress-section {
+  flex: 1;
+  margin-right: 20px;
+}
+
+.question-counter {
+  font-weight: 600;
+  color: var(--blue-night);
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+}
+
+.progress-bar {
+  background: rgba(184, 203, 208, 0.3);
+  height: 8px;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  background: linear-gradient(90deg, var(--blue-ocean), var(--blue-fog));
+  height: 100%;
+  transition: width 0.3s ease;
+  border-radius: 4px;
+}
+
+.score-display-mini {
+  background: linear-gradient(135deg, var(--blue-ocean), var(--blue-fog));
+  color: white;
+  padding: 12px 20px;
+  border-radius: 12px;
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+
+/* Contenu principal du quiz */
+.quiz-content {
+  width: 100%;
+  max-width: 800px;
+}
+
+.question-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  padding: 30px;
+  box-shadow: 0 20px 40px rgba(52, 77, 89, 0.15);
+  border: 1px solid rgba(184, 203, 208, 0.3);
+}
+
+.question-text {
+  color: var(--blue-night);
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 30px;
+  line-height: 1.5;
+}
+
+.options-container {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.option-btn {
+  border: 2px solid var(--blue-ice);
+  border-radius: 12px;
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.option-btn:hover {
+  border-color: var(--blue-ocean);
+  transform: translateX(5px);
+}
+
+.option-letter {
+  background: var(--blue-ocean);
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+}
+
+.option-text {
+  flex: 1;
+  font-size: 1.3rem;
+  color: var(--blue-night);
+}
+
+/* Page de résultats */
+.quiz-result {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: 20px;
+  padding: 40px;
+  max-width: 800px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 20px 40px rgba(52, 77, 89, 0.2);
+}
+
+.result-title {
+  font-size: 2.2rem;
+  font-weight: 700;
+  margin-bottom: 40px;
+}
+
+.score-display {
+  margin-bottom: 40px;
+}
+
+.score-circle {
+  background: linear-gradient(135deg, var(--blue-ocean), var(--blue-fog));
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px;
+  box-shadow: 0 10px 30px rgba(19, 124, 139, 0.3);
+}
+
+.score-number {
+  font-size: 3.5rem;
+  font-weight: 600;
+  color: white;
+  line-height: 1;
+}
+
+.score-total {
+  font-size: 1.3rem;
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.score-percentage {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--blue-ocean);
+}
+
+/* Résultats détaillés */
+.detailed-results {
+  text-align: left;
+}
+
+.detailed-results h3 {
+  color: var(--blue-night);
+  margin-bottom: 20px;
+  font-size: 1.6rem;
+}
+
+.result-item {
+  background: rgba(184, 203, 208, 0.1);
+  border: 1px solid var(--blue-ice);
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 15px;
+}
+
+.result-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.question-number {
+  background: var(--blue-ocean);
+  color: white;
+  padding: 5px 12px;
+  border-radius: 15px;
+  font-weight: 600;
+}
+
+.result-status.correct {
+  color: #28a745;
+  font-weight: 600;
+}
+
+.result-status.incorrect {
+  color: #dc3545;
+  font-weight: 600;
+}
+
+.result-details p {
+  margin-bottom: 8px;
+  color: var(--blue-stone);
+}
+
+.result-details strong {
+  color: var(--blue-night);
+}
+
+/* Actions de résultat */
+.result-actions {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}
+
+.retry-btn,
+.home-btn {
+  padding: 15px 30px;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.retry-btn {
+  background: linear-gradient(135deg, var(--blue-ocean), var(--blue-fog));
+  color: white;
+}
+
+.retry-btn:hover {
+  background: linear-gradient(135deg, var(--blue-night), var(--blue-ocean));
+  transform: translateY(-2px);
+}
+
+.home-btn {
+  background: rgba(122, 144, 164, 0.1);
+  border: 2px solid var(--blue-stone);
+  color: var(--blue-stone);
+}
+
+.home-btn:hover {
+  background: var(--blue-stone);
+  color: white;
+  transform: translateY(-2px);
+}
