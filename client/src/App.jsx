@@ -1,23 +1,26 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
-import Navbar from './components/Navbar';
+import Navbar from "./components/navbar";
 import Home from "./pages/Home";
 import RegisterPage from "./pages/RegisterPage";
-import LoginPage from './pages/LoginPage';
-
+import LoginPage from "./pages/LoginPage";
+import AdminPage from "./pages/AdminPage";
+import Footer from "./components/Footer";
 
 const App = () => {
-   return (
+  return (
     <Router>
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
+        <Route path="/admin" element={<AdminPage />} />
         {/*page 404 */}
         <Route path="*" element={<div>Page non trouvée</div>} />
       </Routes>
+      <Footer />
     </Router>
   );
 };
