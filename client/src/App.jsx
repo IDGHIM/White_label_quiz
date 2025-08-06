@@ -1,13 +1,13 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-
-import Navbar from "./components/navbar";
+import Navbar from "./components/Navbar"; 
 import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
 import AdminPage from "./pages/AdminPage";
 import QuizPage from "./pages/QuizPage";
+import ContactPage from "./pages/ContactPage"; 
 
 const App = () => {
   return (
@@ -20,7 +20,7 @@ const App = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/admin" element={<AdminPage />} />
-        {/*page 404 */}
+        {/* page 404 */}
         <Route path="*" element={<div>Page non trouvée</div>} />
       </Routes>
       <Footer />
