@@ -6,12 +6,14 @@ import Footer from "./components/Footer";
 import Home from "./pages/Home";
 import RegisterPage from "./pages/RegisterPage";
 import LoginPage from "./pages/LoginPage";
-import ForgotPasswordPage from "./pages/ForgotPasswordPage"; 
+import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import AdminPage from "./pages/AdminPage";
 import QuizPage from "./pages/QuizPage";
 import ContactPage from "./pages/ContactPage";
 import ProfilPage from "./pages/ProfilPage";
+import LegalNoticePage from "./pages/LegalNoticePage";
+import LicencePage from "./pages/LicencePage";
 
 const App = () => {
   return (
