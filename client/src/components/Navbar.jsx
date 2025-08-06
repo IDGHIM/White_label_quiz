@@ -4,7 +4,7 @@ import { FaUserCircle, FaUserPlus } from "react-icons/fa";
 import { FiLogIn, FiLogOut, FiHome } from "react-icons/fi";
 
 // Simule l'état
-const isLoggedIn = false;
+const isLoggedIn = true;
 
 const Navbar = () => {
   return (
@@ -20,6 +20,7 @@ const Navbar = () => {
           to="/"
         >
           <FiHome />
+        <span className="tooltip">Accueil</span>
         </Link>
 
         {!isLoggedIn && (
@@ -31,6 +32,7 @@ const Navbar = () => {
               to="/register"
             >
               <FaUserPlus />
+              <span className="tooltip">Inscription</span>
             </Link>
             <Link
               className="navbar-btn active"
@@ -39,6 +41,7 @@ const Navbar = () => {
               to="/login"
             >
               <FiLogIn />
+              <span className="tooltip">Connexion</span>
             </Link>
           </>
         )}
@@ -52,6 +55,7 @@ const Navbar = () => {
               to="/logout"
             >
               <FiLogOut />
+              <span className="tooltip">Déconnexion</span>
             </Link>
             <Link
               className="navbar-btn active"
@@ -60,6 +64,7 @@ const Navbar = () => {
               to="/profil"
             >
               <FaUserCircle />
+              <span className="tooltip">Profil</span>
             </Link>
           </>
         )}
