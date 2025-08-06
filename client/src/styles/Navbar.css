@@ -1,134 +1,219 @@
+/* Navbar principale avec design contrasté */
 .navbar {
-  background: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(15px);
-  border-bottom: 1px solid rgba(184, 203, 208, 0.3);
-  padding: 15px 30px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  background: linear-gradient(90deg, 
+    rgba(184, 203, 208, 0.95) 0%, 
+    rgba(184, 203, 208, 0.98) 20%,
+    white 50%,
+    rgba(184, 203, 208, 0.98) 80%, 
+    rgba(184, 203, 208, 0.95) 100%
+  );
+  backdrop-filter: blur(25px) brightness(1.1);
+  border-bottom: 2px solid rgba(19, 124, 139, 0.2);
+  box-shadow: 
+    0 4px 30px rgba(52, 77, 89, 0.1),
+    inset 0 -1px 0 rgba(184, 203, 208, 0.3);
+  
+  padding: 15px 40px;
   position: sticky;
   top: 0;
   z-index: 1000;
-  box-shadow: 0 4px 20px rgba(52, 77, 89, 0.1);
-  transition: all 0.3s ease;
+  
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  animation: navbarSlideDown 0.6s ease-out;
 }
 
-.navbar:hover {
-  box-shadow: 0 6px 25px rgba(52, 77, 89, 0.15);
+/* Effet de scroll sur la navbar */
+.navbar.scrolled {
+  background: linear-gradient(90deg, 
+    rgba(184, 203, 208, 0.98) 0%, 
+    white 50%, 
+    rgba(184, 203, 208, 0.98) 100%
+  );
+  box-shadow: 0 8px 40px rgba(52, 77, 89, 0.15);
 }
 
+/* Logo/Titre principal */
 .navbar-logo {
   font-size: 1.8rem;
-  font-weight: 700;
+  font-weight: 800;
   color: var(--blue-night);
-  background: linear-gradient(135deg, var(--blue-ocean), var(--blue-fog));
+  text-decoration: none;
+  letter-spacing: -0.5px;
+  
+  position: relative;
+  transition: all 0.3s ease;
+  
+  background: linear-gradient(135deg, var(--blue-night), var(--blue-ocean));
+  background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  background-clip: text;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-  letter-spacing: -0.5px;
+  
+  text-shadow: 0 2px 10px rgba(52, 77, 89, 0.2);
 }
 
-.navbar-logo::after {
-  content: '';
-  position: absolute;
-  bottom: -5px;
-  left: 0;
-  width: 0;
-  height: 2px;
-  background: linear-gradient(90deg, var(--blue-ocean), var(--blue-fog));
-  transition: width 0.3s ease;
-  border-radius: 1px;
-}
-
-.navbar-logo:hover::after {
-  width: 100%;
-}
-
+/* Effet hover sur le logo */
 .navbar-logo:hover {
-  transform: scale(1.02);
+  transform: scale(1.05);
+  filter: brightness(1.2);
+  text-shadow: 0 4px 15px rgba(19, 124, 139, 0.3);
 }
 
-.navbar div:last-child {
+/* Container des boutons de navigation */
+.navbar div {
   display: flex;
-  gap: 8px;
   align-items: center;
+  gap: 15px;
 }
 
+/* Boutons de navigation avec style lumineux */
 .navbar-btn {
-  background: rgba(184, 203, 208, 0.1);
-  border: 2px solid transparent;
-  border-radius: 12px;
-  padding: 12px;
-  color: var(--blue-stone);
-  cursor: pointer;
-  transition: all 0.3s ease;
+  position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
+  
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  
+  background: linear-gradient(135deg, 
+    rgba(52, 77, 89, 0.1), 
+    rgba(122, 144, 164, 0.15)
+  );
+  border: 2px solid rgba(19, 124, 139, 0.2);
+  
+  color: var(--blue-night);
   font-size: 1.2rem;
-  position: relative;
-  overflow: hidden;
-  backdrop-filter: blur(5px);
+  text-decoration: none;
+  
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+  cursor: pointer;
+  
+  /* Effet de brillance subtile */
+  box-shadow: 
+    0 4px 15px rgba(52, 77, 89, 0.1),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
+/* Effet de lueur interne */
 .navbar-btn::before {
   content: '';
   position: absolute;
   top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(90deg, transparent, rgba(19, 124, 139, 0.1), transparent);
-  transition: left 0.4s ease;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 50%;
+  background: radial-gradient(circle, 
+    rgba(19, 124, 139, 0.2) 0%, 
+    transparent 70%
+  );
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+/* États des boutons au hover */
+.navbar-btn:hover {
+  background: linear-gradient(135deg, 
+    rgba(19, 124, 139, 0.15), 
+    rgba(112, 156, 167, 0.2)
+  );
+  border-color: var(--blue-ocean);
+  color: var(--blue-ocean);
+  
+  transform: translateY(-3px) scale(1.1);
+  box-shadow: 
+    0 8px 25px rgba(19, 124, 139, 0.25),
+    0 0 20px rgba(19, 124, 139, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
 }
 
 .navbar-btn:hover::before {
-  left: 100%;
+  opacity: 1;
 }
 
-.navbar-btn:hover {
-  background: rgba(19, 124, 139, 0.1);
-  border-color: var(--blue-ocean);
-  color: var(--blue-ocean);
-  transform: translateY(-2px);
-  box-shadow: 0 5px 15px rgba(19, 124, 139, 0.2);
-}
-
+/* Effet de pression au clic */
 .navbar-btn:active {
-  transform: translateY(0);
-  box-shadow: 0 2px 8px rgba(19, 124, 139, 0.15);
+  transform: translateY(-1px) scale(1.05);
+  transition: transform 0.1s ease;
 }
 
-/* Effet spécial pour le bouton actif/sélectionné */
+/* Style pour le bouton actif/sélectionné */
 .navbar-btn.active {
-  background: linear-gradient(135deg, var(--blue-ocean), var(--blue-fog));
+  background: linear-gradient(135deg, 
+    var(--blue-ocean), 
+    var(--blue-fog)
+  );
   color: white;
   border-color: var(--blue-ocean);
-  box-shadow: 0 4px 12px rgba(19, 124, 139, 0.3);
+  box-shadow: 
+    0 6px 20px rgba(19, 124, 139, 0.3),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
 .navbar-btn.active:hover {
-  background: linear-gradient(135deg, var(--blue-night), var(--blue-ocean));
-  transform: translateY(-1px);
+  background: linear-gradient(135deg, 
+    var(--blue-ocean), 
+    var(--blue-stone)
+  );
+  transform: translateY(-2px) scale(1.08);
 }
 
-/* Styles spécifiques pour certains boutons */
-.navbar-btn[title="Déconnexion"]:hover {
-  background: rgba(220, 53, 69, 0.1);
-  border-color: #dc3545;
-  color: #dc3545;
+/* Tooltips - cachés par défaut */
+.tooltip {
+  position: absolute;
+  bottom: -45px;
+  left: 50%;
+  transform: translateX(-50%);
+  
+  background: linear-gradient(135deg, var(--blue-night), var(--blue-stone));
+  color: var(--blue-ice);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  white-space: nowrap;
+  
+  /* Initialement caché */
+  opacity: 0;
+  visibility: hidden;
+  transform: translateX(-50%) translateY(10px);
+  
+  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  
+  /* Flèche du tooltip */
+  box-shadow: 
+    0 4px 15px rgba(52, 77, 89, 0.3),
+    0 0 10px rgba(19, 124, 139, 0.2);
 }
 
-.navbar-btn[title="Profil"]:hover {
-  background: rgba(112, 156, 167, 0.15);
-  border-color: var(--blue-fog);
-  color: var(--blue-fog);
+/* Flèche du tooltip */
+.tooltip::before {
+  content: '';
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  
+  width: 0;
+  height: 0;
+  border-left: 6px solid transparent;
+  border-right: 6px solid transparent;
+  border-bottom: 6px solid var(--blue-night);
 }
 
-/* Animation au chargement de la navbar */
+/* Affichage du tooltip au hover */
+.navbar-btn:hover .tooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Animation d'entrée de la navbar */
 @keyframes navbarSlideDown {
   from {
     transform: translateY(-100%);
@@ -140,65 +225,110 @@
   }
 }
 
-.navbar {
-  animation: navbarSlideDown 0.5s ease;
+/* Animation des boutons - entrée progressive */
+.navbar-btn:nth-child(1) { animation: buttonSlideIn 0.6s ease-out 0.1s both; }
+.navbar-btn:nth-child(2) { animation: buttonSlideIn 0.6s ease-out 0.2s both; }
+.navbar-btn:nth-child(3) { animation: buttonSlideIn 0.6s ease-out 0.3s both; }
+.navbar-btn:nth-child(4) { animation: buttonSlideIn 0.6s ease-out 0.4s both; }
+
+@keyframes buttonSlideIn {
+  from {
+    transform: translateY(-30px) scale(0.8);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
 }
 
-/* Responsive */
-@media (max-width: 768px) {
+/* Responsive Design - Tablettes */
+@media (max-width: 968px) {
   .navbar {
-    padding: 12px 20px;
+    padding: 12px 25px;
   }
   
   .navbar-logo {
-    font-size: 1.5rem;
+    font-size: 1.6rem;
   }
   
-  .navbar div:last-child {
-    gap: 6px;
+  .navbar div {
+    gap: 12px;
   }
   
   .navbar-btn {
-    padding: 10px;
+    width: 42px;
+    height: 42px;
     font-size: 1.1rem;
   }
+  
+  .tooltip {
+    font-size: 0.75rem;
+    padding: 6px 10px;
+    bottom: -40px;
+  }
 }
 
+/* Responsive Design - Mobile */
 @media (max-width: 480px) {
   .navbar {
-    padding: 10px 15px;
+    padding: 10px 20px;
+    flex-wrap: wrap;
+    gap: 10px;
   }
   
   .navbar-logo {
-    font-size: 1.3rem;
+    font-size: 1.4rem;
+    margin-bottom: 5px;
   }
   
-  .navbar div:last-child {
-    gap: 4px;
+  .navbar div {
+    gap: 10px;
+    flex-wrap: wrap;
   }
   
   .navbar-btn {
-    padding: 8px;
+    width: 40px;
+    height: 40px;
     font-size: 1rem;
+  }
+  
+  .tooltip {
+    font-size: 0.7rem;
+    padding: 5px 8px;
+    bottom: -35px;
   }
 }
 
-/* Effet de focus pour l'accessibilité */
+/* Accessibilité - Focus visible */
 .navbar-btn:focus {
-  outline: none;
-  box-shadow: 0 0 0 3px rgba(19, 124, 139, 0.3);
-  border-color: var(--blue-ocean);
+  outline: 3px solid var(--blue-ocean);
+  outline-offset: 3px;
 }
 
-/* Animation subtile pour les icônes */
-.navbar-btn svg {
-  transition: transform 0.3s ease;
+.navbar-logo:focus {
+  outline: 2px solid var(--blue-ocean);
+  outline-offset: 2px;
+  border-radius: 4px;
 }
 
-.navbar-btn:hover svg {
-  transform: scale(1.1);
-}
-
-.navbar-btn:active svg {
-  transform: scale(0.95);
+/* Mode sombre (optionnel) */
+@media (prefers-color-scheme: dark) {
+  .navbar {
+    background: linear-gradient(90deg, 
+      rgba(52, 77, 89, 0.95) 0%, 
+      rgba(52, 77, 89, 0.98) 20%,
+      var(--blue-night) 50%,
+      rgba(52, 77, 89, 0.98) 80%, 
+      rgba(52, 77, 89, 0.95) 100%
+    );
+    border-bottom-color: rgba(184, 203, 208, 0.3);
+  }
+  
+  .navbar-logo {
+    background: linear-gradient(135deg, var(--blue-ice), var(--blue-fog));
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
 }

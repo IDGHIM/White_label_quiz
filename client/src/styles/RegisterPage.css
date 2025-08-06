@@ -1,6 +1,5 @@
 /* Reset uniquement pour la page de registration */
 .register-page {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   background: linear-gradient(135deg, var(--blue-ice) 0%, var(--blue-fog) 50%, var(--blue-ocean) 100%);
   min-height: 100vh;
   display: flex;
