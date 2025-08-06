@@ -1,10 +1,11 @@
 :root {
-  --blue-ocean: #137c8b; /* Bleu profond, vibrant */
-  --blue-fog: #709ca7; /* Bleu-gris doux */
-  --blue-ice: #b8cbd0; /* Bleu très clair, presque givré */
-  --blue-stone: #7a90a4; /* Bleu-gris moyen, pierreux */
-  --blue-night: #344d59; /* Bleu foncé, tirant sur le noir */
+  --blue-ocean: #0a5a66; /* Bleu profond plus foncé pour meilleur contraste */
+  --blue-fog: #5a8590; /* Bleu-gris plus saturé */
+  --blue-ice: #ffffff; /* Blanc pur pour maximum de contraste */
+  --blue-stone: #4a6b7a; /* Bleu-gris plus foncé */
+  --blue-night: #1a2a33; /* Bleu très foncé, presque noir */
 }
+
 
 * {
   margin: 0;
