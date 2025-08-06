@@ -59,7 +59,7 @@ L’application suit les recommandations **WCAG** et propose :
 ## 📦 Installation (exemple)
 ```bash
 # Cloner le projet
-git clone [https://github.com/IDGHIM/Hackathon_Quiz.git](https://github.com/IDGHIM/Hackathon_Quiz.git)
+git clone https://github.com/IDGHIM/Hackathon_Quiz.git
 
 # Accéder au dossier
 cd Hackathon_Quiz
