@@ -83,10 +83,10 @@
 /* Nom de la personne */
 .contact-person-name {
   color: var(--blue-ice);
-  font-size: 1.4rem;
+  font-size: 2rem; /* anciennement 1.4rem */
   font-weight: 700;
   margin: 0 0 8px 0;
-  letter-spacing: 0.5px;
+  letter-spacing: 0.6px;
   text-shadow: 0 2px 4px rgba(26, 42, 51, 0.3);
   
   background: linear-gradient(135deg, var(--blue-ice), var(--blue-fog));
@@ -105,13 +105,13 @@
 /* Rôle de la personne */
 .contact-person-role {
   color: var(--blue-fog);
-  font-size: 1rem;
+  font-size: 1.4rem; /* anciennement 1rem */
   font-weight: 600;
   margin: 0 0 15px 0;
-  letter-spacing: 0.3px;
+  letter-spacing: 0.4px;
   text-transform: uppercase;
   
-  padding: 5px 12px;
+  padding: 7px 14px;
   background: rgba(90, 133, 144, 0.15);
   border-radius: 15px;
   border: 1px solid rgba(90, 133, 144, 0.2);
@@ -129,11 +129,11 @@
 /* Description de la personne */
 .contact-person-description {
   color: rgba(255, 255, 255, 0.85);
-  font-size: 0.95rem;
-  line-height: 1.6;
+  font-size: 1.3rem; /* anciennement 0.95rem */
+  line-height: 1.8;
   margin: 0 0 25px 0;
   font-style: italic;
-  min-height: 50px;
+  min-height: 60px;
   
   transition: color 0.3s ease;
 }
@@ -157,8 +157,8 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 60px;
-  height: 60px;
+  width: 70px; /* anciennement 60px */
+  height: 70px;
   border-radius: 12px;
   
   background: linear-gradient(145deg, 
@@ -168,7 +168,7 @@
   border: 1px solid rgba(255, 255, 255, 0.15);
   
   color: var(--blue-ice);
-  font-size: 1.2rem;
+  font-size: 1.6rem; /* anciennement 1.2rem */
   text-decoration: none;
   
   position: relative;
@@ -218,17 +218,14 @@
 
 /* Icônes spécifiques avec couleurs personnalisées au survol */
 .contact-link-icon:nth-child(1):hover {
-  /* Portfolio - Globe */
   box-shadow: 0 8px 25px rgba(74, 107, 122, 0.4);
 }
 
 .contact-link-icon:nth-child(2):hover {
-  /* LinkedIn */
   box-shadow: 0 8px 25px rgba(0, 119, 181, 0.4);
 }
 
 .contact-link-icon:nth-child(3):hover {
-  /* GitHub */
   box-shadow: 0 8px 25px rgba(88, 96, 105, 0.4);
 }
 
@@ -264,16 +261,16 @@
   }
   
   .contact-person-name {
-    font-size: 1.3rem;
+    font-size: 1.8rem;
   }
   
   .contact-person-role {
-    font-size: 0.9rem;
+    font-size: 1.2rem;
   }
   
   .contact-person-description {
-    font-size: 0.9rem;
-    min-height: 45px;
+    font-size: 1.1rem;
+    min-height: 50px;
   }
   
   .contact-links {
@@ -281,9 +278,9 @@
   }
   
   .contact-link-icon {
-    width: 42px;
-    height: 42px;
-    font-size: 1.1rem;
+    width: 60px;
+    height: 60px;
+    font-size: 1.4rem;
   }
 }
 
@@ -302,21 +299,21 @@
   }
   
   .contact-person-name {
-    font-size: 1.2rem;
+    font-size: 1.6rem;
     text-align: center;
   }
   
   .contact-person-role {
-    font-size: 0.85rem;
+    font-size: 1.1rem;
     text-align: center;
     display: block;
     margin: 0 auto 15px auto;
   }
   
   .contact-person-description {
-    font-size: 0.85rem;
+    font-size: 1rem;
     text-align: center;
-    min-height: 40px;
+    min-height: 45px;
   }
   
   .contact-links {
@@ -325,9 +322,9 @@
   }
   
   .contact-link-icon {
-    width: 40px;
-    height: 40px;
-    font-size: 1rem;
+    width: 50px;
+    height: 50px;
+    font-size: 1.2rem;
   }
 }
 

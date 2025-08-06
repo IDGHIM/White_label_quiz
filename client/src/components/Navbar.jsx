@@ -32,7 +32,7 @@ const Navbar = () => {
               to="/register"
             >
               <FaUserPlus />
-              <span className="tooltip">Register</span>
+              <span className="tooltip">Inscription</span>
             </Link>
             <Link
               className="navbar-btn active"

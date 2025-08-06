@@ -11,6 +11,7 @@ body {
   color: var(--blue-night);
   box-sizing: border-box;
   position: relative;
+  font-size: 1.25rem; /* ≈20px au lieu de 16px */
 }
 
 .main-content {
@@ -43,7 +44,7 @@ body {
 
 .body-title {
   color: var(--blue-night);
-  font-size: 2.5rem;
+  font-size: 3.5rem; /* anciennement 2.5rem */
   font-weight: 600;
   margin-bottom: 40px;
   position: relative;
@@ -66,7 +67,7 @@ body {
 }
 
 .body-btn {
-  padding: 16px 40px;
+  padding: 20px 48px; /* un peu plus grand pour confort tactile */
   background: linear-gradient(
     135deg,
     var(--blue-ocean) 0%,
@@ -75,12 +76,12 @@ body {
   color: white;
   border: none;
   border-radius: 12px;
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 1.5rem; /* anciennement 18px */
+  font-weight: 700;
   cursor: pointer;
   transition: all 0.3s ease;
   text-transform: uppercase;
-  letter-spacing: 1px;
+  letter-spacing: 1.2px;
   position: relative;
   overflow: hidden;
 }

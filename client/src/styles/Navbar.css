@@ -1,72 +1,73 @@
 /* Navbar principale avec design contrasté */
 .navbar {
   background: linear-gradient(90deg, 
-    rgba(184, 203, 208, 0.95) 0%, 
-    rgba(184, 203, 208, 0.98) 20%,
-    white 50%,
-    rgba(184, 203, 208, 0.98) 80%, 
-    rgba(184, 203, 208, 0.95) 100%
+    rgba(184, 203, 208, 0.95) 0%,       /* Couleur claire transparente à gauche */
+    rgba(184, 203, 208, 0.98) 20%,      /* Légère variation de transparence */
+    white 50%,                          /* Centre blanc */
+    rgba(184, 203, 208, 0.98) 80%,      /* Retour à gris clair transparent */
+    rgba(184, 203, 208, 0.95) 100%      /* Fin de dégradé */
   );
-  backdrop-filter: blur(25px) brightness(1.1);
-  border-bottom: 2px solid rgba(19, 124, 139, 0.2);
+  backdrop-filter: blur(25px) brightness(1.1); /* Flou et légère luminosité */
+  border-bottom: 2px solid rgba(19, 124, 139, 0.2); /* Bordure fine en bas */
   box-shadow: 
-    0 4px 30px rgba(52, 77, 89, 0.1),
-    inset 0 -1px 0 rgba(184, 203, 208, 0.3);
+    0 4px 30px rgba(52, 77, 89, 0.1),           /* Ombre douce externe */
+    inset 0 -1px 0 rgba(184, 203, 208, 0.3);    /* Ligne interne en bas */
   
-  padding: 15px 40px;
-  position: sticky;
+  padding: 15px 40px;          /* Espacement interne horizontal/vertical */
+  position: sticky;            /* Reste collée en haut au scroll */
   top: 0;
-  z-index: 1000;
+  z-index: 1000;               /* Priorité d’affichage élevée */
   
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
+  display: flex;               /* Flexbox pour aligner les éléments */
+  justify-content: space-between; /* Espacement maximal entre logo et boutons */
+  align-items: center;        /* Alignement vertical centré */
   
-  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  animation: navbarSlideDown 0.6s ease-out;
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94); /* Transition fluide */
+  animation: navbarSlideDown 0.6s ease-out;  /* Animation d’entrée */
 }
 
-/* Effet de scroll sur la navbar */
+/* Effet de scroll sur la navbar (quand on descend) */
 .navbar.scrolled {
   background: linear-gradient(90deg, 
     rgba(184, 203, 208, 0.98) 0%, 
     white 50%, 
     rgba(184, 203, 208, 0.98) 100%
   );
-  box-shadow: 0 8px 40px rgba(52, 77, 89, 0.15);
+  box-shadow: 0 8px 40px rgba(52, 77, 89, 0.15); /* Ombre plus marquée */
 }
 
 /* Logo/Titre principal */
 .navbar-logo {
-  font-size: 1.8rem;
+  font-size: 2.4rem; /* Agrandi de 33% */
   font-weight: 800;
-  color: var(--blue-night);
-  text-decoration: none;
-  letter-spacing: -0.5px;
+  color: var(--blue-night);           /* Couleur de texte */
+  text-decoration: none;              /* Pas de soulignement */
+  letter-spacing: -0.5px;             /* Espacement entre lettres légèrement réduit */
   
   position: relative;
-  transition: all 0.3s ease;
+  transition: all 0.3s ease;          /* Transition douce sur hover */
   
+  /* Dégradé appliqué au texte */
   background: linear-gradient(135deg, var(--blue-night), var(--blue-ocean));
   background-clip: text;
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  -webkit-text-fill-color: transparent;  /* Texte transparent pour effet dégradé */
   
-  text-shadow: 0 2px 10px rgba(52, 77, 89, 0.2);
+  text-shadow: 0 2px 10px rgba(52, 77, 89, 0.2); /* Ombre douce du texte */
 }
 
-/* Effet hover sur le logo */
+/* Effet hover sur le logo (agrandir + éclaircir) */
 .navbar-logo:hover {
-  transform: scale(1.05);
-  filter: brightness(1.2);
-  text-shadow: 0 4px 15px rgba(19, 124, 139, 0.3);
+  transform: scale(1.05);              /* Agrandissement */
+  filter: brightness(1.2);             /* Luminosité accrue */
+  text-shadow: 0 4px 15px rgba(19, 124, 139, 0.3); /* Ombre plus marquée */
 }
 
-/* Container des boutons de navigation */
+/* Container des boutons de navigation (flexbox) */
 .navbar div {
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 15px; /* Espace entre boutons */
 }
 
 /* Boutons de navigation avec style lumineux */
@@ -76,9 +77,9 @@
   align-items: center;
   justify-content: center;
   
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
+  width: 65px;       /* Agrandi de 30% */
+  height: 65px;      /* Agrandi de 30% */
+  border-radius: 50%;       /* Bouton rond */
   
   background: linear-gradient(135deg, 
     rgba(52, 77, 89, 0.1), 
@@ -87,26 +88,23 @@
   border: 2px solid rgba(19, 124, 139, 0.2);
   
   color: var(--blue-night);
-  font-size: 1.2rem;
+  font-size: 1.6rem;    /* Agrandi de 33% */
   text-decoration: none;
   
   transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
   cursor: pointer;
   
-  /* Effet de brillance subtile */
+  /* Ombres internes et externes pour effet subtil */
   box-shadow: 
     0 4px 15px rgba(52, 77, 89, 0.1),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
-/* Effet de lueur interne */
+/* Lueur interne au survol */
 .navbar-btn::before {
   content: '';
   position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
+  top: 0; left: 0; right: 0; bottom: 0;
   border-radius: 50%;
   background: radial-gradient(circle, 
     rgba(19, 124, 139, 0.2) 0%, 
@@ -125,7 +123,7 @@
   border-color: var(--blue-ocean);
   color: var(--blue-ocean);
   
-  transform: translateY(-3px) scale(1.1);
+  transform: translateY(-3px) scale(1.1); /* Légère remontée + agrandissement */
   box-shadow: 
     0 8px 25px rgba(19, 124, 139, 0.25),
     0 0 20px rgba(19, 124, 139, 0.15),
@@ -133,7 +131,7 @@
 }
 
 .navbar-btn:hover::before {
-  opacity: 1;
+  opacity: 1; /* Lueur visible */
 }
 
 /* Effet de pression au clic */
@@ -144,10 +142,7 @@
 
 /* Style pour le bouton actif/sélectionné */
 .navbar-btn.active {
-  background: linear-gradient(135deg, 
-    var(--blue-ocean), 
-    var(--blue-fog)
-  );
+  background: linear-gradient(135deg, var(--blue-ocean), var(--blue-fog));
   color: white;
   border-color: var(--blue-ocean);
   box-shadow: 
@@ -155,18 +150,16 @@
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
 }
 
+/* Hover sur bouton actif */
 .navbar-btn.active:hover {
-  background: linear-gradient(135deg, 
-    var(--blue-ocean), 
-    var(--blue-stone)
-  );
+  background: linear-gradient(135deg, var(--blue-ocean), var(--blue-stone));
   transform: translateY(-2px) scale(1.08);
 }
 
 /* Tooltips - cachés par défaut */
 .tooltip {
   position: absolute;
-  bottom: -45px;
+  bottom: -45px;               /* Positionné en dessous du bouton */
   left: 50%;
   transform: translateX(-50%);
   
@@ -185,7 +178,7 @@
   
   transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
   
-  /* Flèche du tooltip */
+  /* Ombre pour relief */
   box-shadow: 
     0 4px 15px rgba(52, 77, 89, 0.3),
     0 0 10px rgba(19, 124, 139, 0.2);
@@ -249,7 +242,7 @@
   }
   
   .navbar-logo {
-    font-size: 1.6rem;
+    font-size: 2rem; /* Agrandi (1.6rem → 2rem) */
   }
   
   .navbar div {
@@ -257,9 +250,9 @@
   }
   
   .navbar-btn {
-    width: 42px;
-    height: 42px;
-    font-size: 1.1rem;
+    width: 55px;    /* Agrandi (42px → 55px) */
+    height: 55px;   /* Agrandi (42px → 55px) */
+    font-size: 1.4rem; /* Agrandi (1.1rem → 1.4rem) */
   }
   
   .tooltip {
@@ -273,12 +266,12 @@
 @media (max-width: 480px) {
   .navbar {
     padding: 10px 20px;
-    flex-wrap: wrap;
+    flex-wrap: wrap;  /* Permet de passer à la ligne si besoin */
     gap: 10px;
   }
   
   .navbar-logo {
-    font-size: 1.4rem;
+    font-size: 1.75rem; /* Agrandi (1.4rem → 1.75rem) */
     margin-bottom: 5px;
   }
   
@@ -288,9 +281,9 @@
   }
   
   .navbar-btn {
-    width: 40px;
-    height: 40px;
-    font-size: 1rem;
+    width: 52px;    /* Agrandi (40px → 52px) */
+    height: 52px;   /* Agrandi (40px → 52px) */
+    font-size: 1.2rem; /* Agrandi (1rem → 1.2rem) */
   }
   
   .tooltip {
