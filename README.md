@@ -73,3 +73,14 @@ npm install
 
 # Lancer le serveur de développement
 npm run dev
+```
+---
+
+## 📫 Me contacter
+
+- GitHub: [@idghim](https://github.com/idghim) [@nicolas-drew](https://github.com/nicolas-drew)) [@Dimz972](https://github.com/Dimz972) [@damiendiluca](https://github.com/damiendiluca) 
+- Mail : [Ichem mail](ichemdghim@gmail.com) [Nicolas mail](X@gmail.com) [Dimitri mail](X@gmail.com) [Damien mail](X@gmail.com) 
+
+---
+
+⭐ *Si ce projet vous a plu ou vous a été utile, n'hésitez pas à lui laisser une étoile !*
