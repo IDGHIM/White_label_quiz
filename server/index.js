@@ -10,10 +10,17 @@ const authRoutes = require("./src/routes/authRoutes");
 const dotenv = require("dotenv");
 dotenv.config();
 const sendEmail = require("./src/utils/sendEmail");
+const cors = require("cors");
 
 app.get("/hello", (req, res) => {
   res.send("Hello world!");
 });
+
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+  })
+);
 
 // Middleware
 app.use(express.json());
@@ -135,6 +142,6 @@ app.use("/api/users", userRouter);
 
 app.use("/auth", authRoutes);
 
-app.listen(3000, () => {
-  console.log("Server is running on http://localhost:3000");
+app.listen(5000, () => {
+  console.log("Server is running on http://localhost:5000");
 });

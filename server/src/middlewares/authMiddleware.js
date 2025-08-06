@@ -1,10 +1,10 @@
-import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
+const jwt = require("jsonwebtoken");
+const dotenv = require("dotenv");
 dotenv.config();
 
 const JWT_SECRET = process.env.JWT_SECRET;
 
-export const protect = (req, res, next) => {
+const protect = (req, res, next) => {
   const token = req.cookies.token || "";
 
   if (!token) {
@@ -24,7 +24,7 @@ export const protect = (req, res, next) => {
 };
 
 // Middleware pour la gestion des rôles utilisateur
-export const authorize =
+const authorize =
   (...roles) =>
   (req, res, next) => {
     if (!req.user) return res.status(401).json({ message: `Non authentifié` });
@@ -36,3 +36,5 @@ export const authorize =
     }
     next();
   };
+
+module.exports = { protect, authorize };

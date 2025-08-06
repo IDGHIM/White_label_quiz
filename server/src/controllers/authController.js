@@ -4,15 +4,17 @@ const bcrypt = require("bcrypt");
 const dotenv = require("dotenv");
 dotenv.config();
 const sendMail = require("../utils/sendEmail");
+const crypto = require("crypto");
 
 const JWT_SECRET = process.env.JWT_SECRET;
+const CLIENT_URL = process.env.CLIENT_URL;
 
 // Fonction pour s'enregistrer
 async function register(req, res) {
   try {
-    const { username, email, password, confirmPassword, message } = req.body;
+    const { username, email, password, confirmPassword } = req.body;
 
-    if (!username || !email || !password || !confirmPassword || !message) {
+    if (!username || !email || !password || !confirmPassword) {
       return res
         .status(400)
         .json({ message: `Tous les champs sont obligatoires` });
@@ -48,7 +50,6 @@ async function register(req, res) {
       expiresIn: "1h",
     });
 
-    // const verificationUrl = `http://localhost:3000`;
     const verificationUrl = `${CLIENT_URL}/auth/verify/${verificationToken}`;
 
     await sendMail({
@@ -68,25 +69,32 @@ async function register(req, res) {
 
 // Connexion au compte
 async function login(req, res) {
+  console.log("✅ Requête login reçue:", req.body);
   try {
     const { email, password } = req.body;
     if (!email || !password) {
+      console.log("❌ Champs manquants");
       return res.status(400).json({ message: `Tous les champs sont requis` });
     }
 
     const user = await User.findOne({ email });
+    console.log("👤 Utilisateur trouvé :", user);
 
     if (!user) {
+      console.log("❌ Utilisateur introuvable");
       return res.status(400).json({ message: `Utilisateur introuvable` });
     }
 
     if (!user.isVerified) {
+      console.log("⚠️ Compte non vérifié");
       return res
         .status(401)
         .json({ message: `Veuillez confirmer votre compte` });
     }
 
+    console.log("🔐 Vérification du mot de passe...");
     const isMatch = await bcrypt.compare(password, user.password);
+    console.log("✅ Mot de passe valide :", isMatch);
 
     if (!isMatch) {
       return res
@@ -151,10 +159,10 @@ async function requestPasswordReset(req, res) {
     user.resetPasswordExpire = Date.now() + 3600000; // 1h
     await user.save();
 
-    const resetUrl = `${CLIENT_URL}/api/auth/reset-password/${resetToken}`;
+    const resetUrl = `${CLIENT_URL}/reset-password/${resetToken}`;
 
     await sendMail({
-      to: newUser.email,
+      to: user.email,
       subject: `Réinitialisation du mot de passe`,
       html: `<a href ="${resetUrl}">${resetUrl}</a>`,
     });
@@ -167,8 +175,7 @@ async function requestPasswordReset(req, res) {
 }
 
 async function resetPassword(req, res) {
-  const { token } = req.params;
-  const { password, confirmPassword } = req.body;
+  const { token, password, confirmPassword } = req.body;
 
   if (!password || !confirmPassword)
     return res
