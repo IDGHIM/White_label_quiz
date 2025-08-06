@@ -1,0 +1,195 @@
+/* Container principal */
+.contact-card-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  padding: 2rem;
+  max-width: 1000px;
+  margin: 0 auto;
+  background: linear-gradient(135deg, var(--blue-ice) 0%, var(--blue-fog) 100%);
+  min-height: 100vh;
+}
+
+/* Card individuelle */
+.contact-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  padding: 1.5rem;
+  box-shadow: 0 6px 24px rgba(52, 77, 89, 0.15);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  max-height: 280px;
+}
+
+/* Animation de bordure qui tourne autour de la card */
+.contact-card::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  background: linear-gradient(45deg, var(--blue-ocean), var(--blue-fog), var(--blue-stone), var(--blue-ocean));
+  background-size: 400% 400%;
+  border-radius: 14px;
+  z-index: -1;
+  animation: gradientRotate 4s ease-in-out infinite;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.contact-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--blue-ocean), var(--blue-stone));
+  border-radius: 12px 12px 0 0;
+}
+
+.contact-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 36px rgba(52, 77, 89, 0.25);
+  border-color: var(--blue-ocean);
+}
+
+.contact-card:hover::after {
+  opacity: 1;
+}
+
+/* Nom de la personne */
+.contact-person-name {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--blue-night);
+  margin: 0 0 0.4rem 0;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+/* Rôle */
+.contact-person-role {
+  font-size: 0.95rem;
+  color: var(--blue-ocean);
+  font-weight: 600;
+  margin: 0 0 0.8rem 0;
+  text-transform: capitalize;
+}
+
+/* Description */
+.contact-person-description {
+  font-size: 0.85rem;
+  color: var(--blue-ice);
+  line-height: 1.4;
+  margin: 0 0 1rem 0;
+  min-height: 2.5rem;
+  font-style: italic;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Conteneur des liens */
+.contact-links {
+  display: flex;
+  gap: 0.8rem;
+  justify-content: center;
+  margin-top: auto;
+}
+
+/* Icônes de liens */
+.contact-link-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: var(--blue-ice);
+  color: var(--blue-ocean);
+  text-decoration: none;
+  transition: all 0.3s ease;
+  font-size: 1rem;
+  border: 2px solid transparent;
+}
+
+.contact-link-icon:hover {
+  background: var(--blue-ocean);
+  color: white;
+  transform: scale(1.1);
+  border-color: var(--blue-fog);
+  box-shadow: 0 3px 12px rgba(19, 124, 139, 0.3);
+}
+
+/* Responsive pour tablettes */
+@media (max-width: 768px) {
+  .contact-card-container {
+    grid-template-columns: 1fr;
+    gap: 1.2rem;
+    padding: 1rem;
+    max-width: 500px;
+  }
+  
+  .contact-card {
+    padding: 1.2rem;
+    max-height: 250px;
+  }
+  
+  .contact-person-name {
+    font-size: 1.1rem;
+  }
+  
+  .contact-person-role {
+    font-size: 0.9rem;
+  }
+  
+  .contact-person-description {
+    font-size: 0.8rem;
+    min-height: 2rem;
+  }
+  
+  .contact-link-icon {
+    width: 34px;
+    height: 34px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Animation d'entrée */
+.contact-card {
+  animation: fadeInUp 0.6s ease forwards;
+  opacity: 0;
+  transform: translateY(30px);
+}
+
+.contact-card:nth-child(1) { animation-delay: 0.1s; }
+.contact-card:nth-child(2) { animation-delay: 0.2s; }
+.contact-card:nth-child(3) { animation-delay: 0.3s; }
+.contact-card:nth-child(4) { animation-delay: 0.4s; }
+
+@keyframes fadeInUp {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Animation de gradient qui tourne autour des cartes */
+@keyframes gradientRotate {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}

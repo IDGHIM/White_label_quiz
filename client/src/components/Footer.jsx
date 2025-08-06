@@ -3,20 +3,20 @@ import "../styles/Footer.css";
 
 const Footer = () => {
   return (
-    <footer className="footer">
-      <div className="footer-links">
-        <Link to="/mentions-legales" className="footer-link">
+    <footer className="site-footer">
+      <nav className="footer-navigation">
+        <Link to="/mentions-legales" className="footer-nav-link">
           Mentions légales
         </Link>
-        <Link to="/licence" className="footer-link">
+        <Link to="/licence" className="footer-nav-link">
           Licence
         </Link>
-        <Link to="/contact" className="footer-link">
+        <Link to="/contact" className="footer-nav-link">
           Contact
         </Link>
-      </div>
-      <div className="footer-copyright">
-        © 2025 Hackathon Quizz - Tous droits réservés.
+      </nav>
+      <div className="footer-copyright-section">
+        © 2025 Hackathon Quiz - Tous droits réservés.
       </div>
     </footer>
   );
