@@ -79,7 +79,7 @@ npm run dev
 ## 📫 Me contacter
 
 - GitHub: [@idghim](https://github.com/idghim) [@nicolas-drew](https://github.com/nicolas-drew) [@Dimz972](https://github.com/Dimz972) [@damiendiluca](https://github.com/damiendiluca) 
-- Mail : [Ichem : ichemdghim@gmail.com] [Nicolas : X@gmail.com] [Dimitri : X@gmail.com] Damien : X@gmail.com
+- Mail : Ichem : ichemdghim@gmail.com Nicolas : X@gmail.com Dimitri : X@gmail.com Damien : X@gmail.com
 
 ---
 
