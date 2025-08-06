@@ -48,12 +48,11 @@ L’application suit les recommandations **WCAG** et propose :
 
 ---
 
-## 🛠️ Stack technique (suggestion)
-- **Front-end** : React / Vue.js avec TailwindCSS (design simple et accessible)
+## 🛠️ Stack technique
+- **Front-end** : React / Vite.js (design simple et accessible)
 - **Back-end** : Node.js / Express
-- **Base de données** : MongoDB ou PostgreSQL
-- **Auth** : JWT ou OAuth2
-- **Accessibilité** : ARIA roles, audit Lighthouse, plugins d’accessibilité
+- **Base de données** : MongoDB 
+- **Auth** : JWT 
 
 ---
 
