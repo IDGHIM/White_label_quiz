@@ -1,0 +1,221 @@
+:root {
+  --blue-ocean: #0a5a66; /* Bleu profond plus foncé pour meilleur contraste */
+  --blue-fog: #5a8590; /* Bleu-gris plus saturé */
+  --blue-ice: #ffffff; /* Blanc pur pour maximum de contraste */
+  --blue-stone: #4a6b7a; /* Bleu-gris plus foncé */
+  --blue-night: #1a2a33; /* Bleu très foncé, presque noir */
+}
+
+/* Container principal */
+.mlq-main-container {
+  min-height: 100vh;
+  background: linear-gradient(135deg, var(--blue-ice) 0%, #f8fafb 100%);
+  padding: 2rem 1rem;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  line-height: 1.6;
+  color: var(--blue-night);
+}
+
+/* Article principal */
+.mlq-article {
+  max-width: 800px;
+  margin: 0 auto;
+  background: var(--blue-ice);
+  border-radius: 16px;
+  box-shadow: 0 8px 32px rgba(10, 90, 102, 0.1);
+  overflow: hidden;
+  border: 1px solid rgba(90, 133, 144, 0.1);
+}
+
+/* Header */
+.mlq-header {
+  background: linear-gradient(135deg, var(--blue-ocean) 0%, var(--blue-stone) 100%);
+  color: var(--blue-ice);
+  padding: 3rem 2.5rem 2.5rem;
+  text-align: center;
+  position: relative;
+}
+
+.mlq-header::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: url("data:image/svg+xml,%3Csvg width='40' height='40' viewBox='0 0 40 40' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23ffffff' fill-opacity='0.05'%3E%3Cpath d='M20 20c0 11.046-8.954 20-20 20v20h40V20H20z'/%3E%3C/g%3E%3C/svg%3E") repeat;
+}
+
+.mlq-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin: 0 0 1rem 0;
+  position: relative;
+  z-index: 1;
+}
+
+.mlq-subtitle {
+  font-size: 1.1rem;
+  opacity: 0.9;
+  margin: 0;
+  font-weight: 400;
+  position: relative;
+  z-index: 1;
+}
+
+/* Sections */
+.mlq-section {
+  padding: 2rem 2.5rem;
+  border-bottom: 1px solid rgba(90, 133, 144, 0.1);
+  transition: background-color 0.3s ease;
+}
+
+.mlq-section:hover {
+  background-color: rgba(90, 133, 144, 0.02);
+}
+
+.mlq-section:last-of-type {
+  border-bottom: none;
+}
+
+.mlq-section-title {
+  font-size: 1.5rem;
+  font-weight: 600;
+  color: var(--blue-ocean);
+  margin: 0 0 1.25rem 0;
+  padding-bottom: 0.5rem;
+  border-bottom: 2px solid var(--blue-fog);
+  display: inline-block;
+}
+
+/* Texte */
+.mlq-text {
+  font-size: 1rem;
+  margin: 0 0 1rem 0;
+  color: var(--blue-night);
+  text-align: justify;
+}
+
+.mlq-text:last-child {
+  margin-bottom: 0;
+}
+
+/* Liens */
+.mlq-link {
+  color: var(--blue-ocean);
+  text-decoration: none;
+  font-weight: 500;
+  border-bottom: 1px solid transparent;
+  transition: all 0.3s ease;
+}
+
+.mlq-link:hover {
+  color: var(--blue-stone);
+  border-bottom-color: var(--blue-fog);
+  text-decoration: none;
+}
+
+.mlq-link:focus {
+  outline: 2px solid var(--blue-fog);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* Listes */
+.mlq-list {
+  margin: 1rem 0;
+  padding-left: 0;
+  list-style: none;
+}
+
+.mlq-list li {
+  background: linear-gradient(90deg, var(--blue-fog) 0%, transparent 100%);
+  background-size: 4px 100%;
+  background-repeat: no-repeat;
+  background-position: 0 center;
+  padding: 0.75rem 0 0.75rem 1.5rem;
+  margin: 0.5rem 0;
+  border-radius: 4px;
+  font-weight: 500;
+  color: var(--blue-stone);
+  transition: all 0.3s ease;
+}
+
+.mlq-list li:hover {
+  background-color: rgba(90, 133, 144, 0.05);
+  transform: translateX(4px);
+}
+
+/* Footer */
+.mlq-footer {
+  background: linear-gradient(135deg, var(--blue-night) 0%, var(--blue-ocean) 100%);
+  color: var(--blue-ice);
+  padding: 2rem 2.5rem;
+  text-align: center;
+  font-size: 0.95rem;
+  line-height: 1.8;
+}
+
+.mlq-footer .mlq-link {
+  color: var(--blue-ice);
+  border-bottom-color: rgba(255, 255, 255, 0.3);
+}
+
+.mlq-footer .mlq-link:hover {
+  color: var(--blue-ice);
+  border-bottom-color: var(--blue-ice);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .mlq-main-container {
+    padding: 1rem 0.5rem;
+  }
+  
+  .mlq-article {
+    border-radius: 8px;
+  }
+  
+  .mlq-header {
+    padding: 2rem 1.5rem;
+  }
+  
+  .mlq-title {
+    font-size: 2rem;
+  }
+  
+  .mlq-subtitle {
+    font-size: 1rem;
+  }
+  
+  .mlq-section {
+    padding: 1.5rem 1.5rem;
+  }
+  
+  .mlq-section-title {
+    font-size: 1.3rem;
+  }
+  
+  .mlq-text {
+    font-size: 0.95rem;
+    text-align: left;
+  }
+  
+  .mlq-footer {
+    padding: 1.5rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .mlq-header {
+    padding: 1.5rem 1rem;
+  }
+  
+  .mlq-section {
+    padding: 1.25rem 1rem;
+  }
+  
+  .mlq-title {
+    font-size: 1.75rem;
+  }
+}
