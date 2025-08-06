@@ -11,6 +11,7 @@ const ResetPasswordPage = () => {
   console.log("Token récupéré depuis l'URL:", token);
   
   const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [message, setMessage] = useState('');
   const [error, setError] = useState('');
 
@@ -33,9 +34,10 @@ const ResetPasswordPage = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:5001/api/reset-password', {
+      const response = await axios.post('http://localhost:3000/api/reset-password', {
         token,
-        newPassword,
+        password: newPassword,
+        confirmPassword,
       });
       
       console.log("Réponse de l'API:", response.data);
@@ -64,8 +66,8 @@ const ResetPasswordPage = () => {
       <input
         type="password"
         placeholder="Confirmer nouveau mot de passe"
-        value={newPassword}
-        onChange={(e) => setNewPassword(e.target.value)}
+        value={confirmPassword}
+        onChange={(e) => setConfirmPassword(e.target.value)}
       />
       <button type="submit">Réinitialiser</button>
       {message && <p className="success">{message}</p>}
