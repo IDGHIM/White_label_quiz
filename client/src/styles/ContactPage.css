@@ -1,195 +1,353 @@
-/* Container principal */
+/* Container principal des cartes de contact */
 .contact-card-container {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 1.5rem;
-  padding: 2rem;
+  grid-template-rows: repeat(2, 1fr);
+  gap: 30px;
+  padding: 40px 20px;
   max-width: 1000px;
   margin: 0 auto;
-  background: linear-gradient(135deg, var(--blue-ice) 0%, var(--blue-fog) 100%);
-  min-height: 100vh;
+  min-height: calc(100vh - 200px);
+  align-content: center;
 }
 
-/* Card individuelle */
+/* Style des cartes individuelles */
 .contact-card {
-  background: rgba(255, 255, 255, 0.95);
-  border-radius: 12px;
-  padding: 1.5rem;
-  box-shadow: 0 6px 24px rgba(52, 77, 89, 0.15);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  transition: all 0.3s ease;
+  background: linear-gradient(145deg, 
+    rgba(26, 42, 51, 0.85), 
+    rgba(74, 107, 122, 0.8)
+  );
+  backdrop-filter: blur(20px) saturate(1.2);
+  border: 1px solid rgba(255, 255, 255, 0.25);
+  border-radius: 20px;
+  padding: 30px 25px;
   position: relative;
   overflow: hidden;
-  max-height: 280px;
+  box-shadow: 
+    0 8px 32px rgba(10, 90, 102, 0.25),
+    0 4px 16px rgba(26, 42, 51, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform: translateY(0);
+  animation: cardSlideIn 0.6s ease-out backwards;
 }
 
-/* Animation de bordure qui tourne autour de la card */
-.contact-card::after {
-  content: '';
-  position: absolute;
-  top: -2px;
-  left: -2px;
-  right: -2px;
-  bottom: -2px;
-  background: linear-gradient(45deg, var(--blue-ocean), var(--blue-fog), var(--blue-stone), var(--blue-ocean));
-  background-size: 400% 400%;
-  border-radius: 14px;
-  z-index: -1;
-  animation: gradientRotate 4s ease-in-out infinite;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
+/* Effet de particules sur les cartes */
 .contact-card::before {
   content: '';
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 20% 20%, rgba(10, 90, 102, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(90, 133, 144, 0.08) 0%, transparent 50%);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+
+/* Ligne décorative en haut de chaque carte */
+.contact-card::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
   height: 3px;
-  background: linear-gradient(90deg, var(--blue-ocean), var(--blue-stone));
-  border-radius: 12px 12px 0 0;
+  background: linear-gradient(90deg, 
+    var(--blue-ocean), 
+    var(--blue-fog), 
+    var(--blue-stone)
+  );
+  border-radius: 20px 20px 0 0;
 }
 
+/* Effets au survol des cartes */
 .contact-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 12px 36px rgba(52, 77, 89, 0.25);
-  border-color: var(--blue-ocean);
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 
+    0 16px 48px rgba(10, 90, 102, 0.25),
+    0 8px 24px rgba(26, 42, 51, 0.15),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
+  
+  border-color: rgba(10, 90, 102, 0.3);
 }
 
-.contact-card:hover::after {
+.contact-card:hover::before {
   opacity: 1;
 }
 
 /* Nom de la personne */
 .contact-person-name {
-  font-size: 1.2rem;
-  font-weight: 700;
-  color: var(--blue-night);
-  margin: 0 0 0.4rem 0;
-  text-transform: uppercase;
-  letter-spacing: 0.3px;
-}
-
-/* Rôle */
-.contact-person-role {
-  font-size: 0.95rem;
-  color: var(--blue-ocean);
-  font-weight: 600;
-  margin: 0 0 0.8rem 0;
-  text-transform: capitalize;
-}
-
-/* Description */
-.contact-person-description {
-  font-size: 0.85rem;
   color: var(--blue-ice);
-  line-height: 1.4;
-  margin: 0 0 1rem 0;
-  min-height: 2.5rem;
-  font-style: italic;
-  display: -webkit-box;
-  -webkit-line-clamp: 3;
-  line-clamp: 3;
-  -webkit-box-orient: vertical;
-  overflow: hidden;
+  font-size: 2rem; /* anciennement 1.4rem */
+  font-weight: 700;
+  margin: 0 0 8px 0;
+  letter-spacing: 0.6px;
+  text-shadow: 0 2px 4px rgba(26, 42, 51, 0.3);
+  
+  background: linear-gradient(135deg, var(--blue-ice), var(--blue-fog));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  
+  transition: all 0.3s ease;
 }
 
-/* Conteneur des liens */
+.contact-card:hover .contact-person-name {
+  transform: translateX(5px);
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+}
+
+/* Rôle de la personne */
+.contact-person-role {
+  color: var(--blue-fog);
+  font-size: 1.4rem; /* anciennement 1rem */
+  font-weight: 600;
+  margin: 0 0 15px 0;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  
+  padding: 7px 14px;
+  background: rgba(90, 133, 144, 0.15);
+  border-radius: 15px;
+  border: 1px solid rgba(90, 133, 144, 0.2);
+  display: inline-block;
+  
+  transition: all 0.3s ease;
+}
+
+.contact-card:hover .contact-person-role {
+  background: rgba(10, 90, 102, 0.2);
+  border-color: rgba(10, 90, 102, 0.3);
+  color: var(--blue-ice);
+}
+
+/* Description de la personne */
+.contact-person-description {
+  color: rgba(255, 255, 255, 0.85);
+  font-size: 1.3rem; /* anciennement 0.95rem */
+  line-height: 1.8;
+  margin: 0 0 25px 0;
+  font-style: italic;
+  min-height: 60px;
+  
+  transition: color 0.3s ease;
+}
+
+.contact-card:hover .contact-person-description {
+  color: var(--blue-ice);
+}
+
+/* Container des liens sociaux */
 .contact-links {
   display: flex;
-  gap: 0.8rem;
+  gap: 15px;
   justify-content: center;
   margin-top: auto;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-/* Icônes de liens */
+/* Style des icônes de liens */
 .contact-link-icon {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 38px;
-  height: 38px;
-  border-radius: 50%;
-  background: var(--blue-ice);
-  color: var(--blue-ocean);
+  width: 70px; /* anciennement 60px */
+  height: 70px;
+  border-radius: 12px;
+  
+  background: linear-gradient(145deg, 
+    rgba(255, 255, 255, 0.1), 
+    rgba(26, 42, 51, 0.2)
+  );
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  
+  color: var(--blue-ice);
+  font-size: 1.6rem; /* anciennement 1.2rem */
   text-decoration: none;
-  transition: all 0.3s ease;
-  font-size: 1rem;
-  border: 2px solid transparent;
+  
+  position: relative;
+  overflow: hidden;
+  
+  transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transform-style: preserve-3d;
 }
 
-.contact-link-icon:hover {
-  background: var(--blue-ocean);
-  color: white;
-  transform: scale(1.1);
-  border-color: var(--blue-fog);
-  box-shadow: 0 3px 12px rgba(19, 124, 139, 0.3);
-}
-
-/* Responsive pour tablettes */
-@media (max-width: 768px) {
-  .contact-card-container {
-    grid-template-columns: 1fr;
-    gap: 1.2rem;
-    padding: 1rem;
-    max-width: 500px;
-  }
-  
-  .contact-card {
-    padding: 1.2rem;
-    max-height: 250px;
-  }
-  
-  .contact-person-name {
-    font-size: 1.1rem;
-  }
-  
-  .contact-person-role {
-    font-size: 0.9rem;
-  }
-  
-  .contact-person-description {
-    font-size: 0.8rem;
-    min-height: 2rem;
-  }
-  
-  .contact-link-icon {
-    width: 34px;
-    height: 34px;
-    font-size: 0.9rem;
-  }
-}
-
-/* Animation d'entrée */
-.contact-card {
-  animation: fadeInUp 0.6s ease forwards;
+/* Effet de lueur pour les icônes */
+.contact-link-icon::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, 
+    rgba(10, 90, 102, 0.3), 
+    rgba(90, 133, 144, 0.2)
+  );
+  border-radius: 12px;
   opacity: 0;
-  transform: translateY(30px);
+  transition: opacity 0.3s ease;
 }
 
+/* Effets au survol des icônes */
+.contact-link-icon:hover {
+  transform: translateY(-3px) scale(1.1);
+  box-shadow: 
+    0 8px 25px rgba(10, 90, 102, 0.3),
+    0 0 20px rgba(10, 90, 102, 0.2);
+  
+  border-color: rgba(10, 90, 102, 0.4);
+  color: white;
+}
+
+.contact-link-icon:hover::before {
+  opacity: 1;
+}
+
+/* Effet au clic */
+.contact-link-icon:active {
+  transform: translateY(-1px) scale(1.05);
+  transition: transform 0.1s ease;
+}
+
+/* Icônes spécifiques avec couleurs personnalisées au survol */
+.contact-link-icon:nth-child(1):hover {
+  box-shadow: 0 8px 25px rgba(74, 107, 122, 0.4);
+}
+
+.contact-link-icon:nth-child(2):hover {
+  box-shadow: 0 8px 25px rgba(0, 119, 181, 0.4);
+}
+
+.contact-link-icon:nth-child(3):hover {
+  box-shadow: 0 8px 25px rgba(88, 96, 105, 0.4);
+}
+
+/* Animations keyframes */
+@keyframes cardSlideIn {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Animation décalée pour chaque carte */
 .contact-card:nth-child(1) { animation-delay: 0.1s; }
 .contact-card:nth-child(2) { animation-delay: 0.2s; }
 .contact-card:nth-child(3) { animation-delay: 0.3s; }
 .contact-card:nth-child(4) { animation-delay: 0.4s; }
 
-@keyframes fadeInUp {
-  to {
-    opacity: 1;
-    transform: translateY(0);
+/* Responsive Design - Tablettes */
+@media (max-width: 968px) {
+  .contact-card-container {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(4, auto);
+    gap: 25px;
+    padding: 30px 15px;
+  }
+  
+  .contact-card {
+    padding: 25px 20px;
+  }
+  
+  .contact-person-name {
+    font-size: 1.8rem;
+  }
+  
+  .contact-person-role {
+    font-size: 1.2rem;
+  }
+  
+  .contact-person-description {
+    font-size: 1.1rem;
+    min-height: 50px;
+  }
+  
+  .contact-links {
+    gap: 12px;
+  }
+  
+  .contact-link-icon {
+    width: 60px;
+    height: 60px;
+    font-size: 1.4rem;
   }
 }
 
-/* Animation de gradient qui tourne autour des cartes */
-@keyframes gradientRotate {
-  0% {
-    background-position: 0% 50%;
+/* Responsive Design - Mobile */
+@media (max-width: 480px) {
+  .contact-card-container {
+    grid-template-columns: 1fr;
+    grid-template-rows: repeat(4, auto);
+    gap: 20px;
+    padding: 20px 10px;
+  }
+  
+  .contact-card {
+    padding: 20px 15px;
+    margin: 0 5px;
+  }
+  
+  .contact-person-name {
+    font-size: 1.6rem;
+    text-align: center;
+  }
+  
+  .contact-person-role {
+    font-size: 1.1rem;
+    text-align: center;
+    display: block;
+    margin: 0 auto 15px auto;
+  }
+  
+  .contact-person-description {
+    font-size: 1rem;
+    text-align: center;
+    min-height: 45px;
+  }
+  
+  .contact-links {
+    gap: 10px;
+    padding-top: 15px;
+  }
+  
+  .contact-link-icon {
+    width: 50px;
+    height: 50px;
+    font-size: 1.2rem;
+  }
+}
+
+/* Effet de focus pour l'accessibilité */
+.contact-link-icon:focus {
+  outline: 2px solid var(--blue-ocean);
+  outline-offset: 3px;
+  background: linear-gradient(145deg, 
+    rgba(10, 90, 102, 0.2), 
+    rgba(90, 133, 144, 0.15)
+  );
+}
+
+/* Animation de pulsation pour attirer l'attention sur les liens actifs */
+@keyframes linkPulse {
+  0%, 100% {
+    transform: scale(1);
   }
   50% {
-    background-position: 100% 50%;
+    transform: scale(1.05);
   }
-  100% {
-    background-position: 0% 50%;
-  }
+}
+
+.contact-link-icon:focus {
+  animation: linkPulse 2s ease-in-out infinite;
 }

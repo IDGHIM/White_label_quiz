@@ -9,6 +9,8 @@ import ForgotPasswordPage from "./pages/ForgotPasswordPage";
 import ResetPasswordPage from "./pages/ResetPasswordPage";
 import AdminPage from "./pages/AdminPage";
 import QuizPage from "./pages/QuizPage";
+import LegalNoticePage from "./pages/LegalNoticePage";
+import LicencePage from "./pages/LicencePage"; 
 import ContactPage from "./pages/ContactPage"; 
 
 const App = () => {
@@ -18,6 +20,9 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/quiz" element={<QuizPage />} />
+        <Route path="/legal-notice" element={<LegalNoticePage />} />
+        <Route path="/licence" element={<LicencePage />} />
+        {/* Routes pour les pages de contact et d'inscription */}
         <Route path="/contact" element={<ContactPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
