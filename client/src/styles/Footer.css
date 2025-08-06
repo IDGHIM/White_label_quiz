@@ -2,251 +2,97 @@
 .site-footer {
   background: linear-gradient(135deg, 
     var(--blue-night) 0%, 
-    rgba(52, 77, 89, 0.9) 30%, 
-    rgba(122, 144, 164, 0.7) 70%, 
+    rgba(26, 42, 51, 0.9) 30%, 
+    rgba(74, 107, 122, 0.7) 70%, 
     var(--blue-stone) 100%
   );
   backdrop-filter: blur(20px) saturate(1.2);
-  border-top: 1px solid rgba(184, 203, 208, 0.2);
+  border-top: 1px solid rgba(255, 255, 255, 0.3);
   box-shadow: 
-    0 -10px 40px rgba(19, 124, 139, 0.15),
-    inset 0 1px 0 rgba(184, 203, 208, 0.1);
+    0 -10px 40px rgba(10, 90, 102, 0.25),
+    inset 0 1px 0 rgba(255, 255, 255, 0.15);
   
   color: var(--blue-ice);
-  font-size: 0.95rem;
-  padding: 20px 50px;
+  font-size: 1.2rem; /* anciennement 0.95rem */
+  padding: 24px 60px; /* plus d’espace pour confort visuel */
   position: relative;
   width: 100%;
   
   display: flex;
   justify-content: space-between;
   align-items: center;
-  
-  margin: 0;
+  margin-top: auto;
   box-sizing: border-box;
   overflow: hidden;
   
-  /* Animation d'apparition */
   animation: footerSlideUp 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
-/* Effet de particules animées en arrière-plan */
-.site-footer::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: 
-    radial-gradient(circle at 20% 30%, rgba(19, 124, 139, 0.15) 0%, transparent 50%),
-    radial-gradient(circle at 80% 70%, rgba(112, 156, 167, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 40% 80%, rgba(184, 203, 208, 0.08) 0%, transparent 50%);
-  animation: particleFloat 8s ease-in-out infinite;
-  pointer-events: none;
-}
-
-/* Effet de ligne lumineuse qui traverse */
-.site-footer::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 2px;
-  background: linear-gradient(90deg, 
-    transparent, 
-    var(--blue-ocean), 
-    var(--blue-fog), 
-    var(--blue-ocean), 
-    transparent
-  );
-  animation: lightSweep 4s ease-in-out infinite 2s;
-}
-
-/* Navigation container avec effet de groupe */
+/* Navigation container */
 .footer-navigation {
   display: flex;
-  gap: 25px;
+  gap: 30px;
   align-items: center;
   position: relative;
   z-index: 2;
 }
 
-/* Style des liens avec effet néomorphisme */
+/* Liens de navigation */
 .footer-nav-link {
   color: var(--blue-ice);
   text-decoration: none;
-  font-weight: 600;
-  font-size: 0.9rem;
-  letter-spacing: 0.5px;
+  font-weight: 700;
+  font-size: 1.1rem; /* anciennement 0.9rem */
+  letter-spacing: 0.6px;
   
-  padding: 10px 16px;
+  padding: 12px 18px;
   border-radius: 12px;
   
   background: linear-gradient(145deg, 
-    rgba(184, 203, 208, 0.08), 
-    rgba(52, 77, 89, 0.12)
+    rgba(255, 255, 255, 0.1), 
+    rgba(26, 42, 51, 0.15)
   );
-  border: 1px solid rgba(184, 203, 208, 0.15);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   
   position: relative;
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   transform-style: preserve-3d;
 }
 
-/* Effet de lueur interne sur les liens */
-.footer-nav-link::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  border-radius: 15px;
-  background: linear-gradient(135deg, 
-    rgba(19, 124, 139, 0.2), 
-    rgba(112, 156, 167, 0.1)
-  );
-  opacity: 0;
-  transition: opacity 0.4s ease;
-}
-
-/* Animation de soulignement liquide */
 .footer-nav-link::after {
-  content: '';
-  position: absolute;
-  bottom: 4px;
-  left: 50%;
-  width: 0;
-  height: 2px;
-  background: linear-gradient(90deg, var(--blue-ocean), var(--blue-fog));
-  border-radius: 2px;
-  transform: translateX(-50%);
-  transition: width 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  box-shadow: 0 0 8px rgba(19, 124, 139, 0.6);
+  bottom: 6px;
 }
 
-/* Effets au survol des liens */
-.footer-nav-link:hover {
-  color: white;
-  background: linear-gradient(145deg, 
-    rgba(19, 124, 139, 0.3), 
-    rgba(112, 156, 167, 0.2)
-  );
-  border-color: rgba(19, 124, 139, 0.4);
-  
-  transform: translateY(-3px) scale(1.02);
-  box-shadow: 
-    0 8px 25px rgba(19, 124, 139, 0.3),
-    0 0 20px rgba(19, 124, 139, 0.2);
-  
-  text-shadow: 0 0 10px rgba(184, 203, 208, 0.5);
-}
-
-.footer-nav-link:hover::before {
-  opacity: 1;
-}
-
-.footer-nav-link:hover::after {
-  width: calc(100% - 24px);
-}
-
-/* Effet de pression au clic */
-.footer-nav-link:active {
-  transform: translateY(-1px) scale(0.98);
-  transition: transform 0.1s ease;
-}
-
-/* Section copyright avec style élégant */
+/* Section copyright */
 .footer-copyright-section {
-  color: var(--blue-night);
-  font-size: 0.85rem;
-  font-weight: 500;
+  color: var(--blue-ice);
+  font-size: 1.05rem; /* anciennement 0.85rem */
+  font-weight: 600;
   
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 12px;
   
   position: relative;
   z-index: 2;
   
-  padding: 8px 15px;
+  padding: 10px 18px;
   border-radius: 10px;
-  background: rgba(52, 77, 89, 0.3);
-  border: 1px solid rgba(112, 156, 167, 0.2);
+  background: rgba(26, 42, 51, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.25);
   backdrop-filter: blur(10px);
   
   transition: all 0.3s ease;
 }
 
-/* Effet hover sur la section copyright */
-.footer-copyright-section:hover {
-  background: rgba(52, 77, 89, 0.4);
-  border-color: rgba(19, 124, 139, 0.3);
-  transform: translateY(-1px);
-  box-shadow: 0 4px 15px rgba(19, 124, 139, 0.2);
-}
-
-/* Animations keyframes */
-@keyframes footerSlideUp {
-  from {
-    transform: translateY(100px);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0);
-    opacity: 1;
-  }
-}
-
-@keyframes particleFloat {
-  0%, 100% {
-    transform: translateY(0px) rotate(0deg);
-    opacity: 1;
-  }
-  33% {
-    transform: translateY(-10px) rotate(1deg);
-    opacity: 0.8;
-  }
-  66% {
-    transform: translateY(5px) rotate(-1deg);
-    opacity: 0.9;
-  }
-}
-
-@keyframes lightSweep {
-  0% {
-    left: -100%;
-    opacity: 0;
-  }
-  50% {
-    opacity: 1;
-  }
-  100% {
-    left: 100%;
-    opacity: 0;
-  }
-}
-
-@keyframes iconPulse {
-  0%, 100% {
-    transform: scale(1);
-    filter: drop-shadow(0 0 5px rgba(19, 124, 139, 0.4));
-  }
-  50% {
-    transform: scale(1.1);
-    filter: drop-shadow(0 0 10px rgba(19, 124, 139, 0.6));
-  }
-}
-
-/* Responsive Design - Tablettes */
+/* Responsive - Tablette */
 @media (max-width: 968px) {
   .site-footer {
     flex-direction: column;
-    gap: 20px;
-    padding: 18px 35px;
+    gap: 22px;
+    padding: 22px 40px;
     text-align: center;
+    font-size: 1.1rem;
   }
   
   .footer-navigation {
@@ -256,21 +102,22 @@
   }
   
   .footer-nav-link {
-    font-size: 0.85rem;
-    padding: 10px 16px;
+    font-size: 1rem;
+    padding: 12px 16px;
   }
   
   .footer-copyright-section {
-    font-size: 0.8rem;
-    padding: 8px 15px;
+    font-size: 0.95rem;
+    padding: 9px 15px;
   }
 }
 
-/* Responsive Design - Mobile */
+/* Responsive - Mobile */
 @media (max-width: 480px) {
   .site-footer {
-    padding: 15px 25px;
-    gap: 15px;
+    padding: 18px 28px;
+    gap: 18px;
+    font-size: 1rem;
   }
   
   .footer-navigation {
@@ -279,60 +126,15 @@
   }
   
   .footer-nav-link {
-    font-size: 0.8rem;
-    padding: 8px 14px;
+    font-size: 0.95rem;
+    padding: 10px 14px;
     width: 100%;
     text-align: center;
-    max-width: 200px;
+    max-width: 220px;
   }
   
   .footer-copyright-section {
-    font-size: 0.75rem;
-    padding: 6px 12px;
+    font-size: 0.9rem;
+    padding: 8px 14px;
   }
-  
-  .footer-copyright-section::before {
-    font-size: 1rem;
-  }
-}
-
-/* Animation d'entrée retardée pour les éléments */
-.footer-navigation {
-  animation: slideInLeft 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.2s both;
-}
-
-.footer-copyright-section {
-  animation: slideInRight 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) 0.4s both;
-}
-
-@keyframes slideInLeft {
-  from {
-    transform: translateX(-50px);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-@keyframes slideInRight {
-  from {
-    transform: translateX(50px);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-
-/* Effet de focus pour l'accessibilité */
-.footer-nav-link:focus {
-  outline: 2px solid var(--blue-ocean);
-  outline-offset: 3px;
-  background: linear-gradient(145deg, 
-    rgba(19, 124, 139, 0.2), 
-    rgba(112, 156, 167, 0.15)
-  );
 }

@@ -54,7 +54,6 @@ const ResetPasswordPage = () => {
       setError("Lien invalide ou expiré.");
     }
   };
-
   return (
     <form onSubmit={handleSubmit} className="reset-password-form">
       <h2>Réinitialiser le mot de passe</h2>

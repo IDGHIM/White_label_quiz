@@ -14,9 +14,9 @@ const teamMembers = [
     },
   },
   {
-    name: "X Dimitri",
+    name: "COPPET Dimitri",
     role: "Développeur Backend",
-    description: "",
+    description: "J’aime donner vie à des idées ambitieuses en bâtissant des systèmes backend solides et évolutifs.",
     links: {
       portfolio: "",
       linkedin: "",
@@ -24,9 +24,9 @@ const teamMembers = [
     },
   },
   {
-    name: "X Damien",
+    name: "DI LUCA Damien",
     role: "Développeur Backend",
-    description: "",
+    description: "Du schéma conceptuel à l’API en production, j’adore transformer les idées en services concrets et scalables.",
     links: {
       portfolio: "",
       linkedin: "",

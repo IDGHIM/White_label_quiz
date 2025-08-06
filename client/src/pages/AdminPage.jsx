@@ -158,6 +158,29 @@ const AdminPage = () => {
   };
 
   const handleSaveUser = async () => {
+    // Validation côté client
+    if (!userForm.username.trim()) {
+      alert("Le nom d'utilisateur est requis");
+      return;
+    }
+
+    if (!userForm.email.trim()) {
+      alert("L'email est requis");
+      return;
+    }
+
+    if (!editingUser && !userForm.password.trim()) {
+      alert("Le mot de passe est requis pour un nouveau utilisateur");
+      return;
+    }
+
+    // Validation de l'email
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(userForm.email)) {
+      alert("Veuillez entrer un email valide");
+      return;
+    }
+
     try {
       if (editingUser) {
         setUsers(
@@ -296,6 +319,22 @@ const AdminPage = () => {
     } catch (error) {
       console.error("Erreur lors de la sauvegarde:", error);
     }
+  };
+
+  // Fonction pour gérer la sélection multiple des bonnes réponses
+  const handleCorrectAnswerToggle = (answer) => {
+    const currentCorrectAnswers = [...questionForm.correctAnswers];
+    const answerIndex = currentCorrectAnswers.indexOf(answer);
+
+    if (answerIndex > -1) {
+      // Retirer la réponse si elle est déjà sélectionnée
+      currentCorrectAnswers.splice(answerIndex, 1);
+    } else {
+      // Ajouter la réponse si elle n'est pas sélectionnée
+      currentCorrectAnswers.push(answer);
+    }
+
+    setQuestionForm({ ...questionForm, correctAnswers: currentCorrectAnswers });
   };
 
   if (isLoading) {
@@ -469,7 +508,7 @@ const AdminPage = () => {
                 : "Ajouter un utilisateur"}
             </h2>
             <div className="form-group">
-              <label>Nom</label>
+              <label>Nom d'utilisateur</label>
               <input
                 type="text"
                 value={userForm.name}
@@ -477,6 +516,7 @@ const AdminPage = () => {
                   setUserForm({ ...userForm, name: e.target.value })
                 }
                 className="form-input"
+                required
               />
             </div>
             <div className="form-group">
@@ -488,6 +528,7 @@ const AdminPage = () => {
                   setUserForm({ ...userForm, email: e.target.value })
                 }
                 className="form-input"
+                required
               />
             </div>
             <div className="form-group">
