@@ -5,7 +5,7 @@ const Footer = () => {
   return (
     <footer className="site-footer">
       <nav className="footer-navigation">
-        <Link to="/mentions-legales" className="footer-nav-link">
+        <Link to="/legal-notice" className="footer-nav-link">
           Mentions légales
         </Link>
         <Link to="/licence" className="footer-nav-link">

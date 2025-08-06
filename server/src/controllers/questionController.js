@@ -1,4 +1,15 @@
 const Question = require('../models/Questions');
+const filter = require('leo-profanity');
+
+// Initialisation du filtre des mots interdits avec les dictionnaires français et anglais
+// Récupère les dictionnaires anglais et français
+const englishDict = filter.getDictionary('en');
+filter.loadDictionary('fr');
+const frenchDict = filter.getDictionary('fr');
+
+// Combine et ajoute les mots des deux dictionnaires ainsi que des mots personnalisés à la liste des mots interdits
+filter.add([...englishDict, ...frenchDict]);
+//console.log(filter.list()); // Afficher la liste des mots interdits
 
 
 //Controller pour récupérer toutes les questions
@@ -26,6 +37,20 @@ exports.show = async (req, res) => {
 //Controller pour créer une nouvelle question
 exports.create = async (req, res) => {
       try {
+        
+        // Validation des réponses correctes
+        if (!req.body.correctAnswer && (!req.body.correctAnswers || req.body.correctAnswers.length === 0)) {
+            return res.status(400).json({ error: 'Au moins une réponse correcte doit être fournie.' });
+        }
+        
+        //Vérification des mots interdits dans la question, les réponses et la catégorie 
+         const isBannedWord = filter.check(req.body.question);
+         const isBannedAnswer = req.body.answers.some(answer => filter.check(answer));
+         const isBannedCategory = filter.check(req.body.category);
+         if (isBannedWord || isBannedAnswer || isBannedCategory) {
+                    return res.status(400).json({ error: 'La question, une réponse ou la catégorie contient des mots interdits.' });
+                }
+
         const newQuestion = new Question(req.body);
         await newQuestion.save();
         res.status(201).json(newQuestion);
@@ -38,6 +63,11 @@ exports.create = async (req, res) => {
 //Controller pour mettre à jour une question
 exports.update = async (req, res) => {
       try {
+        // Validation des réponses correctes
+        if (!req.body.correctAnswer && (!req.body.correctAnswers || req.body.correctAnswers.length === 0)) {
+            return res.status(400).json({ error: 'Au moins une réponse correcte doit être fournie.' });
+        }
+        
         const question = await Question.findByIdAndUpdate(req.params.id, req.body, { new: true });
         if (!question) {
             return res.status(404).json({ message: 'Question non trouvée' });

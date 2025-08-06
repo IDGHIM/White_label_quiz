@@ -1,5 +1,6 @@
 const express = require("express");
 const app = express();
+<<<<<<< HEAD
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const connectDB = require("./src/database/database");
@@ -22,7 +23,21 @@ app.use(
   })
 );
 
+=======
+const mongoose = require('mongoose');
+const cookieParser = require('cookie-parser');
+const cors = require('cors');
+const connectDB = require('./src/database/database');
+const Question = require('./src/models/Questions');
+const questionRouter = require('./src/routes/questionRoutes');
+const userRouter = require('./src/routes/userRoutes'); 
+
+>>>>>>> main
 // Middleware
+app.use(cors({
+  origin: 'http://localhost:5173', 
+  credentials: true
+}));
 app.use(express.json());
 app.use(cookieParser());
 

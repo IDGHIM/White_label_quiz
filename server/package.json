@@ -4,7 +4,11 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+<<<<<<< HEAD
     "start": "nodemon index.js",
+=======
+    "start": "node index.js",
+>>>>>>> main
     "dev": "nodemon index.js"
   },
   "keywords": [],
@@ -21,6 +25,7 @@
     "express": "^5.1.0",
     "express-rate-limit": "^8.0.1",
     "jsonwebtoken": "^9.0.2",
+    "leo-profanity": "^1.8.0",
     "mongoose": "^8.17.0",
     "nodemailer": "^7.0.5"
   },

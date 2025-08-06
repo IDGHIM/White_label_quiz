@@ -1,9 +1,93 @@
 :root {
-  --blue-ocean: #137c8b; /* Bleu profond, vibrant */
-  --blue-fog: #709ca7; /* Bleu-gris doux */
-  --blue-ice: #b8cbd0; /* Bleu très clair, presque givré */
-  --blue-stone: #7a90a4; /* Bleu-gris moyen, pierreux */
-  --blue-night: #344d59; /* Bleu foncé, tirant sur le noir */
+  --blue-ocean: #0a5a66; /* Bleu profond plus foncé pour meilleur contraste */
+  --blue-fog: #5a8590; /* Bleu-gris plus saturé */
+  --blue-ice: #ffffff; /* Blanc pur pour maximum de contraste */
+  --blue-stone: #4a6b7a; /* Bleu-gris plus foncé */
+  --blue-night: #1a2a33; /* Bleu très foncé, presque noir */
+}
+
+/* Animations de fond subtiles */
+@keyframes gentleFloat {
+  0%, 100% {
+    transform: translateY(0px) scale(1);
+    opacity: 0.3;
+  }
+  33% {
+    transform: translateY(-8px) scale(1.02);
+    opacity: 0.4;
+  }
+  66% {
+    transform: translateY(-4px) scale(0.98);
+    opacity: 0.35;
+  }
+}
+
+@keyframes softPulse {
+  0%, 100% {
+    opacity: 0.2;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.35;
+    transform: scale(1.1);
+  }
+}
+
+@keyframes gentleShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* Container principal avec animations subtiles */
+body {
+  background: linear-gradient(
+    135deg,
+    var(--blue-ice) 0%,
+    var(--blue-fog) 50%,
+    var(--blue-ocean) 100%
+  );
+  background-size: 300% 300%;
+  animation: gentleShift 20s ease-in-out infinite;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  color: var(--blue-night);
+  box-sizing: border-box;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Éléments flottants en arrière-plan */
+body::before,
+body::after {
+  content: '';
+  position: fixed;
+  pointer-events: none;
+  z-index: 0;
+  border-radius: 50%;
+  opacity: 0.1;
+}
+
+body::before {
+  width: 300px;
+  height: 300px;
+  background: radial-gradient(circle, var(--blue-fog) 0%, transparent 70%);
+  top: 10%;
+  left: -10%;
+  animation: gentleFloat 25s ease-in-out infinite;
+}
+
+body::after {
+  width: 200px;
+  height: 200px;
+  background: radial-gradient(circle, var(--blue-ocean) 0%, transparent 70%);
+  bottom: 15%;
+  right: -5%;
+  animation: gentleFloat 30s ease-in-out infinite reverse;
 }
 
 * {

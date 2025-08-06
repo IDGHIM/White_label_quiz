@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useParams, useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import axios from "axios";
+import { useParams, useNavigate } from "react-router-dom";
 // import './ResetPasswordPage.css';
 
 const ResetPasswordPage = () => {
   const { token } = useParams();
   const navigate = useNavigate();
-  
+
   // Ajoutez ce console.log pour vérifier le token
   console.log("Token récupéré depuis l'URL:", token);
   
@@ -17,8 +17,8 @@ const ResetPasswordPage = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
-    setMessage('');
+    setError("");
+    setMessage("");
 
     // Vérifiez si le token existe
     if (!token) {
@@ -34,26 +34,25 @@ const ResetPasswordPage = () => {
     }
 
     try {
-      const response = await axios.post('http://localhost:3000/api/reset-password', {
+      const response = await axios.post('http://localhost:5001/api/reset-password', {
         token,
         password: newPassword,
         confirmPassword,
       });
       
       console.log("Réponse de l'API:", response.data);
-      
-      setMessage('Mot de passe mis à jour avec succès.');
-      setTimeout(() => navigate('/login'), 2000);
+
+      setMessage("Mot de passe mis à jour avec succès.");
+      setTimeout(() => navigate("/login"), 2000);
     } catch (err) {
-      console.error('Erreur complète:', err);
+      console.error("Erreur complète:", err);
       if (axios.isAxiosError && axios.isAxiosError(err)) {
         console.error("Réponse d'erreur:", err.response?.data);
-        console.error('Status:', err.response?.status);
+        console.error("Status:", err.response?.status);
       }
       setError("Lien invalide ou expiré.");
     }
   };
-  
   return (
     <form onSubmit={handleSubmit} className="reset-password-form">
       <h2>Réinitialiser le mot de passe</h2>
