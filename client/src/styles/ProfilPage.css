@@ -1,12 +1,6 @@
 /* Container principal */
 .profil-container {
   min-height: 100vh;
-  background: linear-gradient(
-    135deg,
-    var(--blue-ice) 0%,
-    var(--blue-fog) 50%,
-    var(--blue-ocean) 100%
-  );
   padding: 20px;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   max-width: 1200px;

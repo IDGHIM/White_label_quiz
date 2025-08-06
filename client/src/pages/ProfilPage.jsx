@@ -136,32 +136,6 @@ const ProfilPage = () => {
     return "score-poor";
   };
 
-  // Calculer les statistiques par catégorie
-  const getCategoryStats = () => {
-    const stats = {};
-    quizHistory.forEach((quiz) => {
-      if (!stats[quiz.category]) {
-        stats[quiz.category] = {
-          count: 0,
-          totalScore: 0,
-          avgScore: 0,
-        };
-      }
-      stats[quiz.category].count++;
-      stats[quiz.category].totalScore += quiz.percentage;
-    });
-
-    Object.keys(stats).forEach((category) => {
-      stats[category].avgScore = Math.round(
-        stats[category].totalScore / stats[category].count
-      );
-    });
-
-    return stats;
-  };
-
-  const categoryStats = getCategoryStats();
-
   if (isLoading) {
     return (
       <div className="loading-container">
@@ -209,26 +183,6 @@ const ProfilPage = () => {
           <FaHistory className="stat-icon" />
           <div className="stat-value">{quizHistory.length}</div>
           <div className="stat-label">Historique</div>
-        </div>
-      </div>
-
-      {/* Statistiques par catégorie */}
-      <div className="category-stats">
-        <h2>Performance par catégorie</h2>
-        <div className="category-grid">
-          {Object.entries(categoryStats).map(([category, stats]) => (
-            <div key={category} className="category-card">
-              <h3>{category}</h3>
-              <div className="category-score">
-                <span
-                  className={`score-badge ${getScoreColor(stats.avgScore)}`}
-                >
-                  {stats.avgScore}%
-                </span>
-              </div>
-              <p>{stats.count} quiz joués</p>
-            </div>
-          ))}
         </div>
       </div>
 
