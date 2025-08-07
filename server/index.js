@@ -6,7 +6,8 @@ const cors = require('cors');
 const connectDB = require('./src/database/database');
 const Question = require('./src/models/Questions');
 const questionRouter = require('./src/routes/questionRoutes');
-const userRouter = require('./src/routes/userRoutes'); 
+const userRouter = require('./src/routes/userRoutes');
+const quizRouter = require('./src/routes/quizRoutes'); 
 
 // Middleware
 app.use(cors({
@@ -140,3 +141,6 @@ app.use(questionRouter);
 
 //Importation du routeur des utilisateurs
 app.use(userRouter);
+
+//Importation du routeur des quiz
+app.use(quizRouter);
