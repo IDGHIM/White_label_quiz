@@ -114,13 +114,6 @@ body {
   color: var(--blue-night);
   position: relative;
   overflow-x: hidden;
-  font-size: 1.25rem;
-  line-height: 1.6;
-  min-height: 100vh;
-
-  /* Flexbox pour React App */
-  display: flex;
-  flex-direction: column;
 }
 
 /* Éléments flottants décoratifs */
