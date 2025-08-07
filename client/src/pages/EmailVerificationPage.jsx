@@ -25,9 +25,9 @@ const EmailVerificationPage = () => {
 
   return (
     <div style={{ textAlign: "center", marginTop: "3rem" }}>
-    {status === "pending" && <p>⏳ Vérification en cours...</p>}
-    {status === "success" && <p>✅ Votre email a été vérifié avec succès !</p>}
-    {status === "error" && <p>❌ Le lien de vérification est invalide ou expiré.</p>}
+    {status === "pending" && <p>Vérification en cours...</p>}
+    {status === "success" && <p>Votre email a été vérifié avec succès !</p>}
+    {status === "error" && <p>Le lien de vérification est invalide ou expiré.</p>}
   </div>
   )
 }
