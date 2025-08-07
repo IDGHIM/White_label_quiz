@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios'; // Uncomment if you are using axios for API calls
-// import './ForgotPasswordPage.css';
+import axios from 'axios';
 
 const ForgotPasswordPage = () => {
   const [email, setEmail] = useState('');
@@ -18,7 +17,7 @@ const ForgotPasswordPage = () => {
     }
 
     try {
-      await axios.post('http://localhost:3000/auth/password-reset-request', { email });
+      await axios.post('http://localhost:3001/auth/password-reset-request', { email });
       setMessage("Un lien de réinitialisation vous a été envoyé.");
       setEmail('');
     } catch {

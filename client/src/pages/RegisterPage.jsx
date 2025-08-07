@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-//import { useAuth } from '../context/authContext';
 import '../styles/RegisterPage.css';
-import axios from 'axios'
+import axios from 'axios';
 
 const RegisterPage = () => {
-  //const { register } = useAuth();
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -15,13 +13,12 @@ const RegisterPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:3000/auth/register', {
+      await axios.post('http://localhost:3001/auth/register', {
         username,
         email,
         password,
         confirmPassword: password,
       });
-      //await register(username, email, password);
       setMessage("Compte créé ! Vous pouvez maintenant vous connecter.");
       setTimeout(() => navigate('/login'), 1500);
     } catch (error) {
