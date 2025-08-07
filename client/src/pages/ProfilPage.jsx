@@ -160,7 +160,6 @@ const ProfilPage = () => {
     return stats;
   };
 
-  const categoryStats = getCategoryStats();
 
   if (isLoading) {
     return (
@@ -209,26 +208,6 @@ const ProfilPage = () => {
           <FaHistory className="stat-icon" />
           <div className="stat-value">{quizHistory.length}</div>
           <div className="stat-label">Historique</div>
-        </div>
-      </div>
-
-      {/* Statistiques par catégorie */}
-      <div className="category-stats">
-        <h2>Performance par catégorie</h2>
-        <div className="category-grid">
-          {Object.entries(categoryStats).map(([category, stats]) => (
-            <div key={category} className="category-card">
-              <h3>{category}</h3>
-              <div className="category-score">
-                <span
-                  className={`score-badge ${getScoreColor(stats.avgScore)}`}
-                >
-                  {stats.avgScore}%
-                </span>
-              </div>
-              <p>{stats.count} quiz joués</p>
-            </div>
-          ))}
         </div>
       </div>
 
