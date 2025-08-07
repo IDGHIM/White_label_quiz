@@ -14,7 +14,7 @@ const AdminPage = () => {
   const [users, setUsers] = useState([]);
   const [quizzes, setQuizzes] = useState([]);
   const [allQuestions, setAllQuestions] = useState([]);
-  const [currentUser, setCurrentUser] = useState(null); // Utilisateur connecté
+  const [currentUser, setCurrentUser] = useState(null);
   const [activeTab, setActiveTab] = useState("quizzes");
   const [isLoading, setIsLoading] = useState(true);
 
