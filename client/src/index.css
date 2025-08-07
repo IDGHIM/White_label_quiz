@@ -1,3 +1,6 @@
+@import "./styles/Accessibility.css";
+@import "./styles/AccessibilityMenu.css";
+
 :root {
   --blue-ocean: #0a5a66; /* Bleu profond plus foncé pour meilleur contraste */
   --blue-fog: #5a8590; /* Bleu-gris plus saturé */
@@ -8,7 +11,8 @@
 
 /* Animations de fond subtiles */
 @keyframes gentleFloat {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px) scale(1);
     opacity: 0.3;
   }
@@ -23,7 +27,8 @@
 }
 
 @keyframes softPulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.2;
     transform: scale(1);
   }
@@ -34,7 +39,8 @@
 }
 
 @keyframes gentleShift {
-  0%, 100% {
+  0%,
+  100% {
     background-position: 0% 50%;
   }
   50% {
@@ -64,7 +70,7 @@ body {
 /* Éléments flottants en arrière-plan */
 body::before,
 body::after {
-  content: '';
+  content: "";
   position: fixed;
   pointer-events: none;
   z-index: 0;
