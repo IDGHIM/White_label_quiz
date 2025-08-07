@@ -19,7 +19,7 @@ app.get("/hello", (req, res) => {
 // Middleware
 app.use(
   cors({
-    origin: "http://localhost:5178",
+    origin: "http://localhost:5173",
     credentials: true,
   })
 );
@@ -143,5 +143,5 @@ app.use("/api/users", userRouter);
 app.use("/auth", authRoutes);
 
 app.listen(5000, () => {
-  console.log("Server is running on http://localhost:5000");
+  console.log("Server is running on http://localhost:3000");
 });
