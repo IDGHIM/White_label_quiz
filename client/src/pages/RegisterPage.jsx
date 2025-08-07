@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 //import { useAuth } from '../context/authContext';
 import '../styles/RegisterPage.css';
+import axios from 'axios'
 
 const RegisterPage = () => {
   //const { register } = useAuth();
@@ -14,6 +15,12 @@ const RegisterPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      await axios.post('http://localhost:5000/auth/register', {
+        username,
+        email,
+        password,
+        confirmPassword: password,
+      });
       //await register(username, email, password);
       setMessage("Compte créé ! Vous pouvez maintenant vous connecter.");
       setTimeout(() => navigate('/login'), 1500);

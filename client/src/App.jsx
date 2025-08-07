@@ -14,6 +14,7 @@ import ContactPage from "./pages/ContactPage";
 import ProfilPage from "./pages/ProfilPage";
 import LegalNoticePage from "./pages/LegalNoticePage";
 import LicencePage from "./pages/LicencePage";
+import EmailVerificationPage from "./pages/EmailVerificationPage";
 
 const App = () => {
   return (
@@ -29,7 +30,8 @@ const App = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
-        <Route path="/reset-password:token" element={<ResetPasswordPage />} />
+        <Route path="/reset-password/:token" element={<ResetPasswordPage />} />
+        <Route path="/auth/verify/:token" element={< EmailVerificationPage /> }/>
         {/* Admin route */}
         <Route path="/admin" element={<AdminPage />} />
         <Route path="/profil" element={<ProfilPage />} />
