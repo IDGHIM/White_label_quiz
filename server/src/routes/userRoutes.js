@@ -5,22 +5,22 @@ const userController = require("../controllers/userController");
 const { protect, authorize } = require("../middlewares/authMiddleware");
 
 // Protection de toutes les routes
-router.use(protect);
+//router.use(protect);    // Décommenter pour protéger toutes les routes
 
 // Route pour récupérer tous les utilisateurs
-router.get("/", userController.index);
+router.get("/api/users", userController.index);
 
 // Route pour récupérer un utilisateur par son ID
-router.get("/:id", userController.show);
+router.get("/api/users/:id", userController.show);
 
 // Route pour créer un nouvel utilisateur
-router.post("/", userController.create);
+router.post("/api/users", userController.create);
 
 // Route pour modifier un utilisateur
-router.put("/:id", userController.update);
+router.put("/api/users/:id", userController.update);
 
 // Route pour supprimer un utilisateur
-router.delete("/:id", userController.delete);
+router.delete("/api/users/:id", userController.delete);
 
 // Route uniquement accessible aux admins
 router.get("/admin", authorize("admin"), (req, res) => {
