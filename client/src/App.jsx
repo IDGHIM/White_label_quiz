@@ -14,12 +14,14 @@ import ContactPage from "./pages/ContactPage";
 import ProfilPage from "./pages/ProfilPage";
 import LegalNoticePage from "./pages/LegalNoticePage";
 import LicencePage from "./pages/LicencePage";
+import AccessibilityMenu from "./components/AccessiblityMenu";
 import EmailVerificationPage from "./pages/EmailVerificationPage";
 
 const App = () => {
   return (
     <Router>
       <Navbar />
+      <AccessibilityMenu />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/quiz" element={<QuizPage />} />

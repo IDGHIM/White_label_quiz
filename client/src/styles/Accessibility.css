@@ -1,0 +1,303 @@
+/* Application du mode contraste élevé */
+body.high-contrast * {
+  background-color: var(--color-bg-primary) !important;
+  color: var(--color-text-primary) !important;
+  border-color: var(--color-text-primary) !important;
+  text-shadow: none !important;
+  box-shadow: none !important;
+}
+
+body.high-contrast button,
+body.high-contrast .btn,
+body.high-contrast .quiz-card,
+body.high-contrast .modal {
+  border: var(--border-width-thick) solid var(--color-text-primary) !important;
+}
+
+body.high-contrast a,
+body.high-contrast .link {
+  color: var(--color-accent-primary) !important;
+  text-decoration: underline !important;
+  text-decoration-thickness: 2px !important;
+}
+
+body.high-contrast button:hover,
+body.high-contrast .btn:hover {
+  background-color: var(--color-accent-primary) !important;
+  color: var(--color-bg-primary) !important;
+}
+
+/* Protanopie (rouge-vert) */
+body.colorblind-protanopia,
+body.colorblind-protanopia body {
+  --color-bg-primary: #e3edf7;
+  --color-bg-secondary: #d1e3f1;
+  background: linear-gradient(135deg, #e3edf7 0%, #d1e3f1 100%) !important;
+}
+
+body.colorblind-deuteranopia,
+body.colorblind-deuteranopia body {
+  --color-bg-primary: #f6ecd6;
+  --color-bg-secondary: #ede4cb;
+  background: linear-gradient(135deg, #f6ecd6 0%, #ede4cb 100%) !important;
+}
+
+body.colorblind-tritanopia,
+body.colorblind-tritanopia body {
+  --color-bg-primary: #eae7fb;
+  --color-bg-secondary: #d5d2ee;
+  background: linear-gradient(135deg, #eae7fb 0%, #d5d2ee 100%) !important;
+}
+
+body.colorblind-monochrome,
+body.colorblind-monochrome body {
+  --color-bg-primary: #eeeeee;
+  --color-bg-secondary: #cccccc;
+  background: linear-gradient(135deg, #eeeeee 0%, #cccccc 100%) !important;
+}
+
+@font-face {
+  font-family: "opendyslexic";
+  src: url("http://dyslexicfonts.com/fonts/OpenDyslexic-Regular.otf");
+  font-style: normal;
+  font-weight: normal;
+}
+
+body.dyslexia-mode {
+  font-family: "OpenDyslexic", "Comic Sans MS", "Arial", sans-serif !important;
+  letter-spacing: 0.12em !important;
+  word-spacing: 0.25em !important;
+}
+
+body.dyslexia-mode * {
+  font-family: inherit !important;
+  letter-spacing: inherit !important;
+}
+
+body.dyslexia-mode p,
+body.dyslexia-mode li,
+body.dyslexia-mode span {
+  margin-bottom: var(--spacing-base) !important;
+}
+
+/* Amélioration de la distinction des lettres */
+body.dyslexia-mode b,
+body.dyslexia-mode strong {
+  font-weight: 900 !important;
+  color: var(--color-accent-primary) !important;
+}
+
+body.dyslexia-mode i,
+body.dyslexia-mode em {
+  font-style: normal !important;
+  text-decoration: underline !important;
+  text-decoration-style: wavy !important;
+  text-decoration-color: var(--color-accent-secondary) !important;
+}
+
+/* Focus visible pour tous les éléments interactifs */
+*:focus {
+  outline: none !important;
+}
+
+*:focus-visible {
+  outline: var(--border-width-focus) solid var(--color-accent-primary) !important;
+  outline-offset: 2px !important;
+  box-shadow: var(--shadow-focus) !important;
+  position: relative;
+  z-index: 10;
+}
+
+/* Focus spécial pour les boutons */
+button:focus-visible,
+.btn:focus-visible {
+  transform: scale(1.05);
+  transition: transform 0.2s ease;
+}
+
+/* Focus pour les champs de formulaire */
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  border-color: var(--color-accent-primary) !important;
+  background-color: var(--color-bg-secondary) !important;
+}
+
+body.large-cursor {
+  cursor: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24"><path fill="%23FFF" stroke="%23000" stroke-width="1.5" stroke-linejoin="round" d="M18 14.88 8.16 3.15c-.26-.31-.76-.12-.76.28v15.31c0 .36.42.56.7.33l3.1-2.6 1.55 4.25c.08.22.33.34.55.26l1.61-.59a.43.43 0 0 0 .26-.55l-1.55-4.25h4.05c.36 0 .56-.42.33-.7Z"></path></svg>')
+      24 24,
+    auto !important;
+}
+
+body.large-cursor button,
+body.large-cursor a,
+body.large-cursor input,
+body.large-cursor select {
+  cursor: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="48" height="60" viewBox="0 0 24 24"><path fill="%23FFF" stroke="%23000" stroke-width="1.5" stroke-linejoin="round" d="M10 11V8.99c0-.88.59-1.64 1.44-1.86h.05A1.99 1.99 0 0 1 14 9.05V12v-2c0-.88.6-1.65 1.46-1.87h.05A1.98 1.98 0 0 1 18 10.06V13v-1.94a2 2 0 0 1 1.51-1.94h0A2 2 0 0 1 22 11.06V14c0 .6-.08 1.27-.21 1.97a7.96 7.96 0 0 1-7.55 6.48 54.98 54.98 0 0 1-4.48 0 7.96 7.96 0 0 1-7.55-6.48C2.08 15.27 2 14.59 2 14v-1.49c0-1.11.9-2.01 2.01-2.01h0a2 2 0 0 1 2.01 2.03l-.01.97v-10c0-1.1.9-2 2-2h0a2 2 0 0 1 2 2V11Z"></path></svg>')
+      12 4,
+    pointer !important;
+}
+
+/* Badges de réussite/échec plus visibles */
+.success-indicator {
+  background: var(--color-accent-success) !important;
+  color: white !important;
+  padding: var(--spacing-sm) var(--spacing-base) !important;
+  border-radius: 8px !important;
+  font-weight: bold !important;
+  border: 3px solid darken(var(--color-accent-success), 20%) !important;
+}
+
+.error-indicator {
+  background: var(--color-accent-error) !important;
+  color: white !important;
+  padding: var(--spacing-sm) var(--spacing-base) !important;
+  border-radius: 8px !important;
+  font-weight: bold !important;
+  border: 3px solid darken(var(--color-accent-error), 20%) !important;
+}
+
+.warning-indicator {
+  background: var(--color-accent-warning) !important;
+  color: var(--color-text-primary) !important;
+  padding: var(--spacing-sm) var(--spacing-base) !important;
+  border-radius: 8px !important;
+  font-weight: bold !important;
+  border: 3px solid darken(var(--color-accent-warning), 20%) !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+body.reduce-motion *,
+body.reduce-motion *::before,
+body.reduce-motion *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+@media print {
+  body {
+    font-size: 12pt !important;
+    line-height: 1.5 !important;
+    color: #000 !important;
+    background: #fff !important;
+  }
+
+  .no-print,
+  .navbar,
+  .footer,
+  .btn,
+  button {
+    display: none !important;
+  }
+
+  .print-only {
+    display: block !important;
+  }
+
+  a {
+    color: #000 !important;
+    text-decoration: underline !important;
+  }
+
+  a[href]:after {
+    content: " (" attr(href) ")";
+  }
+}
+
+/* Masquage accessible */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.focus-trap {
+  position: relative;
+}
+
+.focus-trap:focus-within {
+  outline: 3px dashed var(--color-accent-primary);
+  outline-offset: 5px;
+}
+
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--color-accent-primary);
+  color: white;
+  padding: var(--spacing-sm) var(--spacing-base);
+  text-decoration: none;
+  z-index: 10000;
+}
+
+.skip-link:focus {
+  top: 0;
+}
+
+/* Quiz adaptés */
+.quiz-container {
+  font-size: var(--font-size-base);
+  line-height: var(--line-height-base);
+}
+
+.question-text {
+  font-size: var(--font-size-lg);
+  font-weight: 600;
+  margin-bottom: var(--spacing-md);
+}
+
+.option-btn {
+  font-size: var(--font-size-md);
+  padding: var(--spacing-base) var(--spacing-md);
+  margin-bottom: var(--spacing-sm);
+  border: var(--border-width-base) solid var(--color-accent-primary);
+  min-height: 60px;
+}
+
+.option-btn:hover,
+.option-btn:focus {
+  background-color: var(--color-bg-secondary);
+  transform: translateX(5px);
+}
+
+/* Boutons accessibles */
+.accessible-btn {
+  min-width: 44px;
+  min-height: 44px;
+  padding: var(--spacing-base) var(--spacing-md);
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  border: var(--border-width-base) solid transparent;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-sm);
+  transition: all 0.3s ease;
+}
+
+.accessible-btn:hover {
+  transform: scale(1.05);
+}
+
+.accessible-btn:active {
+  transform: scale(0.98);
+}
