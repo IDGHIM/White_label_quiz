@@ -143,5 +143,5 @@ app.use("/api/users", userRouter);
 app.use("/auth", authRoutes);
 
 app.listen(5000, () => {
-  console.log("Server is running on http://localhost:5000");
+  console.log("Server is running on http://localhost:3000");
 });

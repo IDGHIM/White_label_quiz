@@ -18,7 +18,7 @@ const ForgotPasswordPage = () => {
     }
 
     try {
-      await axios.post('http://localhost:5000/auth/password-reset-request', { email });
+      await axios.post('http://localhost:3000/auth/password-reset-request', { email });
       setMessage("Un lien de réinitialisation vous a été envoyé.");
       setEmail('');
     } catch {
