@@ -9,10 +9,11 @@ const ResetPasswordPage = () => {
 
   // Ajoutez ce console.log pour vérifier le token
   console.log("Token récupéré depuis l'URL:", token);
-
-  const [newPassword, setNewPassword] = useState("");
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
+  
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -33,14 +34,12 @@ const ResetPasswordPage = () => {
     }
 
     try {
-      const response = await axios.post(
-        "http://localhost:3000/api/reset-password",
-        {
-          token,
-          newPassword,
-        }
-      );
-
+      const response = await axios.post('http://localhost:5000/auth/reset-password', {
+        token,
+        password: newPassword,
+        confirmPassword,
+      });
+      
       console.log("Réponse de l'API:", response.data);
 
       setMessage("Mot de passe mis à jour avec succès.");
@@ -66,8 +65,8 @@ const ResetPasswordPage = () => {
       <input
         type="password"
         placeholder="Confirmer nouveau mot de passe"
-        value={newPassword}
-        onChange={(e) => setNewPassword(e.target.value)}
+        value={confirmPassword}
+        onChange={(e) => setConfirmPassword(e.target.value)}
       />
       <button type="submit">Réinitialiser</button>
       {message && <p className="success">{message}</p>}

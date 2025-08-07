@@ -1,22 +1,30 @@
-const express = require('express');
+const express = require("express");
 const app = express();
-const mongoose = require('mongoose');
-const cookieParser = require('cookie-parser');
-const cors = require('cors');
-const connectDB = require('./src/database/database');
-const Question = require('./src/models/Questions');
-const questionRouter = require('./src/routes/questionRoutes');
-const userRouter = require('./src/routes/userRoutes'); 
+const mongoose = require("mongoose");
+const cookieParser = require("cookie-parser");
+const connectDB = require("./src/database/database");
+const Question = require("./src/models/Questions");
+const questionRouter = require("./src/routes/questionRoutes");
+const userRouter = require("./src/routes/userRoutes");
+const authRoutes = require("./src/routes/authRoutes");
+const dotenv = require("dotenv");
+dotenv.config();
+const sendEmail = require("./src/utils/sendEmail");
+const cors = require("cors");
+
+app.get("/hello", (req, res) => {
+  res.send("Hello world!");
+});
 
 // Middleware
-app.use(cors({
-  origin: 'http://localhost:5173', 
-  credentials: true
-}));
+app.use(
+  cors({
+    origin: "http://localhost:5178",
+    credentials: true,
+  })
+);
 app.use(express.json());
 app.use(cookieParser());
-
-
 
 // //Tableau de questions pour initialiser la base de données
 // const questions = [
@@ -52,7 +60,6 @@ app.use(cookieParser());
 // //Création du modèle Question
 // const Question = mongoose.model('Question', QuestionSchema);
 
-
 // //Création de connexion à MongoDB
 // mongoose.connect('mongodb+srv://dimitricoppet:Hackathon@cluster0.qzd4bho.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0')
 // .then( async () => {
@@ -61,12 +68,9 @@ app.use(cookieParser());
 //     await Question.insertMany(questions);
 //     console.log('Questions inserted successfully');
 
-
-
 // }).catch(err => {
 //   console.error('MongoDB connection error:', err);
 // });
-
 
 //Taleau des users pour initialiser la base de données
 // const users = [
@@ -127,16 +131,17 @@ app.use(cookieParser());
 //     console.error('MongoDB connection error:', err);
 //   });
 
-
-app.listen(3000, () => {
-  console.log("Server is running on http://localhost:3000");
-});
-
 //appel de la connection à la base de données
 connectDB();
 
 //Importation du routeur des questions
-app.use(questionRouter);
+app.use("/api/questions", questionRouter);
 
 //Importation du routeur des utilisateurs
-app.use(userRouter);
+app.use("/api/users", userRouter);
+
+app.use("/auth", authRoutes);
+
+app.listen(5000, () => {
+  console.log("Server is running on http://localhost:5000");
+});
