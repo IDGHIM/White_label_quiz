@@ -31,12 +31,12 @@ async function register(req, res) {
       return res.status(400).json({ message: `Email est déjà utilisé` });
     }
 
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new User({
       username,
       email,
-      password: hashedPassword,
+      password,
       role: "user",
       isVerified: false,
     });
@@ -76,11 +76,14 @@ async function login(req, res) {
     }
 
     const user = await User.findOne({ email });
-    console.log("Utilisateur trouvé :", user);
 
     if (!user) {
       console.log("Utilisateur introuvable");
       return res.status(400).json({ message: `Utilisateur introuvable` });
+    }
+
+    if (!user.password) {
+      return res.status(400).json({ message: "Mot de passe manquant." });
     }
 
     if (!user.isVerified) {
@@ -200,7 +203,7 @@ async function resetPassword(req, res) {
       return res.status(400).json({ message: `Token invalide ou expiré` });
 
     // On hash un nouveau mot de passe
-    user.password = await bcrypt.hash(password, 10);
+    user.password = password;
     user.resetToken = undefined;
     user.resetTokenExpiration = undefined;
 
