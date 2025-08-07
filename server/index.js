@@ -16,16 +16,10 @@ app.get("/hello", (req, res) => {
   res.send("Hello world!");
 });
 
-app.use(
-  cors({
-    origin: "http://localhost:5173",
-  })
-);
-
 // Middleware
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "http://localhost:5178",
     credentials: true,
   })
 );

@@ -43,14 +43,12 @@ async function register(req, res) {
 
     await newUser.save();
 
-    const CLIENT_URL = process.env.CLIENT_URL;
-
     // Génération du token de vérification par email qui expire au bout d'une heure
     const verificationToken = jwt.sign({ id: newUser._id }, JWT_SECRET, {
       expiresIn: "1h",
     });
 
-    const verificationUrl = `${CLIENT_URL}/auth/verify/${verificationToken}`;
+    const verificationUrl = `${process.env.SERVER_URL}/auth/verify/${verificationToken}`;
 
     await sendMail({
       to: newUser.email,
@@ -73,28 +71,28 @@ async function login(req, res) {
   try {
     const { email, password } = req.body;
     if (!email || !password) {
-      console.log("❌ Champs manquants");
+      console.log("Champs manquants");
       return res.status(400).json({ message: `Tous les champs sont requis` });
     }
 
     const user = await User.findOne({ email });
-    console.log("👤 Utilisateur trouvé :", user);
+    console.log("Utilisateur trouvé :", user);
 
     if (!user) {
-      console.log("❌ Utilisateur introuvable");
+      console.log("Utilisateur introuvable");
       return res.status(400).json({ message: `Utilisateur introuvable` });
     }
 
     if (!user.isVerified) {
-      console.log("⚠️ Compte non vérifié");
+      console.log("Compte non vérifié");
       return res
         .status(401)
         .json({ message: `Veuillez confirmer votre compte` });
     }
 
-    console.log("🔐 Vérification du mot de passe...");
+    console.log("Vérification du mot de passe...");
     const isMatch = await bcrypt.compare(password, user.password);
-    console.log("✅ Mot de passe valide :", isMatch);
+    console.log("Mot de passe valide :", isMatch);
 
     if (!isMatch) {
       return res
@@ -122,7 +120,7 @@ async function login(req, res) {
       user: {
         id: user._id,
         role: user.role,
-        username: user.name,
+        username: user.username,
         email: user.email,
       },
       token,
@@ -155,8 +153,8 @@ async function requestPasswordReset(req, res) {
       .update(resetToken)
       .digest("hex");
 
-    user.resetPasswordToken = resetTokenHash;
-    user.resetPasswordExpire = Date.now() + 3600000; // 1h
+    user.resetToken = resetTokenHash;
+    user.resetTokenExpiration = Date.now() + 3600000; // 1h
     await user.save();
 
     const resetUrl = `${CLIENT_URL}/reset-password/${resetToken}`;
@@ -194,8 +192,8 @@ async function resetPassword(req, res) {
       .digest("hex");
 
     const user = await User.findOne({
-      resetPasswordToken: resetTokenHash,
-      resetPasswordExpire: { $gt: Date.now() },
+      resetToken: resetTokenHash,
+      resetTokenExpiration: { $gt: Date.now() },
     });
 
     if (!user)
@@ -203,8 +201,8 @@ async function resetPassword(req, res) {
 
     // On hash un nouveau mot de passe
     user.password = await bcrypt.hash(password, 10);
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpire = undefined;
+    user.resetToken = undefined;
+    user.resetTokenExpiration = undefined;
 
     await user.save();
     res.json({ message: `Mot de passe réinitialisé avec succès` });
@@ -282,12 +280,12 @@ async function resendVerificationEmail(req, res) {
     // ----------------------------------------------------------------- //
     // ----------------------------------------------------------------- //
 
-    const verificationUrl = `${CLIENT_URL}/api/auth/verify/${verificationToken}`;
+    const verificationUrl = `${CLIENT_URL}/auth/verify/${verificationToken}`;
 
-    await sendEmail({
+    await sendMail({
       to: user.email,
       subject: "Nouveau lien de vérification",
-      html: `Bonjour ${user.name},<br><br>Voici un nouveau lien pour vérifier votre compte : <a href="${verificationUrl}">Vérifier mon compte</a><br><br>Ce lien est valable 24h.`,
+      html: `Bonjour ${user.username},<br><br>Voici un nouveau lien pour vérifier votre compte : <a href="${verificationUrl}">Vérifier mon compte</a><br><br>Ce lien est valable 24h.`,
     });
 
     res.json({
