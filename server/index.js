@@ -28,7 +28,7 @@ app.listen(3001, () => {
 connectDB();
 
 //Importation du routeur d'authentification
-app.use('/api/auth', authRouter);
+app.use('/auth', authRouter);
 
 //Importation du routeur des questions
 app.use(questionRouter);
