@@ -1,3 +1,6 @@
+@import "./styles/Accessibility.css";
+@import "./styles/AccessibilityMenu.css";
+
 /* Variables CSS globales */
 :root {
   --blue-ocean: #0a5a66;
@@ -21,7 +24,8 @@
 
 /* Animations globales */
 @keyframes gentleFloat {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0px) scale(1);
     opacity: 0.3;
   }
@@ -36,7 +40,8 @@
 }
 
 @keyframes softPulse {
-  0%, 100% {
+  0%,
+  100% {
     opacity: 0.2;
     transform: scale(1);
   }
@@ -47,7 +52,8 @@
 }
 
 @keyframes gentleShift {
-  0%, 100% {
+  0%,
+  100% {
     background-position: 0% 50%;
   }
   50% {
@@ -108,19 +114,12 @@ body {
   color: var(--blue-night);
   position: relative;
   overflow-x: hidden;
-  font-size: 1.25rem;
-  line-height: 1.6;
-  min-height: 100vh;
-  
-  /* Flexbox pour React App */
-  display: flex;
-  flex-direction: column;
 }
 
 /* Éléments flottants décoratifs */
 body::before,
 body::after {
-  content: '';
+  content: "";
   position: fixed;
   pointer-events: none;
   z-index: 0;
@@ -211,7 +210,11 @@ body::after {
 }
 
 .btn-primary {
-  background: linear-gradient(135deg, var(--blue-ocean) 0%, var(--blue-fog) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--blue-ocean) 0%,
+    var(--blue-fog) 100%
+  );
   color: white;
 }
 
@@ -300,8 +303,12 @@ body::after {
 }
 
 @keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* Responsive breakpoints */
@@ -315,21 +322,21 @@ body::after {
   body {
     font-size: 1.1rem;
   }
-  
+
   .container {
     padding: 0 12px;
   }
-  
+
   .btn {
     padding: 14px 20px;
     font-size: 0.9rem;
   }
-  
+
   .card {
     padding: 20px;
     margin: 10px 0;
   }
-  
+
   /* Cache les animations flottantes sur mobile */
   body::before,
   body::after {
@@ -341,11 +348,11 @@ body::after {
   body {
     font-size: 1rem;
   }
-  
+
   .container {
     padding: 0 8px;
   }
-  
+
   .card {
     padding: 16px;
     border-radius: 12px;
