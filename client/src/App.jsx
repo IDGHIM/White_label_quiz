@@ -15,6 +15,7 @@ import ProfilPage from "./pages/ProfilPage";
 import LegalNoticePage from "./pages/LegalNoticePage";
 import LicencePage from "./pages/LicencePage";
 import AccessibilityMenu from "./components/AccessiblityMenu";
+import EmailVerificationPage from "./pages/EmailVerificationPage";
 
 const App = () => {
   return (
