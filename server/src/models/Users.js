@@ -26,10 +26,11 @@ UserSchema.pre("save", async function (next) {
   }
 });
 
-// Méthode pour comparer le mot de passe
-UserSchema.methods.comparePassword = function (password) {
-  return bcrypt.compare(password, this.password);
-};
+  // Méthode pour comparer le mot de passe
+  // UserSchema.methods.comparePassword = function (password) {
+  //   return bcrypt.compare(password, this.password);
+  // };
+
 
 const User = mongoose.model("User", UserSchema);
 
