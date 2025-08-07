@@ -27,7 +27,7 @@ const LoginPage = () => {
     try {
       setLoading(true);
       //await login(identifier, password);
-      navigate('/dashboard');
+      navigate('/profil');
     } catch (err) {
       console.error("Erreur de connexion :", err);
       setError("Nom d'utilisateur, email ou mot de passe incorrect.");

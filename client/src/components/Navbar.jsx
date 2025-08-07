@@ -4,7 +4,7 @@ import { FaUserCircle, FaUserPlus } from "react-icons/fa";
 import { FiLogIn, FiLogOut, FiHome } from "react-icons/fi";
 
 // Simule l'état
-const isLoggedIn = true;
+const isLoggedIn = false;
 
 const Navbar = () => {
   return (
