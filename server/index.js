@@ -1,14 +1,30 @@
 // index.js - Backend sur port 3001
 const express = require("express");
 const app = express();
-const mongoose = require('mongoose');
-const cookieParser = require('cookie-parser');
-const cors = require('cors');
-const connectDB = require('./src/database/database');
-const Question = require('./src/models/Questions');
-const questionRouter = require('./src/routes/questionRoutes');
-const userRouter = require('./src/routes/userRoutes');
-const quizRouter = require('./src/routes/quizRoutes'); 
+const mongoose = require("mongoose");
+const cookieParser = require("cookie-parser");
+const connectDB = require("./src/database/database");
+const Question = require("./src/models/Questions");
+const questionRouter = require("./src/routes/questionRoutes");
+const userRouter = require("./src/routes/userRoutes");
+const authRoutes = require("./src/routes/authRoutes");
+const quizRouter = require("./src/routes/quizRoutes");
+const dotenv = require("dotenv");
+dotenv.config();
+const sendEmail = require("./src/utils/sendEmail");
+const cors = require("cors");
+
+app.get("/hello", (req, res) => {
+  res.send("Hello world!");
+});
+
+// Middleware CORS - Frontend Vite sur port 5173, Backend sur port 3001
+app.use(
+  cors({
+    origin: "http://localhost:5173", // Vite frontend
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 app.use(cookieParser());
@@ -17,10 +33,17 @@ app.use(cookieParser());
 connectDB();
 
 // Importation du routeur des questions
-app.use("/api/questions", questionRouter);
+app.use(questionRouter);
 
-//Importation du routeur des utilisateurs
+// Importation du routeur des utilisateurs
 app.use(userRouter);
 
-//Importation du routeur des quiz
+app.use(authRoutes);
+
+// Importation du routeur des quizzes
 app.use(quizRouter);
+
+// Serveur sur port 3000
+app.listen(3000, () => {
+  console.log("Server is running on http://localhost:3000");
+});
