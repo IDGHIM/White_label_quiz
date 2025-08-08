@@ -23,8 +23,9 @@ router.put("/api/users/:id", userController.update);
 router.delete("/api/users/:id", userController.delete);
 
 // Route uniquement accessible aux admins
-router.get("/admin", authorize("admin"), (req, res) => {
+router.get("/admin", protect, authorize("admin"), (req, res) => {
   res.json({ message: "Bienvenue admin !" });
 });
+
 
 module.exports = router;
