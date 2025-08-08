@@ -33,11 +33,5 @@ const EmailVerificationPage = () => {
   </div>
   )
 }
-      {status === "pending" && <p>⏳ Vérification en cours...</p>}
-      {status === "success" && <p>✅ Votre email a été vérifié avec succès !</p>}
-      {status === "error" && <p>❌ Le lien de vérification est invalide ou expiré.</p>}
-    </div>
-  );
-};
 
 export default EmailVerificationPage;
