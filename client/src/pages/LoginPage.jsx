@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
+import axios from 'axios';
 //import { useAuth } from '../context/authContext';
 import '../styles/LoginPage.css';
 
@@ -27,6 +28,10 @@ const LoginPage = () => {
     try {
       setLoading(true);
       //await login(identifier, password);
+      await axios.post('http://localhost:3001/auth/login', {
+        identifier,
+        password: password,
+      });
       navigate('/profil');
     } catch (err) {
       console.error("Erreur de connexion :", err);
