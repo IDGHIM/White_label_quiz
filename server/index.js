@@ -30,15 +30,13 @@ app.listen(PORT, "0.0.0.0", () => {
 connectDB();
 
 //Importation du routeur d'authentification
-app.use("/auth", authRouter);
+app.use(authRouter);
 
 //Importation du routeur des questions
 app.use(questionRouter);
 
 //Importation du routeur des utilisateurs
 app.use(userRouter);
-
-app.use("/auth", authRoutes);
 
 //Importation du routeur des quiz
 app.use(quizRouter);
