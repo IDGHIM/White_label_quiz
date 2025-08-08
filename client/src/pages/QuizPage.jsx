@@ -90,7 +90,42 @@ const QuizPage = () => {
   // Gère la réponse de l'utilisateur : vérifie si elle est correcte, met à jour le score et les réponses
   // Passe à la question suivante ou affiche les résultats si c'est la dernière question
   const handleAnswer = (answer) => {
-    const isCorrect = answer === currentQuestion.correctAnswer;
+    // Debug: afficher les informations pour comprendre le format des données
+    console.log("=== DEBUG RÉPONSE ===");
+    console.log("Réponse sélectionnée (lettre):", answer);
+    console.log("Texte de la réponse sélectionnée:", currentQuestion[`option${answer}`]);
+    console.log("correctAnswers (array):", currentQuestion.correctAnswers);
+    console.log("Question actuelle:", currentQuestion);
+    
+    const selectedText = currentQuestion[`option${answer}`];
+    let isCorrect = false;
+    let correctAnswerText = '';
+    
+    // Vérifier si correctAnswers existe et est un tableau
+    if (currentQuestion.correctAnswers && Array.isArray(currentQuestion.correctAnswers)) {
+      // Prendre la première réponse correcte du tableau
+      correctAnswerText = currentQuestion.correctAnswers[0];
+      
+      // Méthode 1: Comparer le texte de la réponse sélectionnée avec la réponse correcte
+      isCorrect = selectedText === correctAnswerText;
+      
+      // Méthode 2: Comparaison flexible (supprime les espaces et met en minuscules)
+      if (!isCorrect && selectedText && correctAnswerText) {
+        const normalizedSelected = selectedText.toLowerCase().trim();
+        const normalizedCorrect = correctAnswerText.toLowerCase().trim();
+        isCorrect = normalizedSelected === normalizedCorrect;
+      }
+      
+      // Méthode 3: Vérifier si la lettre correspond à l'une des réponses correctes
+      if (!isCorrect) {
+        isCorrect = currentQuestion.correctAnswers.includes(answer);
+      }
+    }
+    
+    console.log("Réponse correcte:", correctAnswerText);
+    console.log("Est-ce correct ?", isCorrect);
+    console.log("====================");
+    
     if (isCorrect) {
       setScore((s) => s + 1);
     }
@@ -99,7 +134,8 @@ const QuizPage = () => {
     const answerData = {
       questionId: currentQuestion.id,
       selectedAnswer: answer,
-      correctAnswer: currentQuestion.correctAnswer,
+      selectedText: selectedText,
+      correctAnswer: correctAnswerText,
       isCorrect: isCorrect,
     };
 
@@ -233,7 +269,7 @@ const QuizPage = () => {
                   </p>
                   <p>
                     <strong>Votre réponse:</strong>{" "}
-                    {answer.selectedAnswer || "Pas de réponse"}
+                    {answer.selectedText || answer.selectedAnswer || "Pas de réponse"}
                   </p>
                   {!answer.isCorrect && (
                     <p>
