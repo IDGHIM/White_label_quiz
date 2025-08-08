@@ -31,12 +31,13 @@ async function register(req, res) {
       return res.status(400).json({ message: `Email est déjà utilisé` });
     }
 
-    // const hashedPassword = await bcrypt.hash(password, 10);
+    // ✅ CORRECTION: Hasher le mot de passe
+    const hashedPassword = await bcrypt.hash(password, 10);
 
     const newUser = new User({
       username,
       email,
-      password,
+      password: hashedPassword, // ✅ Utiliser le mot de passe hashé
       role: "user",
       isVerified: false,
     });
@@ -53,7 +54,7 @@ async function register(req, res) {
     await sendMail({
       to: newUser.email,
       subject: "Vérification email",
-      html: `Bonjour${username}, <br>. Merci de vérifier votre compte en cliquant sur ce lien : <a href="${verificationUrl}"> Vérifier mon compte</a> <br> Ce lien expire dans une heure`,
+      html: `Bonjour ${username}, <br>. Merci de vérifier votre compte en cliquant sur ce lien : <a href="${verificationUrl}"> Vérifier mon compte</a> <br> Ce lien expire dans une heure`,
     });
 
     return res.status(201).json({
@@ -71,46 +72,48 @@ async function login(req, res) {
   try {
     const { identifier, password } = req.body;
     if (!identifier || !password) {
-      console.log("Champs manquants");
+      console.log("❌ Champs manquants");
       return res.status(400).json({ message: `Tous les champs sont requis` });
     }
 
-    let user = await User.findOne({ email: identifier });
-    console.log("Utilisateur trouvé :", user);
+    // ✅ CORRECTION: Recherche améliorée par email OU username
+    let user = await User.findOne({
+      $or: [{ email: identifier }, { username: identifier }]
+    });
+    
+    console.log("🔍 Utilisateur trouvé :", user ? 'OUI' : 'NON');
 
     if (!user) {
-      user = await User.findOne({ username: identifier });
-    }
-
-    if (!user) {
-      console.log("Utilisateur introuvable");
-      return res.status(400).json({ message: `Utilisateur introuvable` });
+      console.log("❌ Utilisateur introuvable");
+      return res.status(401).json({ message: `Identifiants incorrects` });
     }
 
     if (!user.password) {
+      console.log("❌ Mot de passe manquant en DB");
       return res.status(400).json({ message: "Mot de passe manquant." });
     }
 
     if (!user.isVerified) {
-      console.log("Compte non vérifié");
+      console.log("❌ Compte non vérifié");
       return res
         .status(401)
         .json({ message: `Veuillez confirmer votre compte` });
     }
 
-    console.log("Vérification du mot de passe...");
-    console.log("Mot de passe reçu :", password);
-    console.log("Mot de passe en base :", user.password);
+    console.log("🔍 Vérification du mot de passe...");
     const isMatch = await bcrypt.compare(password, user.password);
-    console.log("Mot de passe valide :", isMatch);
+    console.log("🔍 Mot de passe valide :", isMatch);
 
     if (!isMatch) {
+      console.log("❌ Mot de passe incorrect");
       return res
-        .status(400)
-        .json({ message: `Email ou mot de passe incorrect` });
+        .status(401) // ✅ CORRECTION: 401 au lieu de 400
+        .json({ message: `Identifiants incorrects` });
     }
 
-    // Création du token,. Expiration de la session au bout d'une heure
+    console.log("✅ Connexion réussie pour:", user.username);
+
+    // Création du token. Expiration de la session au bout d'une heure
     const token = jwt.sign(
       { id: user._id, role: user.role, name: user.username },
       JWT_SECRET,
@@ -119,7 +122,7 @@ async function login(req, res) {
 
     // Envoi du token dans les cookies
     res.cookie("token", token, {
-      httponly: true,
+      httpOnly: true, // ✅ CORRECTION: Casse corrigée
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 jours
@@ -136,7 +139,7 @@ async function login(req, res) {
       token,
     });
   } catch (error) {
-    console.error(error);
+    console.error("💥 Erreur login:", error);
     res.status(500).json({ message: `Erreur serveur` });
   }
 }
@@ -172,7 +175,7 @@ async function requestPasswordReset(req, res) {
     await sendMail({
       to: user.email,
       subject: `Réinitialisation du mot de passe`,
-      html: `<a href ="${resetUrl}">${resetUrl}</a>`,
+      html: `<a href="${resetUrl}">${resetUrl}</a>`,
     });
 
     res.json({ message: `Email de réinitialisation envoyé` });
@@ -209,8 +212,9 @@ async function resetPassword(req, res) {
     if (!user)
       return res.status(400).json({ message: `Token invalide ou expiré` });
 
-    // On hash un nouveau mot de passe
-    user.password = password;
+    // ✅ CORRECTION: Hasher le nouveau mot de passe
+    const hashedPassword = await bcrypt.hash(password, 10);
+    user.password = hashedPassword;
     user.resetToken = undefined;
     user.resetTokenExpiration = undefined;
 
@@ -262,9 +266,11 @@ async function verifyEmail(req, res) {
 
     user.isVerified = true;
     await user.save();
+    
+    console.log(`✅ Compte vérifié pour: ${user.email}`);
     res.json({ message: `Compte vérifié avec succès` });
   } catch (error) {
-    console.error(`Erreur`);
+    console.error(`Erreur vérification email:`, error);
     res.status(400).json({ message: `Token invalide ou expiré` });
   }
 }
@@ -287,9 +293,6 @@ async function resendVerificationEmail(req, res) {
       expiresIn: "1d",
     });
 
-    // ----------------------------------------------------------------- //
-    // ----------------------------------------------------------------- //
-
     const verificationUrl = `${CLIENT_URL}/auth/verify/${verificationToken}`;
 
     await sendMail({
@@ -302,10 +305,10 @@ async function resendVerificationEmail(req, res) {
       message: "Un nouveau lien de vérification a été envoyé à votre email.",
     });
   } catch (error) {
-    console.error("Erreur lors du renvoi de l’email :", error);
+    console.error("Erreur lors du renvoi de l'email :", error);
     res
       .status(500)
-      .json({ message: "Erreur lors de l’envoi du lien de vérification." });
+      .json({ message: "Erreur lors de l'envoi du lien de vérification." });
   }
 }
 
