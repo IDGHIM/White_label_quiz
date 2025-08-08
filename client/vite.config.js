@@ -8,7 +8,7 @@ export default defineConfig({
     allowedHosts: ["hackathon-quiz-qif7.onrender.com"],
     proxy: {
       "/api": {
-        target: "http://localhost:3001",
+        target: "https://hackathon-quiz-backend.onrender.com/",
         changeOrigin: true,
         secure: false,
       },

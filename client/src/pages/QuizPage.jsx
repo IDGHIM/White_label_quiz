@@ -17,6 +17,8 @@ const QuizPage = () => {
   const [quizStarted, setQuizStarted] = useState(false);
   // États pour stocker les réponses de l'utilisateur
   const [answers, setAnswers] = useState([]);
+  // État pour stocker les réponses sélectionnées pour la question actuelle
+  const [selectedAnswers, setSelectedAnswers] = useState([]);
 
   // Fonction pour récupérer le quiz depuis l'API
   const fetchQuiz = async () => {
@@ -84,13 +86,73 @@ const QuizPage = () => {
     setCurrentQuestionIndex(0);
     setScore(0);
     setAnswers([]);
+    setSelectedAnswers([]);
     setShowResult(false);
   };
 
-  // Gère la réponse de l'utilisateur : vérifie si elle est correcte, met à jour le score et les réponses
-  // Passe à la question suivante ou affiche les résultats si c'est la dernière question
-  const handleAnswer = (answer) => {
-    const isCorrect = answer === currentQuestion.correctAnswer;
+  // Gère la sélection d'une réponse (toggle pour sélections multiples)
+  const handleAnswerSelection = (answer) => {
+    const isMultipleChoice = currentQuestion.correctAnswers && currentQuestion.correctAnswers.length > 1;
+    
+    if (isMultipleChoice) {
+      // Pour les questions à choix multiples, toggle la sélection
+      setSelectedAnswers(prev => {
+        if (prev.includes(answer)) {
+          return prev.filter(a => a !== answer);
+        } else {
+          return [...prev, answer];
+        }
+      });
+    } else {
+      // Pour les questions à choix unique, sélection directe
+      setSelectedAnswers([answer]);
+      // Passer automatiquement à la question suivante
+      setTimeout(() => submitAnswer([answer]), 500);
+    }
+  };
+
+  // Valide les réponses sélectionnées
+  const submitAnswer = (answersToSubmit = selectedAnswers) => {
+    console.log("=== DEBUG RÉPONSE ===");
+    console.log("Réponses sélectionnées:", answersToSubmit);
+    console.log("correctAnswers (array):", currentQuestion.correctAnswers);
+    console.log("Question actuelle:", currentQuestion);
+    
+    let isCorrect = false;
+    let correctAnswersTexts = [];
+    let selectedTexts = answersToSubmit.map(ans => currentQuestion[`option${ans}`]);
+    
+    // Vérifier si correctAnswers existe et est un tableau
+    if (currentQuestion.correctAnswers && Array.isArray(currentQuestion.correctAnswers)) {
+      correctAnswersTexts = currentQuestion.correctAnswers;
+      
+      // Pour une réponse correcte, toutes les bonnes réponses doivent être sélectionnées
+      // et aucune mauvaise réponse ne doit être sélectionnée
+      
+      // Méthode 1: Comparer les textes des réponses
+      const selectedTextsSet = new Set(selectedTexts);
+      const correctTextsSet = new Set(correctAnswersTexts);
+      
+      isCorrect = selectedTextsSet.size === correctTextsSet.size &&
+                  [...selectedTextsSet].every(text => correctTextsSet.has(text));
+      
+      // Méthode 2: Si la première ne fonctionne pas, comparer les lettres
+      if (!isCorrect) {
+        const selectedSet = new Set(answersToSubmit);
+        const correctSet = new Set(currentQuestion.correctAnswers.filter(ans => ['A', 'B', 'C'].includes(ans)));
+        
+        if (correctSet.size > 0) {
+          isCorrect = selectedSet.size === correctSet.size &&
+                     [...selectedSet].every(ans => correctSet.has(ans));
+        }
+      }
+    }
+    
+    console.log("Réponses correctes:", correctAnswersTexts);
+    console.log("Textes sélectionnés:", selectedTexts);
+    console.log("Est-ce correct ?", isCorrect);
+    console.log("====================");
+    
     if (isCorrect) {
       setScore((s) => s + 1);
     }
@@ -98,13 +160,18 @@ const QuizPage = () => {
     // Enregistre la réponse de l'utilisateur avec les détails de la question
     const answerData = {
       questionId: currentQuestion.id,
-      selectedAnswer: answer,
-      correctAnswer: currentQuestion.correctAnswer,
+      selectedAnswers: answersToSubmit,
+      selectedTexts: selectedTexts,
+      correctAnswers: correctAnswersTexts,
       isCorrect: isCorrect,
+      isMultipleChoice: correctAnswersTexts.length > 1,
     };
 
     // Ajoute la réponse à la liste des réponses
     setAnswers((a) => [...a, answerData]);
+
+    // Réinitialise les sélections pour la question suivante
+    setSelectedAnswers([]);
 
     // Passe à la question suivante ou affiche les résultats si c'est la dernière question
     if (currentQuestionIndex < totalQuestions - 1) {
@@ -121,6 +188,7 @@ const QuizPage = () => {
     setScore(0);
     setShowResult(false);
     setAnswers([]);
+    setSelectedAnswers([]);
   };
 
   // Fonction pour recharger le quiz
@@ -233,11 +301,16 @@ const QuizPage = () => {
                   </p>
                   <p>
                     <strong>Votre réponse:</strong>{" "}
-                    {answer.selectedAnswer || "Pas de réponse"}
+                    {answer.selectedTexts ? answer.selectedTexts.join(", ") : 
+                     (answer.selectedText || answer.selectedAnswer || "Pas de réponse")}
                   </p>
                   {!answer.isCorrect && (
                     <p>
-                      <strong>Bonne réponse:</strong> {answer.correctAnswer}
+                      <strong>Bonne réponse:</strong> {
+                        Array.isArray(answer.correctAnswers) ? 
+                        answer.correctAnswers.join(", ") : 
+                        answer.correctAnswers
+                      }
                     </p>
                   )}
                 </div>
@@ -292,21 +365,58 @@ const QuizPage = () => {
       <div className="quiz-content">
         <div className="question-card">
           <h2 className="question-text">{currentQuestion.question}</h2>
+          
+          {/* Indicateur du type de question */}
+          <div className="question-type-indicator">
+            {currentQuestion.correctAnswers && currentQuestion.correctAnswers.length > 1 ? (
+              <p className="multiple-choice-hint">
+                📋 <strong>Choix multiple</strong> - Sélectionnez toutes les bonnes réponses ({currentQuestion.correctAnswers.length} réponses attendues)
+              </p>
+            ) : (
+              <p className="single-choice-hint">
+                ✅ <strong>Choix unique</strong> - Une seule bonne réponse
+              </p>
+            )}
+          </div>
 
           <div className="options-container">
             {["A", "B", "C"].map((option) => (
               <button
                 key={option}
-                className="option-btn"
-                onClick={() => handleAnswer(option)}
+                className={`option-btn ${selectedAnswers.includes(option) ? 'selected' : ''}`}
+                onClick={() => handleAnswerSelection(option)}
               >
                 <span className="option-letter">{option}</span>
                 <span className="option-text">
                   {currentQuestion[`option${option}`]}
                 </span>
+                {selectedAnswers.includes(option) && (
+                  <span className="selected-indicator">✓</span>
+                )}
               </button>
             ))}
           </div>
+
+          {/* Bouton de validation pour les questions à choix multiples */}
+          {currentQuestion.correctAnswers && currentQuestion.correctAnswers.length > 1 && (
+            <div className="submit-section">
+              <button 
+                className="submit-btn" 
+                onClick={() => submitAnswer()}
+                disabled={selectedAnswers.length === 0}
+              >
+                Valider ma réponse ({selectedAnswers.length} sélectionnée{selectedAnswers.length > 1 ? 's' : ''})
+              </button>
+              {selectedAnswers.length > 0 && (
+                <button 
+                  className="clear-btn" 
+                  onClick={() => setSelectedAnswers([])}
+                >
+                  Effacer les sélections
+                </button>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>

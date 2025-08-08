@@ -28,7 +28,7 @@ const LoginPage = () => {
     try {
       setLoading(true);
       //await login(identifier, password);
-      await axios.post('http://localhost:3001/auth/login', {
+      await axios.post('https://hackathon-quiz-backend.onrender.com/api/login', {
         identifier,
         password: password,
       });
