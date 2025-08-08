@@ -28,7 +28,7 @@ const LoginPage = () => {
     try {
       setLoading(true);
       //await login(identifier, password);
-      await axios.post('http://localhost:3001/auth/login', {
+      await axios.post('http://localhost:3001/api/login', {
         identifier,
         password: password,
       });

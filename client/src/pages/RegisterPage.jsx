@@ -13,7 +13,8 @@ const RegisterPage = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post('http://localhost:3001/auth/register', {
+      // ✅ URL CORRIGÉE : /auth/register -> /api/register
+      await axios.post('http://localhost:3001/api/register', {
         username,
         email,
         password,
