@@ -10,6 +10,8 @@ const userRouter = require("./src/routes/userRoutes");
 const quizRouter = require("./src/routes/quizRoutes");
 const authRouter = require("./src/routes/authRoutes");
 
+const PORT = process.env.PORT || 3001;
+
 // Middleware
 app.use(
   cors({
@@ -20,8 +22,8 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
-app.listen(3001, () => {
-  console.log("Server is running on http://localhost:3001");
+app.listen(PORT, () => {
+  console.log(`Server is running on http://localhost:${PORT}`);
 });
 
 //appel de la connection à la base de données
