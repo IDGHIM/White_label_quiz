@@ -1,92 +1,135 @@
-body {
-  height: 100vh;
-  margin: 0;
-  padding: 0;
-}
+/* Styles pour le composant Body.jsx */
 
-body {
-  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg,
-      var(--blue-ice) 0%,
-      var(--blue-fog) 50%,
-      var(--blue-ocean) 100%);
-  height: 100vh;
-  color: var(--blue-night);
-  box-sizing: border-box;
-  position: relative;
-  font-size: 1.25rem; /* ≈20px au lieu de 16px */
-}
-
-.main-content {
-  flex: 1;
+/* Container principal du contenu Body */
+.body-container {
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
-  padding: 20px;
-  box-sizing: border-box;
-}
-
-.body-container {
-  background: rgba(255, 255, 255, 0.9);
-  padding: 50px 40px;
-  border-radius: 20px;
-  box-shadow: 0 20px 40px rgba(52, 77, 89, 0.2);
-  backdrop-filter: blur(10px);
-  border: 1px solid rgba(184, 203, 208, 0.3);
-  text-align: center;
+  min-height: 80vh;
+  padding: 60px 50px;
+  margin: 40px auto;
+  max-width: 700px;
+  width: 90%;
+  
+  /* Effet glassmorphism */
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  
+  /* Ombres et effets */
+  box-shadow: 
+    0 25px 60px rgba(52, 77, 89, 0.25),
+    0 0 0 1px rgba(255, 255, 255, 0.8) inset;
+  
+  /* Animations */
   transform: translateY(0);
-  transition: all 0.3s ease;
-  max-width: 600px;
-  width: 100%;
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+  text-align: center;
 }
 
+/* Barre décorative en haut */
+.body-container::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(90, 133, 144, 0.3), 
+    transparent
+  );
+}
+
+/* Effet hover pour le container */
 .body-container:hover {
-  transform: translateY(-5px);
-  box-shadow: 0 25px 50px rgba(52, 77, 89, 0.2);
+  transform: translateY(-8px);
+  box-shadow: 
+    0 35px 80px rgba(52, 77, 89, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.9) inset;
 }
 
+/* Titre principal */
 .body-title {
   color: var(--blue-night);
-  font-size: 3.5rem; /* anciennement 2.5rem */
-  font-weight: 600;
-  margin-bottom: 40px;
+  font-size: 4rem;
+  font-weight: 700;
+  margin-bottom: 16px;
   position: relative;
-  background: linear-gradient(135deg, var(--blue-ocean), var(--blue-fog));
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  
+  /* Effet gradient sur le texte */
+  background: linear-gradient(135deg, 
+    var(--blue-ocean) 0%, 
+    var(--blue-fog) 50%,
+    var(--blue-stone) 100%
+  );
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  
+  /* Animation d'apparition */
+  animation: fadeInUp 0.8s ease-out;
 }
 
+/* Barre décorative sous le titre */
 .body-title::after {
   content: "";
   position: absolute;
-  bottom: -15px;
+  bottom: -20px;
   left: 50%;
   transform: translateX(-50%);
-  width: 80px;
-  height: 4px;
-  background: linear-gradient(90deg, var(--blue-ocean), var(--blue-fog));
-  border-radius: 2px;
+  width: 100px;
+  height: 5px;
+  background: linear-gradient(90deg, 
+    var(--blue-ocean), 
+    var(--blue-fog), 
+    var(--blue-ocean)
+  );
+  border-radius: 3px;
+  box-shadow: 0 2px 10px rgba(10, 90, 102, 0.3);
 }
 
+/* Bouton principal */
 .body-btn {
-  padding: 16px 40px;
+  margin-top: 48px;
+  padding: 20px 48px;
   background: linear-gradient(135deg,
-      var(--blue-ocean) 0%,
-      var(--blue-fog) 100%);
+    var(--blue-ocean) 0%,
+    var(--blue-fog) 50%,
+    var(--blue-stone) 100%
+  );
+  background-size: 200% 200%;
   color: white;
   border: none;
-  border-radius: 12px;
-  font-size: 1.5rem; /* anciennement 18px */
+  border-radius: 16px;
+  font-size: 1.4rem;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s ease;
   text-transform: uppercase;
-  letter-spacing: 1.2px;
+  letter-spacing: 1.5px;
+  
+  /* Transitions et animations */
+  transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
   position: relative;
   overflow: hidden;
+  
+  /* Ombres */
+  box-shadow: 
+    0 8px 25px rgba(10, 90, 102, 0.3),
+    0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+  
+  /* Animation d'apparition avec délai */
+  animation: fadeInUp 0.8s ease-out 0.3s both;
 }
 
+/* Effet de brillance qui traverse le bouton */
 .body-btn::before {
   content: "";
   position: absolute;
@@ -95,23 +138,166 @@ body {
   width: 100%;
   height: 100%;
   background: linear-gradient(90deg,
-      transparent,
-      rgba(255, 255, 255, 0.2),
-      transparent);
-  transition: left 0.5s;
+    transparent,
+    rgba(255, 255, 255, 0.3),
+    transparent
+  );
+  transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Effet de cercle au clic */
+.body-btn::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 0;
+  height: 0;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* États hover du bouton */
+.body-btn:hover {
+  background-position: 100% 100%;
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 
+    0 15px 40px rgba(10, 90, 102, 0.4),
+    0 0 0 1px rgba(255, 255, 255, 0.2) inset;
 }
 
 .body-btn:hover::before {
   left: 100%;
 }
 
-.body-btn:hover {
-  background: linear-gradient(135deg,
-      var(--blue-night) 0%,
-      var(--blue-ocean) 100%);
-  transform: translateY(-2px);
+.body-btn:hover::after {
+  width: 300px;
+  height: 300px;
 }
 
+/* État actif du bouton */
 .body-btn:active {
-  transform: translateY(0);
+  transform: translateY(-2px) scale(1);
+  transition: all 0.1s ease;
+}
+
+/* État focus pour l'accessibilité */
+.body-btn:focus {
+  outline: none;
+  box-shadow: 
+    0 8px 25px rgba(10, 90, 102, 0.3),
+    0 0 0 3px rgba(10, 90, 102, 0.3);
+}
+
+/* État disabled */
+.body-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  background: var(--blue-stone);
+}
+
+.body-btn:disabled:hover {
+  transform: none;
+  background: var(--blue-stone);
+}
+
+/* Animations keyframes */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .body-container {
+    padding: 48px 40px;
+    margin: 32px auto;
+    max-width: 600px;
+  }
+  
+  .body-title {
+    font-size: 3.2rem;
+  }
+  
+  .body-btn {
+    padding: 18px 40px;
+    font-size: 1.3rem;
+    margin-top: 40px;
+  }
+}
+
+@media (max-width: 768px) {
+  .body-container {
+    padding: 40px 32px;
+    margin: 24px 16px;
+    min-height: 70vh;
+    border-radius: 20px;
+  }
+  
+  .body-title {
+    font-size: 2.8rem;
+    margin-bottom: 12px;
+  }
+  
+  .body-title::after {
+    width: 80px;
+    height: 4px;
+    bottom: -16px;
+  }
+  
+  .body-btn {
+    padding: 16px 32px;
+    font-size: 1.2rem;
+    letter-spacing: 1px;
+    margin-top: 32px;
+  }
+}
+
+@media (max-width: 480px) {
+  .body-container {
+    padding: 32px 24px;
+    margin: 20px 12px;
+    min-height: 60vh;
+    width: calc(100% - 24px);
+  }
+  
+  .body-title {
+    font-size: 2.4rem;
+    line-height: 1.1;
+  }
+  
+  .body-btn {
+    padding: 14px 28px;
+    font-size: 1.1rem;
+    width: 100%;
+    max-width: 280px;
+    margin-top: 28px;
+  }
+}
+
+/* Animation pour les appareils qui préfèrent moins de mouvement */
+@media (prefers-reduced-motion: reduce) {
+  .body-container,
+  .body-btn,
+  .body-title {
+    animation: none;
+    transition: none;
+  }
+  
+  .body-container:hover {
+    transform: none;
+  }
+  
+  .body-btn:hover {
+    transform: none;
+  }
 }

@@ -1,52 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../styles/QuizPage.css";
 
 const QuizPage = () => {
-  // Liste des questions du quiz (stockées en local ici, mais viendront plus tard d'une API)
-  const [questions] = useState([
-    {
-      id: 1,
-      question:
-        "En quelle année a eu lieu la chute de l'Empire romain d'Occident ?",
-      optionA: "395",
-      optionB: "410",
-      optionC: "476",
-      correctAnswer: "C",
-    },
-    {
-      id: 2,
-      question: "Quelle est la formule chimique de l'eau ?",
-      optionA: "H2O",
-      optionB: "CO2",
-      optionC: "O2",
-      correctAnswer: "A",
-    },
-    {
-      id: 3,
-      question: "Quelle est la capitale de l'Australie ?",
-      optionA: "Sydney",
-      optionB: "Melbourne",
-      optionC: "Canberra",
-      correctAnswer: "C",
-    },
-    {
-      id: 4,
-      question: "Qui a écrit 'Les Misérables' ?",
-      optionA: "Émile Zola",
-      optionB: "Victor Hugo",
-      optionC: "Gustave Flaubert",
-      correctAnswer: "B",
-    },
-    {
-      id: 5,
-      question: "Combien de planètes y a-t-il dans notre système solaire ?",
-      optionA: "8",
-      optionB: "9",
-      optionC: "7",
-      correctAnswer: "A",
-    },
-  ]);
-
+  // États pour les questions et le chargement
+  const [questions, setQuestions] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  
   // États pour gérer l'index de la question actuelle
   const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
   // États pour le score, les résultats et le démarrage du quiz
@@ -57,6 +17,62 @@ const QuizPage = () => {
   const [quizStarted, setQuizStarted] = useState(false);
   // États pour stocker les réponses de l'utilisateur
   const [answers, setAnswers] = useState([]);
+
+  // Fonction pour récupérer le quiz depuis l'API
+  const fetchQuiz = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      
+      const response = await fetch('/api/quizzes');
+      
+      if (!response.ok) {
+        throw new Error(`Erreur HTTP: ${response.status}`);
+      }
+      
+      const data = await response.json();
+      
+      // Debug: afficher les données reçues
+      console.log('Données reçues de l\'API:', data);
+      console.log('Type des données:', typeof data);
+      
+      // Vérification que les données reçues sont valides
+      if (data && Array.isArray(data) && data.length > 0) {
+        // Si c'est un array de quiz, prendre le premier quiz
+        if (data[0] && data[0].questions && Array.isArray(data[0].questions)) {
+          console.log('Questions trouvées (format quiz array):', data[0].questions.length);
+          setQuestions(data[0].questions);
+        } else {
+          // Si c'est directement un array de questions
+          console.log('Questions trouvées (format array direct):', data.length);
+          setQuestions(data);
+        }
+      } else if (data && data.questions && Array.isArray(data.questions)) {
+        // Si les questions sont dans un objet wrapper
+        console.log('Questions trouvées (format objet):', data.questions.length);
+        setQuestions(data.questions);
+      } else if (data && data.data && Array.isArray(data.data)) {
+        // Format avec propriété data
+        console.log('Questions trouvées (format data):', data.data.length);
+        setQuestions(data.data);
+      } else {
+        console.error('Format de données non reconnu:', data);
+        throw new Error(`Format de données invalide. Reçu: ${typeof data}`);
+      }
+      
+    } catch (err) {
+      console.error('Erreur lors du chargement du quiz:', err);
+      setError(err.message);
+      setQuestions([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Chargement des données au montage du composant
+  useEffect(() => {
+    fetchQuiz();
+  }, []);
 
   // Question actuelle et nombre total de questions
   const currentQuestion = questions[currentQuestionIndex];
@@ -107,6 +123,45 @@ const QuizPage = () => {
     setAnswers([]);
   };
 
+  // Fonction pour recharger le quiz
+  const reloadQuiz = () => {
+    resetQuiz();
+    fetchQuiz();
+  };
+
+  // Affichage pendant le chargement
+  if (loading) {
+    return (
+      <div className="quiz-container">
+        <div className="quiz-loading">
+          <div className="loading-spinner"></div>
+          <h2>Chargement du quiz...</h2>
+          <p>Récupération des questions depuis le serveur</p>
+        </div>
+      </div>
+    );
+  }
+
+  // Affichage en cas d'erreur
+  if (error) {
+    return (
+      <div className="quiz-container">
+        <div className="quiz-error">
+          <h2>Erreur de chargement</h2>
+          <p>Impossible de charger le quiz : {error}</p>
+          <div className="error-actions">
+            <button onClick={fetchQuiz} className="retry-btn">
+              Réessayer
+            </button>
+            <button onClick={() => window.location.href = "/"} className="home-btn">
+              Retour à l'accueil
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   // Quiz non démarré : affiche les informations du quiz et le bouton pour commencer
   if (!quizStarted) {
     return (
@@ -129,9 +184,14 @@ const QuizPage = () => {
               </ul>
             </div>
           </div>
-          <button onClick={startQuiz} className="start-quiz-btn">
-            Commencer le Quiz
-          </button>
+          <div className="quiz-actions">
+            <button onClick={startQuiz} className="start-quiz-btn">
+              Commencer le Quiz
+            </button>
+            <button onClick={reloadQuiz} className="reload-btn">
+              Recharger le Quiz
+            </button>
+          </div>
         </div>
       </div>
     );
@@ -188,6 +248,9 @@ const QuizPage = () => {
           <div className="result-actions">
             <button onClick={resetQuiz} className="retry-btn">
               Recommencer
+            </button>
+            <button onClick={reloadQuiz} className="reload-btn">
+              Nouveau Quiz
             </button>
             <button
               onClick={() => (window.location.href = "/")}

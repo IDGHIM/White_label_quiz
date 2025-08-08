@@ -69,13 +69,18 @@ async function register(req, res) {
 async function login(req, res) {
   console.log("✅ Requête login reçue:", req.body);
   try {
-    const { email, password } = req.body;
-    if (!email || !password) {
+    const { identifier, password } = req.body;
+    if (!identifier || !password) {
       console.log("Champs manquants");
       return res.status(400).json({ message: `Tous les champs sont requis` });
     }
 
-    const user = await User.findOne({ email });
+    let user = await User.findOne({ email: identifier });
+    console.log("Utilisateur trouvé :", user);
+
+    if (!user) {
+      user = await User.findOne({ username: identifier });
+    }
 
     if (!user) {
       console.log("Utilisateur introuvable");
@@ -94,6 +99,8 @@ async function login(req, res) {
     }
 
     console.log("Vérification du mot de passe...");
+    console.log("Mot de passe reçu :", password);
+    console.log("Mot de passe en base :", user.password);
     const isMatch = await bcrypt.compare(password, user.password);
     console.log("Mot de passe valide :", isMatch);
 

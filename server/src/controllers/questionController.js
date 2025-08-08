@@ -1,4 +1,5 @@
 const Question = require('../models/Questions');
+const Quiz = require('../models/Quiz');
 const filter = require('leo-profanity');
 
 // Initialisation du filtre des mots interdits avec les dictionnaires français et anglais
@@ -53,6 +54,17 @@ exports.create = async (req, res) => {
 
         const newQuestion = new Question(req.body);
         await newQuestion.save();
+        
+        // Mettre à jour le compteur de questions du quiz si la question est associée à un quiz
+        if (req.body.quizId) {
+            const quiz = await Quiz.findById(req.body.quizId);
+            if (quiz) {
+                const questionsCount = await Question.countDocuments({ quizId: req.body.quizId });
+                quiz.questionsCount = questionsCount;
+                await quiz.save();
+            }
+        }
+        
         res.status(201).json(newQuestion);
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -82,10 +94,25 @@ exports.update = async (req, res) => {
 //Controller pour supprimer une question
 exports.delete = async (req, res) => {
     try {
-        const question = await Question.findByIdAndDelete(req.params.id);
+        const question = await Question.findById(req.params.id);
         if (!question) {
             return res.status(404).json({ message: 'Question non trouvée' });
         }
+        
+        const quizId = question.quizId;
+        
+        await Question.findByIdAndDelete(req.params.id);
+        
+        // Mettre à jour le compteur de questions du quiz si la question était associée à un quiz
+        if (quizId) {
+            const quiz = await Quiz.findById(quizId);
+            if (quiz) {
+                const questionsCount = await Question.countDocuments({ quizId: quizId });
+                quiz.questionsCount = questionsCount;
+                await quiz.save();
+            }
+        }
+        
         res.json({ message: 'Question supprimée avec succès' });
     } catch (error) {
         res.status(500).json({ error: error.message });

@@ -14,22 +14,22 @@ const UserSchema = new mongoose.Schema({
 });
 
 //Avant de sauvegarder : hash le mot de passe
-UserSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
+// UserSchema.pre("save", async function (next) {
+//   if (!this.isModified("password")) return next();
 
-  try {
-    const hash = await bcrypt.hash(this.password, 10);
-    this.password = hash;
-    next();
-  } catch (err) {
-    next(err);
-  }
-});
+//   try {
+//     const hash = await bcrypt.hash(this.password, 10);
+//     this.password = hash;
+//     next();
+//   } catch (err) {
+//     next(err);
+//   }
+// });
 
 // Méthode pour comparer le mot de passe
-UserSchema.methods.comparePassword = function (password) {
-  return bcrypt.compare(password, this.password);
-};
+// UserSchema.methods.comparePassword = function (password) {
+//   return bcrypt.compare(password, this.password);
+// };
 
 const User = mongoose.model("User", UserSchema);
 
