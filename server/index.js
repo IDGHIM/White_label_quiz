@@ -36,5 +36,7 @@ app.use(questionRouter);
 //Importation du routeur des utilisateurs
 app.use(userRouter);
 
+app.use("/auth", authRoutes);
+
 //Importation du routeur des quiz
 app.use(quizRouter);
