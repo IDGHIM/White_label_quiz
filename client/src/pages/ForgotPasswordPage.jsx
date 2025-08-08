@@ -18,7 +18,7 @@ const ForgotPasswordPage = () => {
     }
 
     try {
-      await axios.post('http://localhost:3001/api/password-reset-request', { email });
+      await axios.post('https://hackathon-quiz-backend.onrender.com/api/password-reset-request', { email });
       setMessage("Un lien de réinitialisation vous a été envoyé.");
       setEmail('');
     } catch {

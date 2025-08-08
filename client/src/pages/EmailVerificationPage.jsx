@@ -9,7 +9,7 @@ const EmailVerificationPage = () => {
   useEffect(() => {
     const verifyEmail = async () => {
       try {
-        const res = await axios.get(`http://localhost:3001/api/verify/${token}`);
+        const res = await axios.get(`https://hackathon-quiz-backend.onrender.com/api/verify/${token}`);
         console.log(res.data);
         setStatus("success");
       } catch (err) {
