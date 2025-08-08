@@ -15,10 +15,11 @@ const PORT = process.env.PORT || 3001;
 // Middleware
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: "https://hackathon-quiz-4g3a.onrender.com",
     credentials: true,
   })
 );
+
 app.use(express.json());
 app.use(cookieParser());
 
@@ -37,8 +38,6 @@ app.use(questionRouter);
 
 //Importation du routeur des utilisateurs
 app.use(userRouter);
-
-app.use("/auth", authRoutes);
 
 //Importation du routeur des quiz
 app.use(quizRouter);
