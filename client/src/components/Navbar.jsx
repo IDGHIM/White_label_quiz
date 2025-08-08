@@ -58,7 +58,7 @@ const Navbar = () => {
       const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
       if (token) {
         try {
-          await fetch('http://localhost:5173/api/auth/logout', {
+          await fetch('https://hackathon-quiz-4g3a.onrender.com/api/auth/logout', {
             method: 'POST',
             headers: {
               'Authorization': `Bearer ${token}`,
