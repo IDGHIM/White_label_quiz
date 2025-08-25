@@ -101,6 +101,7 @@ async function login(req, res) {
     }
 
     console.log("🔍 Vérification du mot de passe...");
+    // ✅ CORRECTION: Décommenter et utiliser bcrypt.compare
     const isMatch = await bcrypt.compare(password, user.password);
     console.log("🔍 Mot de passe valide :", isMatch);
 

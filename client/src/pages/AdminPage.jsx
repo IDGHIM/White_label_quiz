@@ -77,7 +77,7 @@ const AdminPage = () => {
         setCurrentUser(mockCurrentUser);
 
         // Appel API pour récupérer les utilisateurs
-        const usersResponse = await fetch('https://hackathon-quiz-backend.onrender.com/api/users');
+        const usersResponse = await fetch('http://localhost:3001/api/users');
         if (usersResponse.ok) {
           const usersData = await usersResponse.json();
           // Adapter les données pour correspondre au format attendu par l'interface
@@ -91,14 +91,14 @@ const AdminPage = () => {
         }
 
         // Appel API pour récupérer les quiz depuis la base de données
-        const quizzesResponse = await fetch('https://hackathon-quiz-backend.onrender.com/api/quizzes');
+        const quizzesResponse = await fetch('http://localhost:3001/api/quizzes');
         if (quizzesResponse.ok) {
           const quizzesData = await quizzesResponse.json();
           setQuizzes(quizzesData);
         }
 
         // Appel API pour récupérer toutes les questions pour la sélection
-        const questionsResponse = await fetch('https://hackathon-quiz-backend.onrender.com/api/questions');
+        const questionsResponse = await fetch('http://localhost:3001/api/questions');
         if (questionsResponse.ok) {
           const questionsData = await questionsResponse.json();
           const adaptedAllQuestions = questionsData.map(question => ({
@@ -141,7 +141,7 @@ const AdminPage = () => {
       window.confirm("Êtes-vous sûr de vouloir supprimer cet utilisateur ?")
     ) {
       try {
-        const response = await fetch(`https://hackathon-quiz-backend.onrender.com/api/users/${userId}`, {
+        const response = await fetch(`http://localhost:3001/api/users/${userId}`, {
           method: 'DELETE',
         });
 
@@ -184,7 +184,7 @@ const AdminPage = () => {
           role: userForm.role
         };
 
-        const response = await fetch(`https://hackathon-quiz-backend.onrender.com/api/users/${editingUser.id}`, {
+        const response = await fetch(`http://localhost:3001/api/users/${editingUser.id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -225,7 +225,7 @@ const AdminPage = () => {
           role: userForm.role
         };
 
-        const response = await fetch('https://hackathon-quiz-backend.onrender.com/api/users', {
+        const response = await fetch('http://localhost:3001/api/users', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -307,7 +307,7 @@ const AdminPage = () => {
     if (window.confirm("Êtes-vous sûr de vouloir supprimer ce quiz ? Toutes les questions de ce quiz seront supprimées.")) {
       try {
         // Appeler l'API pour supprimer le quiz (qui supprimera aussi ses questions)
-        const response = await fetch(`https://hackathon-quiz-backend.onrender.com/api/quizzes/${quizId}`, {
+        const response = await fetch(`http://localhost:3001/api/quizzes/${quizId}`, {
           method: 'DELETE',
         });
 
@@ -326,7 +326,7 @@ const AdminPage = () => {
   const handleDuplicateQuiz = async (quiz) => {
     try {
       // Appeler l'API pour dupliquer le quiz
-      const response = await fetch(`https://hackathon-quiz-backend.onrender.com/api/quizzes/${quiz.id}/duplicate`, {
+      const response = await fetch(`http://localhost:3001/api/quizzes/${quiz.id}/duplicate`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -395,7 +395,7 @@ const AdminPage = () => {
             quizId: quizForm.id
           };
 
-          const response = await fetch('https://hackathon-quiz-backend.onrender.com/api/questions', {
+          const response = await fetch('http://localhost:3001/api/questions', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -456,7 +456,7 @@ const AdminPage = () => {
     } else {
       // Si c'est une question sauvegardée, la supprimer du serveur
       try {
-        const response = await fetch(`https://hackathon-quiz-backend.onrender.com/api/questions/${questionId}`, {
+        const response = await fetch(`http://localhost:3001/api/questions/${questionId}`, {
           method: 'DELETE',
         });
 
@@ -508,7 +508,7 @@ const AdminPage = () => {
         };
 
         // Envoyer la mise à jour au serveur
-        const response = await fetch(`https://hackathon-quiz-backend.onrender.com/api/questions/${editingQuestion.id}`, {
+        const response = await fetch(`http://localhost:3001/api/questions/${editingQuestion.id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -637,7 +637,7 @@ const AdminPage = () => {
           quizId: quizForm.id
         };
 
-        return fetch(`https://hackathon-quiz-backend.onrender.com/api/questions/${question.id}`, {
+        return fetch(`http://localhost:3001/api/questions/${question.id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
@@ -707,14 +707,14 @@ const AdminPage = () => {
   const reloadData = async () => {
     try {
       // Recharger les quiz
-      const quizzesResponse = await fetch('https://hackathon-quiz-backend.onrender.com/api/quizzes');
+      const quizzesResponse = await fetch('http://localhost:3001/api/quizzes');
       if (quizzesResponse.ok) {
         const quizzesData = await quizzesResponse.json();
         setQuizzes(quizzesData);
       }
 
       // Recharger toutes les questions
-      const questionsResponse = await fetch('https://hackathon-quiz-backend.onrender.com/api/questions');
+      const questionsResponse = await fetch('http://localhost:3001/api/questions');
       if (questionsResponse.ok) {
         const questionsData = await questionsResponse.json();
         const adaptedAllQuestions = questionsData.map(question => ({
@@ -746,7 +746,7 @@ const AdminPage = () => {
           isAutoGenerated: false
         };
 
-        const response = await fetch('https://hackathon-quiz-backend.onrender.com/api/quizzes', {
+        const response = await fetch('http://localhost:3001/api/quizzes', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -770,7 +770,7 @@ const AdminPage = () => {
                   quizId: newQuiz.id
                 };
 
-                return fetch('https://hackathon-quiz-backend.onrender.com/api/questions', {
+                return fetch('http://localhost:3001/api/questions', {
                   method: 'POST',
                   headers: {
                     'Content-Type': 'application/json',
@@ -787,7 +787,7 @@ const AdminPage = () => {
                   quizId: newQuiz.id
                 };
 
-                return fetch(`https://hackathon-quiz-backend.onrender.com/api/questions/${question.id}`, {
+                return fetch(`http://localhost:3001/api/questions/${question.id}`, {
                   method: 'PUT',
                   headers: {
                     'Content-Type': 'application/json',
@@ -814,7 +814,7 @@ const AdminPage = () => {
           createdBy: currentUser ? currentUser.name : quizForm.createdBy || "Admin" // Préserver le créateur existant ou utiliser l'utilisateur connecté
         };
 
-        const response = await fetch(`https://hackathon-quiz-backend.onrender.com/api/quizzes/${editingQuiz.id}`, {
+        const response = await fetch(`http://localhost:3001/api/quizzes/${editingQuiz.id}`, {
           method: 'PUT',
           headers: {
             'Content-Type': 'application/json',

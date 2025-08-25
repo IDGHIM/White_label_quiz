@@ -26,7 +26,7 @@ const QuizPage = () => {
       setLoading(true);
       setError(null);
       
-      const response = await fetch('https://hackathon-quiz-backend.onrender.com/api/quizzes');
+      const response = await fetch('http://localhost:3001/api/quizzes');
       
       if (!response.ok) {
         throw new Error(`Erreur HTTP: ${response.status}`);

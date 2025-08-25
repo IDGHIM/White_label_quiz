@@ -14,7 +14,7 @@ const RegisterPage = () => {
     e.preventDefault();
     try {
       // ✅ URL CORRIGÉE : /auth/register -> /api/register
-      await axios.post('https://hackathon-quiz-backend.onrender.com/api/register', {
+      await axios.post('http://localhost:3001/api/register', {
         username,
         email,
         password,

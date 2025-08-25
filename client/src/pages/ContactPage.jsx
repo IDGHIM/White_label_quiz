@@ -4,38 +4,8 @@ import { FaLinkedin, FaGithub, FaGlobe } from "react-icons/fa";
 
 const teamMembers = [
   {
-    name: "DREW Nicolas",
-    role: "Développeur Frontend",
-    description: "Je cherche toujours à grandir et à m'améliorer grâce à des projets et nouveaux défis.",
-    links: {
-      portfolio: "https://nicolas-drew.github.io/Portfolio/",
-      linkedin: "https://www.linkedin.com/in/nicolas-drew/",
-      github: "https://github.com/nicolas-drew",
-    },
-  },
-  {
-    name: "COPPET Dimitri",
-    role: "Développeur Backend",
-    description: "J’aime donner vie à des idées ambitieuses en bâtissant des systèmes backend solides et évolutifs.",
-    links: {
-      portfolio: "",
-      linkedin: "",
-      github: "https://github.com/Dimz972",
-    },
-  },
-  {
-    name: "DI LUCA Damien",
-    role: "Développeur Backend",
-    description: "Du schéma conceptuel à l’API en production, j’adore transformer les idées en services concrets et scalables.",
-    links: {
-      portfolio: "",
-      linkedin: "",
-      github: "https://github.com/damiendiluca",
-    },
-  },
-  {
     name: "DGHIM Ichem",
-    role: "Développeur Frontend",
+    role: "Développeur Frontend & Backend",
     description: "J’ai une imagination sans limite qui me pousse à transformer chaque idée en réalité.",
     links: {
       portfolio: "https://idghim.github.io/fcc-Portofolio-Webpage/",

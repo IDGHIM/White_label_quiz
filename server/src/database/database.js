@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 module.exports = async() => {
     try {
-        await mongoose.connect('mongodb+srv://dimitricoppet:Hackathon@cluster0.qzd4bho.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0');
+        await mongoose.connect('mongodb+srv://ichemdghim:TWfy1ed4qVoFR2ht@whitelabel.f7u4zhu.mongodb.net/?retryWrites=true&w=majority&appName=WhiteLabel');
         console.log('MongoDB connected successfully');
     }
     catch (error) {

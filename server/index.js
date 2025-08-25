@@ -6,11 +6,18 @@ const cors = require("cors");
 const connectDB = require("./src/database/database");
 const PORT = process.env.PORT || 3001;
 
-// Middleware
+// Middleware CORS - Autorise à la fois le développement local ET la production
 app.use(cors({
-  origin: "https://hackathon-quiz-4g3a.onrender.com",
+  origin: [
+    "http://localhost:5173",  // Frontend Vite en développement
+    "https://localhost:5173", // Si vous utilisez HTTPS en local
+    "https://hackathon-quiz-4g3a.onrender.com" // Production
+  ],
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
 app.use(express.json());
 app.use(cookieParser());
 
@@ -47,7 +54,7 @@ try {
 } catch (error) {
   console.error("❌ ERREUR dans authController:", error.message);
   console.error(error.stack);
-  process.exit(1);
+  // Ne pas arrêter le serveur, continuer avec les fallbacks
 }
 
 try {
@@ -114,9 +121,36 @@ try {
   console.error("❌ ERREUR dans quizController:", error.message);
   console.error(error.stack);
 
-  // Fallback routes
+  // Fallback routes pour les quiz
   apiRouter.get("/quizzes", (req, res) => {
-    res.json({ message: "Quizzes route OK (fallback)" });
+    res.json({ 
+      message: "Quizzes route OK (fallback)",
+      // Données de test temporaires pour déboguer votre frontend
+      data: [
+        {
+          id: 1,
+          title: "Quiz Test",
+          questions: [
+            {
+              id: 1,
+              question: "Quelle est la couleur du ciel ?",
+              optionA: "Bleu",
+              optionB: "Rouge",
+              optionC: "Vert",
+              correctAnswers: ["Bleu"]
+            },
+            {
+              id: 2,
+              question: "Combien font 2 + 2 ?",
+              optionA: "3",
+              optionB: "4",
+              optionC: "5",
+              correctAnswers: ["4"]
+            }
+          ]
+        }
+      ]
+    });
   });
 }
 
@@ -127,6 +161,9 @@ console.log("🎉 Tous les contrôleurs testés !");
 
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`✅ Server running on http://localhost:${PORT}`);
+  console.log("🌐 CORS autorisé pour:");
+  console.log("  - http://localhost:5173 (Vite dev)");
+  console.log("  - https://hackathon-quiz-4g3a.onrender.com (Production)");
   console.log("📋 Routes disponibles:");
   console.log("  POST /api/register");
   console.log("  POST /api/login");
