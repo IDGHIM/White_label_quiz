@@ -5,14 +5,14 @@ function MentionsLegales() {
   const currentYear = new Date().getFullYear();
 
   const siteInfo = {
-    siteName: "Hackaton Quiz",
-    siteUrl: "https://www.votre-site-exemple.fr", // <- remplacer
-    responsablePublication: "DREW Nicolas, COPPET Dimitri, DI LUCA Damien, DGHIM Ichem", 
-    emailContact: "hackatonquiz@gmail.com", 
+    siteName: "Quiz App",
+    siteUrl: "https://www.votre-site-exemple.fr", // <- à remplacer par ton vrai lien si besoin
+    responsablePublication: "DGHIM Ichem", 
+    emailContact: "ichemdghim@gmail.com", 
     hebergeur: {
       nom: "Render",
     },
-    team: ["DREW Nicolas", "COPPET Dimitri", "DI LUCA Damien", "DGHIM Ichem"], 
+    team: ["DGHIM Ichem"], 
   };
 
   return (
@@ -79,7 +79,7 @@ function MentionsLegales() {
         <section className="mlq-section">
           <h2 className="mlq-section-title">Contributeurs</h2>
           <p className="mlq-text">
-            Projet développé dans le cadre d'un hackathon. Équipe technique :
+            Projet développé par :
           </p>
           <ul className="mlq-list">
             {siteInfo.team.map((dev, idx) => (

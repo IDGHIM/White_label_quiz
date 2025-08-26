@@ -4,13 +4,13 @@ export default function LicencePage() {
   const currentYear = new Date().getFullYear();
 
   const siteInfo = {
-    siteName: "Hackaton Quiz",
-    siteUrl: "https://www.votre-site-exemple.fr", // <- remplacer
-    emailContact: "hackatonquiz@gmail.com", 
+    siteName: "Quiz App",
+    siteUrl: "https://www.votre-site-exemple.fr", // <- à remplacer par ton vrai lien si besoin
+    emailContact: "ichemdghim@gmail.com", 
     hebergeur: {
       nom: "Render",
     },
-    team: ["DREW Nicolas", "COPPET Dimitri", "DI LUCA Damien", "DGHIM Ichem"], 
+    team: ["DGHIM Ichem"], 
   };
 
   return (
@@ -23,18 +23,18 @@ export default function LicencePage() {
 
         <section className="mlq-section">
           <p className="mlq-text">
-            Ce projet a été développé dans un cadre personnel afin d'améliorer nos compétences en développement web.
-            Il est mis à disposition sous licence MIT, ce qui signifie que vous êtes libre de l'utiliser, de le copier, de le modifier et de le distribuer,
+            Ce projet a été développé dans le cadre d’un TP de développeur web. 
+            Par la suite, je souhaite le commercialiser auprès de professionnels et de particuliers.
+            Il est actuellement mis à disposition sous licence MIT, ce qui signifie que vous êtes libre de l'utiliser, de le copier, de le modifier et de le distribuer,
             à condition de conserver la mention du droit d'auteur et de la licence dans toutes les copies ou parties substantielles du projet.
           </p>
         </section>
 
         <section className="mlq-section">
           <h2 className="mlq-section-title">Texte de la licence MIT (traduction française)</h2>
-          <pre className="mlq-pre">
-{`Licence MIT
+          <pre className="mlq-pre">{`Licence MIT
 
-Copyright (c) ${currentYear} ${siteInfo.team.join(", ")}
+Copyright (c) ${currentYear} ${siteInfo.team}
 
 Permission est accordée, gratuitement, à toute personne obtenant une copie
 de ce logiciel et des fichiers de documentation associés (le "Logiciel"),
@@ -54,8 +54,7 @@ CONTREFAÇON. EN AUCUN CAS LES AUTEURS OU TITULAIRES DU DROIT D'AUTEUR NE
 SERONT RESPONSABLES DE TOUTE RÉCLAMATION, DOMMAGE OU AUTRE RESPONSABILITÉ,
 QU'ELLE SOIT CONTRACTUELLE, DÉLICTUELLE OU AUTRE, RÉSULTANT DE, OU EN
 RAPPORT AVEC LE LOGICIEL OU L'UTILISATION OU D'AUTRES INTERACTIONS AVEC LE
-LOGICIEL.`}
-          </pre>
+LOGICIEL.`}</pre>
         </section>
 
         <section className="mlq-section">

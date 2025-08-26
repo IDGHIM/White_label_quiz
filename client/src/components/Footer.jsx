@@ -16,7 +16,7 @@ const Footer = () => {
         </Link>
       </nav>
       <div className="footer-copyright-section">
-        © 2025 Hackathon Quiz - Tous droits réservés.
+        © 2025 Quiz App - Tous droits réservés.
       </div>
     </footer>
   );

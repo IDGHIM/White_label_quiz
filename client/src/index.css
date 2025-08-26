@@ -3,11 +3,11 @@
 
 /* Variables CSS globales */
 :root {
-  --blue-ocean: #0a5a66;
-  --blue-fog: #5a8590;
+  --blue-ocean: #352961;
+  --blue-fog: #774181;
   --blue-ice: #ffffff;
-  --blue-stone: #4a6b7a;
-  --blue-night: #1a2a33;
+  --blue-stone: #f6e5e5;
+  --blue-night: #e6b2c6;
 }
 
 /* Reset CSS complet */
