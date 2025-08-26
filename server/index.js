@@ -35,6 +35,21 @@ const apiRouter = express.Router();
 // ===== ÉTAPE 1: TESTER LES CONTRÔLEURS UN PAR UN =====
 console.log("🧪 Phase de test - Intégration progressive...");
 
+// ✅ CORRECTION: Importer le bon middleware d'authentification
+let protect = null;
+try {
+  console.log("🔐 Test authMiddleware...");
+  const authMiddleware = require("./src/middlewares/authMiddleware");
+  protect = authMiddleware.protect; // ✅ CORRECTION: utiliser 'protect' au lieu de 'authenticateToken'
+  console.log("✅ authMiddleware OK - protect function loaded");
+} catch (error) {
+  console.error("❌ ERREUR dans authMiddleware:", error.message);
+  // Fallback middleware simple si le fichier n'existe pas
+  protect = (req, res, next) => {
+    res.status(501).json({ message: "Middleware d'authentification non disponible" });
+  };
+}
+
 try {
   // Test 1: AuthController
   console.log("1️⃣ Test authController...");
@@ -49,12 +64,37 @@ try {
     authController.requestPasswordReset
   );
   apiRouter.post("/reset-password", authController.resetPassword);
+  apiRouter.get("/verify/:token", authController.verifyEmail);
+  apiRouter.post("/resend-verification", authController.resendVerificationEmail);
+  
+  // ✅ CORRECTION: Route /api/me protégée avec le bon middleware
+  apiRouter.get("/me", protect, authController.me);
 
   console.log("✅ authController OK");
 } catch (error) {
   console.error("❌ ERREUR dans authController:", error.message);
   console.error(error.stack);
-  // Ne pas arrêter le serveur, continuer avec les fallbacks
+  
+  // Fallback route pour /api/me
+  apiRouter.get("/me", (req, res) => {
+    res.status(500).json({ 
+      success: false, 
+      message: "AuthController non disponible (fallback)" 
+    });
+  });
+}
+
+// ✅ OPTION ALTERNATIVE: Utiliser directement authRoutes.js
+try {
+  console.log("🔄 Tentative d'import des routes d'authentification...");
+  const authRoutes = require("./src/routes/authRoutes");
+  
+  // Utiliser les routes définies dans authRoutes.js
+  app.use("/api", authRoutes);
+  console.log("✅ Routes d'authentification chargées depuis authRoutes.js");
+} catch (error) {
+  console.error("❌ ERREUR lors du chargement d'authRoutes:", error.message);
+  console.log("📝 Utilisation des routes définies manuellement dans index.js");
 }
 
 try {
@@ -154,7 +194,7 @@ try {
   });
 }
 
-// Appliquer le routeur avec le préfixe /api
+// Appliquer le routeur avec le préfixe /api (si pas déjà fait avec authRoutes)
 app.use("/api", apiRouter);
 
 console.log("🎉 Tous les contrôleurs testés !");
@@ -168,6 +208,11 @@ app.listen(PORT, "0.0.0.0", () => {
   console.log("  POST /api/register");
   console.log("  POST /api/login");
   console.log("  POST /api/logout");
+  console.log("  GET  /api/me (🔒 protégée)");
+  console.log("  GET  /api/verify/:token");
+  console.log("  POST /api/resend-verification");
+  console.log("  POST /api/password-reset-request");
+  console.log("  POST /api/reset-password");
   console.log("  GET  /api/users");
   console.log("  GET  /api/questions");
   console.log("  GET  /api/quizzes");

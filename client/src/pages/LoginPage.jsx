@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 
 const LoginPage = () => {
@@ -8,158 +8,246 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [message, setMessage] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Validation côté client
+    if (!identifier.trim()) {
+      setMessage('Veuillez saisir votre email ou nom d\'utilisateur');
+      return;
+    }
+    
+    if (!password.trim()) {
+      setMessage('Veuillez saisir votre mot de passe');
+      return;
+    }
+
     setIsLoading(true);
     setMessage('');
 
-    console.log('🚀 [FRONTEND] Tentative de connexion...');
-    console.log('🚀 [FRONTEND] Identifier:', identifier);
-    console.log('🚀 [FRONTEND] Password:', password ? '***' : 'VIDE');
+    console.log('🚀 [LOGIN] Tentative de connexion...');
+    console.log('🚀 [LOGIN] Identifier:', identifier);
 
     try {
-      console.log('🌐 [FRONTEND] Envoi de la requête vers:', 'http://localhost:3001/api/login');
+      console.log('🌐 [LOGIN] Envoi de la requête vers l\'API...');
       
       const response = await axios.post('http://localhost:3001/api/login', {
-        identifier,
-        password,
+        identifier: identifier.trim(),
+        password: password,
       }, {
-        withCredentials: true, // Pour les cookies
+        withCredentials: true, // Important pour les cookies
+        timeout: 10000 // Timeout de 10 secondes
       });
 
-      console.log('✅ [FRONTEND] Réponse reçue:', response.data);
-      console.log('✅ [FRONTEND] Status:', response.status);
-
-      setMessage('Connexion réussie ! Redirection...');
+      console.log('✅ [LOGIN] Connexion réussie:', response.data);
       
-      // Stockage des données utilisateur si nécessaire
-      if (response.data.user) {
-        console.log('👤 [FRONTEND] Données utilisateur:', response.data.user);
-        // localStorage.setItem('user', JSON.stringify(response.data.user));
+      setMessage('Connexion réussie ! Redirection en cours...');
+
+      // ✅ CORRECTION: Rafraîchir la navbar IMMÉDIATEMENT
+      if (window.refreshNavbarAuth) {
+        console.log('🔄 [LOGIN] Rafraîchissement de la navbar...');
+        try {
+          await window.refreshNavbarAuth();
+          console.log('✅ [LOGIN] Navbar mise à jour avec succès');
+        } catch (navError) {
+          console.error('⚠️ [LOGIN] Erreur lors du rafraîchissement de la navbar:', navError);
+        }
+      } else {
+        console.warn('⚠️ [LOGIN] window.refreshNavbarAuth non disponible');
       }
 
-      if (response.data.token) {
-        console.log('🔑 [FRONTEND] Token reçu');
-        // localStorage.setItem('token', response.data.token);
-      }
-
+      // Attendre un peu avant la redirection pour laisser le temps à la navbar de se mettre à jour
       setTimeout(() => {
-        navigate('/profil'); // ou la page de destination
-      }, 1500);
+        console.log('🔄 [LOGIN] Redirection vers /profil');
+        navigate('/profil');
+      }, 1000);
 
     } catch (error) {
-      console.error('❌ [FRONTEND] Erreur complète:', error);
-      console.error('❌ [FRONTEND] Response data:', error.response?.data);
-      console.error('❌ [FRONTEND] Response status:', error.response?.status);
-      console.error('❌ [FRONTEND] Response headers:', error.response?.headers);
+      console.error('❌ [LOGIN] Erreur complète:', error);
       
       if (error.response) {
         // Erreur HTTP (400, 401, 500, etc.)
-        console.error('🔥 [FRONTEND] Erreur serveur:', {
+        console.error('🔥 [LOGIN] Erreur serveur:', {
           status: error.response.status,
           message: error.response.data?.message,
           data: error.response.data
         });
         
-        setMessage(`Erreur ${error.response.status}: ${error.response.data?.message || 'Erreur serveur'}`);
+        const errorMessage = error.response.data?.message || 'Erreur serveur';
         
-        // Gestion spécifique des erreurs
         switch (error.response.status) {
-          case 401:
-            console.warn('🚫 [FRONTEND] Erreur d\'authentification - Vérifiez vos identifiants');
-            break;
           case 400:
-            console.warn('⚠️ [FRONTEND] Données invalides');
+            setMessage('Données invalides. Vérifiez vos informations.');
+            break;
+          case 401:
+            setMessage('Identifiants incorrects. Vérifiez votre email/nom d\'utilisateur et mot de passe.');
+            break;
+          case 403:
+            setMessage('Compte non vérifié. Vérifiez vos emails ou contactez le support.');
+            break;
+          case 429:
+            setMessage('Trop de tentatives. Veuillez réessayer plus tard.');
             break;
           case 500:
-            console.warn('💥 [FRONTEND] Erreur serveur interne');
+            setMessage('Erreur serveur. Veuillez réessayer plus tard.');
             break;
           default:
-            console.warn('❓ [FRONTEND] Erreur inconnue');
+            setMessage(`Erreur ${error.response.status}: ${errorMessage}`);
         }
       } else if (error.request) {
         // Erreur réseau
-        console.error('🌐 [FRONTEND] Erreur réseau:', error.request);
-        setMessage('Erreur réseau: Impossible de joindre le serveur');
+        console.error('🌐 [LOGIN] Erreur réseau:', error.request);
+        setMessage('Impossible de joindre le serveur. Vérifiez votre connexion internet.');
+      } else if (error.code === 'ECONNABORTED') {
+        // Timeout
+        setMessage('La requête a pris trop de temps. Veuillez réessayer.');
       } else {
         // Erreur inconnue
-        console.error('❓ [FRONTEND] Erreur inconnue:', error.message);
-        setMessage(`Erreur: ${error.message}`);
+        console.error('❓ [LOGIN] Erreur inconnue:', error.message);
+        setMessage(`Erreur inattendue: ${error.message}`);
       }
     } finally {
       setIsLoading(false);
     }
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword(!showPassword);
+  };
+
+  const clearMessage = () => {
+    setMessage('');
+  };
+
   return (
     <div className="login-page">
-      <form className="login-form" onSubmit={handleSubmit}>
-        <h2 className="login-title">Se connecter</h2>
-        
-        <input
-          className="login-input"
-          type="text"
-          value={identifier}
-          onChange={(e) => {
-            setIdentifier(e.target.value);
-            console.log('📝 [FRONTEND] Identifier changé:', e.target.value);
-          }}
-          placeholder="Email ou nom d'utilisateur"
-          required
-          disabled={isLoading}
-        />
-        
-        <input
-          className="login-input"
-          type="password"
-          value={password}
-          onChange={(e) => {
-            setPassword(e.target.value);
-            console.log('📝 [FRONTEND] Password changé:', e.target.value ? '***' : 'vide');
-          }}
-          placeholder="Mot de passe"
-          required
-          disabled={isLoading}
-        />
-        
-        <button 
-          type="submit" 
-          className="login-submit-button"
-          disabled={isLoading}
-        >
-          {isLoading ? 'Connexion...' : 'Se connecter'}
-        </button>
-        
-        {message && (
-          <p className={`login-message ${message.includes('Erreur') ? 'error' : 'success'}`}>
-            {message}
-          </p>
-        )}
+      <div className="login-container">
+        <form className="login-form" onSubmit={handleSubmit}>
+          <h2 className="login-title">Connexion</h2>
+          <p className="login-subtitle">Connectez-vous à votre compte</p>
+          
+          {/* Champ Identifiant */}
+          <div className="input-group">
+            <label htmlFor="identifier" className="input-label">
+              Email ou nom d'utilisateur
+            </label>
+            <input
+              id="identifier"
+              className="login-input"
+              type="text"
+              value={identifier}
+              onChange={(e) => {
+                setIdentifier(e.target.value);
+                if (message) clearMessage(); // Effacer le message d'erreur lors de la saisie
+              }}
+              placeholder="Entrez votre email ou nom d'utilisateur"
+              required
+              disabled={isLoading}
+              autoComplete="username"
+            />
+          </div>
+          
+          {/* Champ Mot de passe */}
+          <div className="input-group">
+            <label htmlFor="password" className="input-label">
+              Mot de passe
+            </label>
+            <div className="password-input-container">
+              <input
+                id="password"
+                className="login-input"
+                type={showPassword ? "text" : "password"}
+                value={password}
+                onChange={(e) => {
+                  setPassword(e.target.value);
+                  if (message) clearMessage();
+                }}
+                placeholder="Entrez votre mot de passe"
+                required
+                disabled={isLoading}
+                autoComplete="current-password"
+              />
+              <button
+                type="button"
+                className="password-toggle"
+                onClick={togglePasswordVisibility}
+                disabled={isLoading}
+                aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
+              >
+                {showPassword ? "👁️" : "👁️‍🗨️"}
+              </button>
+            </div>
+          </div>
+          
+          {/* Bouton de soumission */}
+          <button 
+            type="submit" 
+            className={`login-submit-button ${isLoading ? 'loading' : ''}`}
+            disabled={isLoading || !identifier.trim() || !password.trim()}
+          >
+            {isLoading ? (
+              <>
+                <span className="spinner"></span>
+                Connexion en cours...
+              </>
+            ) : (
+              'Se connecter'
+            )}
+          </button>
+          
+          {/* Message de statut */}
+          {message && (
+            <div className={`login-message ${message.includes('Erreur') || message.includes('Impossible') ? 'error' : 'success'}`}>
+              <span>{message}</span>
+              {message.includes('Erreur') && (
+                <button 
+                  type="button" 
+                  className="message-close"
+                  onClick={clearMessage}
+                  aria-label="Fermer le message"
+                >
+                  ✕
+                </button>
+              )}
+            </div>
+          )}
 
-        {/* Logs visibles pour le debug */}
-        <div style={{ 
-          marginTop: '20px', 
-          padding: '10px', 
-          backgroundColor: '#f5f5f5', 
-          fontSize: '12px',
-          maxHeight: '200px',
-          overflow: 'auto',
-          border: '1px solid #ddd'
-        }}>
-          <strong>🔧 Debug Info:</strong><br/>
-          Identifier: {identifier || 'vide'}<br/>
-          Password: {password ? '***' : 'vide'}<br/>
-          Loading: {isLoading ? 'OUI' : 'NON'}<br/>
-          Message: {message || 'aucun'}<br/>
-          <em>Vérifiez la console pour plus de détails</em>
-        </div>
+          {/* Liens utiles */}
+          <div className="login-links">
+            <Link to="/forgot-password" className="forgot-password-link">
+              Mot de passe oublié ?
+            </Link>
+          </div>
 
-        <div style={{ marginTop: '10px', fontSize: '14px' }}>
-          <p>Pas de compte ? <a href="/register">S'inscrire</a></p>
-          <p>Mot de passe oublié ? <a href="/forgot-password">Réinitialiser</a></p>
-        </div>
-      </form>
+          <div className="register-link">
+            <p>
+              Pas encore de compte ? 
+              <Link to="/register" className="register-link-text">
+                Créer un compte
+              </Link>
+            </p>
+          </div>
+
+          {/* Section de debug (à supprimer en production) */}
+          {process.env.NODE_ENV === 'development' && (
+            <div className="debug-info">
+              <details>
+                <summary>🔧 Informations de debug</summary>
+                <div className="debug-content">
+                  <p><strong>Identifier:</strong> {identifier || 'vide'}</p>
+                  <p><strong>Password:</strong> {password ? '***' : 'vide'}</p>
+                  <p><strong>Loading:</strong> {isLoading ? 'OUI' : 'NON'}</p>
+                  <p><strong>Message:</strong> {message || 'aucun'}</p>
+                  <p><strong>NavbarAuth disponible:</strong> {window.refreshNavbarAuth ? 'OUI' : 'NON'}</p>
+                  <small>Vérifiez la console pour plus de détails</small>
+                </div>
+              </details>
+            </div>
+          )}
+        </form>
+      </div>
     </div>
   );
 };

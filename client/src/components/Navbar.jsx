@@ -7,46 +7,51 @@ import { FiLogIn, FiLogOut, FiHome } from "react-icons/fi";
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userData, setUserData] = useState(null);
+  const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // Fonction pour vérifier l'état de connexion
-  const checkAuthStatus = () => {
-    const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
-    const user = localStorage.getItem('userData') || sessionStorage.getItem('userData');
-    
-    if (token) {
-      setIsLoggedIn(true);
-      if (user) {
-        try {
-          setUserData(JSON.parse(user));
-        } catch (error) {
-          console.error('Erreur lors de la lecture des données utilisateur:', error);
+  // Fonction pour vérifier l'état de connexion via l'API
+  const checkAuthStatus = async () => {
+    try {
+      const response = await fetch('/api/me', {
+        method: 'GET',
+        credentials: 'include', // Important pour envoyer les cookies
+        headers: {
+          'Content-Type': 'application/json'
         }
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && data.data) {
+          setIsLoggedIn(true);
+          setUserData(data.data);
+        } else {
+          setIsLoggedIn(false);
+          setUserData(null);
+        }
+      } else {
+        // Token invalide ou expiré
+        setIsLoggedIn(false);
+        setUserData(null);
       }
-    } else {
+    } catch (error) {
+      console.error('Erreur lors de la vérification de l\'authentification:', error);
       setIsLoggedIn(false);
       setUserData(null);
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Vérifier l'état de connexion au montage et écouter les changements
+  // Vérifier l'état de connexion au montage
   useEffect(() => {
     checkAuthStatus();
 
-    // Écouter les changements dans le localStorage
-    const handleStorageChange = (e) => {
-      if (e.key === 'authToken' || e.key === 'userData') {
-        checkAuthStatus();
-      }
-    };
-
-    window.addEventListener('storage', handleStorageChange);
-
-    // Vérifier périodiquement l'état de connexion
-    const interval = setInterval(checkAuthStatus, 1000);
+    // Vérifier périodiquement l'état de connexion (optionnel)
+    const interval = setInterval(checkAuthStatus, 5 * 60 * 1000); // Toutes les 5 minutes
 
     return () => {
-      window.removeEventListener('storage', handleStorageChange);
       clearInterval(interval);
     };
   }, []);
@@ -54,42 +59,54 @@ const Navbar = () => {
   // Fonction de déconnexion
   const handleLogout = async () => {
     try {
-      // Optionnel: Appeler l'API de déconnexion
-      const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
-      if (token) {
-        try {
-          await fetch('https://localhost:5173/api/auth/logout', {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json'
-            }
-          });
-        } catch (error) {
-          console.error('Erreur lors de la déconnexion côté serveur:', error);
+      const response = await fetch('/api/logout', {
+        method: 'POST',
+        credentials: 'include', // Important pour envoyer les cookies
+        headers: {
+          'Content-Type': 'application/json'
         }
+      });
+
+      if (response.ok) {
+        console.log('Déconnexion réussie');
+      } else {
+        console.error('Erreur lors de la déconnexion côté serveur');
       }
-
-      // Nettoyer le stockage local
-      localStorage.removeItem('authToken');
-      localStorage.removeItem('userData');
-      sessionStorage.removeItem('authToken');
-      sessionStorage.removeItem('userData');
-
-      // Mettre à jour l'état
-      setIsLoggedIn(false);
-      setUserData(null);
-
-      // Rediriger vers la page d'accueil
-      navigate('/');
-      
-      // Optionnel: Afficher un message de confirmation
-      alert('Déconnexion réussie !');
-      
     } catch (error) {
       console.error('Erreur lors de la déconnexion:', error);
+    } finally {
+      // Mettre à jour l'état local même si l'API échoue
+      setIsLoggedIn(false);
+      setUserData(null);
+      navigate('/');
     }
   };
+
+  // Fonction pour forcer la mise à jour après connexion/inscription
+  const refreshAuthStatus = () => {
+    checkAuthStatus();
+  };
+
+  // Exposer la fonction globalement pour l'utiliser après connexion
+  useEffect(() => {
+    window.refreshNavbarAuth = refreshAuthStatus;
+    return () => {
+      delete window.refreshNavbarAuth;
+    };
+  }, []);
+
+  if (loading) {
+    return (
+      <nav className="navbar">
+        <Link to="/" className="navbar-logo">
+          Quiz
+        </Link>
+        <div className="navbar-menu">
+          <span>Chargement...</span>
+        </div>
+      </nav>
+    );
+  }
 
   return (
     <nav className="navbar">
@@ -97,6 +114,7 @@ const Navbar = () => {
          Quiz
       </Link>
       <div className="navbar-menu">
+        {/* Bouton Accueil - toujours visible */}
         <Link
           className="navbar-btn active"
           title="Accueil"
@@ -107,6 +125,7 @@ const Navbar = () => {
           <span className="tooltip">Accueil</span>
         </Link>
         
+        {/* Boutons pour utilisateurs non connectés */}
         {!isLoggedIn && (
           <>
             <Link
@@ -130,7 +149,8 @@ const Navbar = () => {
           </>
         )}
         
-        {isLoggedIn && (
+        {/* Boutons pour utilisateurs connectés */}
+        {isLoggedIn && userData && (
           <>
             <Link
               className="navbar-btn active"
@@ -140,7 +160,10 @@ const Navbar = () => {
             >
               <FaUserCircle />
               <span className="tooltip">
-                {userData?.name ? `Profil de ${userData.name}` : 'Profil'}
+                {userData.username ? 
+                  `Profil de ${userData.username}` : 
+                  'Mon Profil'
+                }
               </span>
             </Link>
             <button
@@ -148,6 +171,7 @@ const Navbar = () => {
               title="Déconnexion"
               aria-label="Déconnexion"
               onClick={handleLogout}
+              type="button"
             >
               <FiLogOut />
               <span className="tooltip">Déconnexion</span>
