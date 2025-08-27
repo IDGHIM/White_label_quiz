@@ -3,13 +3,13 @@ import "../styles/Body.css";
 const Body = ({ onStartQuiz }) => {
   return (
     <main className="body-container">
-      <h1 className="body-title">Bienvenue sur le Hackathon Quiz !</h1>
+      <h1 className="body-title">Bienvenue sur le Quiz !</h1>
       
       <section className="body-info">
         <div className="objective-section">
           <h2 className="objective-title">Objectif du questionnaire :</h2>
           <p className="objective-text">
-            {/* Objectif à personnaliser selon vos besoins */}
+            {/* Objectif à personnaliser selon les besoins */}
           </p>
         </div>
         

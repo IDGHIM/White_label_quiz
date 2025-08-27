@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import "../styles/Navbar.css";
 import { Link, useNavigate } from "react-router-dom";
-import { FaUserCircle, FaUserPlus } from "react-icons/fa";
-import { FiLogIn, FiLogOut, FiHome } from "react-icons/fi";
+import { FaUserCircle, FaUserPlus, FaCrown, FaGamepad } from "react-icons/fa";
+import { FiLogIn, FiLogOut, FiHome, FiUser } from "react-icons/fi";
 
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -13,9 +13,9 @@ const Navbar = () => {
   // Fonction pour vérifier l'état de connexion via l'API
   const checkAuthStatus = async () => {
     try {
-      const response = await fetch('/api/me', {
+      const response = await fetch('http://localhost:3001/api/me', {
         method: 'GET',
-        credentials: 'include', // Important pour envoyer les cookies
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json'
         }
@@ -31,7 +31,6 @@ const Navbar = () => {
           setUserData(null);
         }
       } else {
-        // Token invalide ou expiré
         setIsLoggedIn(false);
         setUserData(null);
       }
@@ -44,24 +43,17 @@ const Navbar = () => {
     }
   };
 
-  // Vérifier l'état de connexion au montage
   useEffect(() => {
     checkAuthStatus();
-
-    // Vérifier périodiquement l'état de connexion (optionnel)
-    const interval = setInterval(checkAuthStatus, 5 * 60 * 1000); // Toutes les 5 minutes
-
-    return () => {
-      clearInterval(interval);
-    };
+    const interval = setInterval(checkAuthStatus, 5 * 60 * 1000);
+    return () => clearInterval(interval);
   }, []);
 
-  // Fonction de déconnexion
   const handleLogout = async () => {
     try {
-      const response = await fetch('/api/logout', {
+      const response = await fetch('http://localhost:3001/api/logout', {
         method: 'POST',
-        credentials: 'include', // Important pour envoyer les cookies
+        credentials: 'include',
         headers: {
           'Content-Type': 'application/json'
         }
@@ -75,19 +67,16 @@ const Navbar = () => {
     } catch (error) {
       console.error('Erreur lors de la déconnexion:', error);
     } finally {
-      // Mettre à jour l'état local même si l'API échoue
       setIsLoggedIn(false);
       setUserData(null);
       navigate('/');
     }
   };
 
-  // Fonction pour forcer la mise à jour après connexion/inscription
   const refreshAuthStatus = () => {
     checkAuthStatus();
   };
 
-  // Exposer la fonction globalement pour l'utiliser après connexion
   useEffect(() => {
     window.refreshNavbarAuth = refreshAuthStatus;
     return () => {
@@ -102,21 +91,25 @@ const Navbar = () => {
           Quiz
         </Link>
         <div className="navbar-menu">
-          <span>Chargement...</span>
+          <div className="loading-indicator">
+            <span>Chargement...</span>
+          </div>
         </div>
       </nav>
     );
   }
 
   return (
-    <nav className="navbar">
+    <nav className={`navbar ${isLoggedIn ? 'navbar-authenticated' : 'navbar-guest'}`}>
       <Link to="/" className="navbar-logo">
-         Quiz
+        {/* Logo différent selon l'état de connexion */}
+        {isLoggedIn ? '🎯 Quiz Pro' : '📝 Quiz'}
       </Link>
+      
       <div className="navbar-menu">
-        {/* Bouton Accueil - toujours visible */}
+        {/* Bouton Accueil - toujours visible avec icône adaptée */}
         <Link
-          className="navbar-btn active"
+          className={`navbar-btn ${isLoggedIn ? 'btn-authenticated' : 'btn-guest'}`}
           title="Accueil"
           aria-label="Accueil"
           to="/"
@@ -125,12 +118,12 @@ const Navbar = () => {
           <span className="tooltip">Accueil</span>
         </Link>
         
-        {/* Boutons pour utilisateurs non connectés */}
+        {/* Interface pour utilisateurs non connectés */}
         {!isLoggedIn && (
-          <>
+          <div className="guest-menu">
             <Link
-              className="navbar-btn active"
-              title="Inscription"
+              className="navbar-btn btn-register"
+              title="Créer un compte"
               aria-label="Inscription"
               to="/register"
             >
@@ -138,37 +131,71 @@ const Navbar = () => {
               <span className="tooltip">Inscription</span>
             </Link>
             <Link
-              className="navbar-btn active"
-              title="Connexion"
+              className="navbar-btn btn-login"
+              title="Se connecter"
               aria-label="Connexion"
               to="/login"
             >
               <FiLogIn />
               <span className="tooltip">Connexion</span>
             </Link>
-          </>
+          </div>
         )}
         
-        {/* Boutons pour utilisateurs connectés */}
+        {/* Interface pour utilisateurs connectés */}
         {isLoggedIn && userData && (
-          <>
+          <div className="authenticated-menu">
+            {/* Bouton Quiz - uniquement pour les connectés */}
             <Link
-              className="navbar-btn active"
-              title="Profil"
+              className="navbar-btn btn-quiz"
+              title="Mes Quiz"
+              aria-label="Mes Quiz"
+              to="/quiz"
+            >
+              <FaGamepad />
+              <span className="tooltip">Mes Quiz</span>
+            </Link>
+
+            {/* Bouton Profil avec avatar personnalisé */}
+            <Link
+              className="navbar-btn btn-profile"
+              title={`Profil de ${userData.username || 'Utilisateur'}`}
               aria-label="Profil"
               to="/profil"
             >
-              <FaUserCircle />
+              {userData.avatar ? (
+                <img 
+                  src={userData.avatar} 
+                  alt="Avatar" 
+                  className="user-avatar"
+                />
+              ) : userData.isVIP ? (
+                <FaCrown className="vip-icon" />
+              ) : (
+                <FaUserCircle />
+              )}
               <span className="tooltip">
                 {userData.username ? 
                   `Profil de ${userData.username}` : 
                   'Mon Profil'
                 }
+                {userData.isVIP && ' 👑'}
               </span>
             </Link>
+
+            {/* Indicateur de score/niveau (optionnel) */}
+            {userData.score && (
+              <div className="score-indicator">
+                <span className="score-badge">
+                  {userData.score}
+                </span>
+              </div>
+            )}
+
+            {/* Bouton de déconnexion */}
             <button
-              className="navbar-btn active logout-btn"
-              title="Déconnexion"
+              className="navbar-btn btn-logout"
+              title="Se déconnecter"
               aria-label="Déconnexion"
               onClick={handleLogout}
               type="button"
@@ -176,8 +203,13 @@ const Navbar = () => {
               <FiLogOut />
               <span className="tooltip">Déconnexion</span>
             </button>
-          </>
+          </div>
         )}
+
+        {/* Indicateur d'état de connexion visuel */}
+        <div className={`connection-status ${isLoggedIn ? 'connected' : 'disconnected'}`}>
+          <span className="status-dot"></span>
+        </div>
       </div>
     </nav>
   );
