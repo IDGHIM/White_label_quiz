@@ -1,6 +1,6 @@
 import React from "react";
 import '../styles/ContactPage.css';
-import { FaLinkedin, FaGithub, FaGlobe, FaEnvelope, FaPhone, FaMapMarkerAlt } from "react-icons/fa";
+import { FaLinkedin, FaGithub, FaBriefcase , FaEnvelope, FaPhone, FaMapMarkerAlt } from "react-icons/fa";
 
 const teamMembers = [
   {
@@ -53,7 +53,7 @@ const ContactCard = ({ member }) => (
           className="contact-link-icon"
           title="Portfolio"
         >
-          <FaGlobe />
+          <FaBriefcase  />
         </a>
       )}
       

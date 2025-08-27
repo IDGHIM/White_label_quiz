@@ -3,11 +3,11 @@
 
 /* Variables CSS globales */
 :root {
-  --blue-ocean: #352961;
-  --blue-fog: #774181;
-  --blue-ice: #ffffff;
-  --blue-stone: #f6e5e5;
-  --blue-night: #e6b2c6;
+  --first-color: #d3d5fd;   /* Ancien blue-ice */
+  --second-color: #929aab;  /* Ancien blue-stone */
+  --third-color: #474a56;   /* Ancien blue-fog */
+  --fourth-color: #0b0b0d;  /* Ancien blue-ocean */
+  --accent-color: #e6b2c6;  /* Gardé pour les accents */
 }
 
 /* Reset CSS complet */
@@ -104,14 +104,14 @@ body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background: linear-gradient(
     135deg,
-    var(--blue-ice) 0%,
-    var(--blue-fog) 50%,
-    var(--blue-ocean) 100%
+    var(--first-color) 0%,
+    var(--third-color) 50%,
+    var(--fourth-color) 100%
   );
   background-size: 300% 300%;
   background-attachment: fixed;
   animation: gentleShift 20s ease-in-out infinite;
-  color: var(--blue-night);
+  color: var(--accent-color);
   position: relative;
   overflow-x: hidden;
 }
@@ -130,7 +130,7 @@ body::after {
 body::before {
   width: 300px;
   height: 300px;
-  background: radial-gradient(circle, var(--blue-fog) 0%, transparent 70%);
+  background: radial-gradient(circle, var(--third-color) 0%, transparent 70%);
   top: 10%;
   left: -10%;
   animation: gentleFloat 25s ease-in-out infinite;
@@ -139,7 +139,7 @@ body::before {
 body::after {
   width: 200px;
   height: 200px;
-  background: radial-gradient(circle, var(--blue-ocean) 0%, transparent 70%);
+  background: radial-gradient(circle, var(--fourth-color) 0%, transparent 70%);
   bottom: 15%;
   right: -5%;
   animation: gentleFloat 30s ease-in-out infinite reverse;
@@ -212,21 +212,21 @@ body::after {
 .btn-primary {
   background: linear-gradient(
     135deg,
-    var(--blue-ocean) 0%,
-    var(--blue-fog) 100%
+    var(--fourth-color) 0%,
+    var(--third-color) 100%
   );
   color: white;
 }
 
 .btn-secondary {
-  background: var(--blue-stone);
+  background: var(--second-color);
   color: white;
 }
 
 .btn-outline {
   background: transparent;
-  border: 2px solid var(--blue-ocean);
-  color: var(--blue-ocean);
+  border: 2px solid var(--fourth-color);
+  color: var(--fourth-color);
 }
 
 .btn:hover {
@@ -249,15 +249,15 @@ body::after {
   background: rgba(255, 255, 255, 0.9);
   border-radius: 16px;
   padding: 24px;
-  box-shadow: 0 10px 30px rgba(52, 77, 89, 0.15);
+  box-shadow: 0 10px 30px rgba(11, 11, 13, 0.15);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(184, 203, 208, 0.3);
+  border: 1px solid rgba(146, 154, 171, 0.3);
   transition: all 0.3s ease;
 }
 
 .card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 15px 40px rgba(52, 77, 89, 0.2);
+  box-shadow: 0 15px 40px rgba(11, 11, 13, 0.2);
 }
 
 /* Messages d'état */
@@ -297,7 +297,7 @@ body::after {
   width: 40px;
   height: 40px;
   border: 4px solid rgba(0, 0, 0, 0.1);
-  border-left: 4px solid var(--blue-ocean);
+  border-left: 4px solid var(--fourth-color);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -309,6 +309,23 @@ body::after {
   100% {
     transform: rotate(360deg);
   }
+}
+
+/* Classes utilitaires pour les nouvelles couleurs */
+.first-color { 
+  background: var(--first-color);
+}
+
+.second-color { 
+  background: var(--second-color);
+}
+
+.third-color { 
+  background: var(--third-color);
+}
+
+.fourth-color { 
+  background: var(--fourth-color);
 }
 
 /* Responsive breakpoints */

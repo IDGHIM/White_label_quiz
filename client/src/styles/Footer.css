@@ -1,136 +1,206 @@
-/* Footer principal avec effet glassmorphism */
+/* Footer cohérent avec la navbar */
 .site-footer {
-  background: linear-gradient(135deg,
-    var(--blue-night) 0%,
-    rgba(26, 42, 51, 0.9) 30%,
-    rgba(74, 107, 122, 0.7) 70%,
-    var(--blue-stone) 100%
-  );
-  backdrop-filter: blur(20px) saturate(1.2);
-  border-top: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow:
-    0 -10px 40px rgba(10, 90, 102, 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.15);
- 
-  color: var(--blue-ice);
-  font-size: 1.2rem; /* anciennement 0.95rem */
-  padding: 24px 60px; /* plus d'espace pour confort visuel */
-  position: relative;
-  width: 100%;
- 
   display: flex;
   justify-content: space-between;
   align-items: center;
+  padding: 1rem 2rem;
+  background: linear-gradient(135deg, var(--second-color) 0%, var(--third-color) 100%);
+  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+  color: white;
+  font-size: 1rem;
+  position: relative;
+  width: 100%;
   margin-top: auto;
   box-sizing: border-box;
-  overflow: hidden;
- 
-  animation: footerSlideUp 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+/* États différents selon la section */
+.footer-guest {
+  background: linear-gradient(135deg, var(--second-color) 0%, var(--third-color) 100%);
+}
+
+.footer-authenticated {
+  background: linear-gradient(135deg, var(--third-color) 0%, var(--fourth-color) 100%);
 }
 
 /* Navigation container */
 .footer-navigation {
   display: flex;
-  gap: 30px;
   align-items: center;
+  gap: 1rem;
   position: relative;
-  z-index: 2;
 }
 
-/* Liens de navigation */
-.footer-nav-link {
-  color: var(--blue-ice);
-  text-decoration: none;
-  font-weight: 700;
-  font-size: 1.1rem; /* anciennement 0.9rem */
-  letter-spacing: 0.6px;
- 
-  padding: 12px 18px;
-  border-radius: 12px;
- 
-  background: linear-gradient(145deg,
-    rgba(255, 255, 255, 0.1),
-    rgba(26, 42, 51, 0.15)
-  );
-  border: 1px solid rgba(255, 255, 255, 0.2);
- 
-  position: relative;
-  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-  transform-style: preserve-3d;
-}
-
-/* Animations hover subtiles et accessibles */
-.footer-nav-link:hover {
-  /* Légère augmentation de la luminosité du fond */
-  background: linear-gradient(145deg,
-    rgba(255, 255, 255, 0.18),
-    rgba(26, 42, 51, 0.25)
-  );
-  
-  /* Bordure plus visible */
-  border-color: rgba(255, 255, 255, 0.35);
-  
-  /* Très léger agrandissement */
-  transform: scale(1.02);
-  
-  /* Ombre douce pour donner de la profondeur */
-  box-shadow: 
-    0 4px 15px rgba(10, 90, 102, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.25);
-}
-
-/* Focus pour l'accessibilité (navigation clavier) */
-.footer-nav-link:focus {
-  outline: 3px solid rgba(255, 255, 255, 0.6);
-  outline-offset: 2px;
-  
-  /* Mêmes effets que hover pour la cohérence */
-  background: linear-gradient(145deg,
-    rgba(255, 255, 255, 0.18),
-    rgba(26, 42, 51, 0.25)
-  );
-  border-color: rgba(255, 255, 255, 0.35);
-  transform: scale(1.02);
-  box-shadow: 
-    0 4px 15px rgba(10, 90, 102, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.25);
-}
-
-/* État actif (clic) */
-.footer-nav-link:active {
-  transform: scale(0.98);
-  box-shadow: 
-    0 2px 8px rgba(10, 90, 102, 0.15),
-    inset 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.footer-nav-link::after {
-  bottom: 6px;
-}
-
-/* Section copyright */
-.footer-copyright-section {
-  color: var(--blue-ice);
-  font-size: 1.05rem; /* anciennement 0.85rem */
-  font-weight: 600;
- 
+/* Groupes de menus */
+.footer-menu {
   display: flex;
   align-items: center;
-  gap: 12px;
- 
+  gap: 0.5rem;
+}
+
+/* Liens de navigation - même style que navbar */
+.footer-nav-link {
   position: relative;
-  z-index: 2;
- 
-  padding: 10px 18px;
-  border-radius: 10px;
-  background: rgba(26, 42, 51, 0.4);
-  border: 1px solid rgba(255, 255, 255, 0.25);
-  backdrop-filter: blur(10px);
- 
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.75rem;
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  font-size: 1.2rem;
+  min-width: 45px;
+  min-height: 45px;
+}
+
+/* Styles spécialisés pour les liens footer */
+.footer-nav-link.link-home {
+  background: rgba(76, 175, 80, 0.3);
+}
+
+.footer-nav-link.link-about {
+  background: rgba(33, 150, 243, 0.3);
+}
+
+.footer-nav-link.link-contact {
+  background: rgba(255, 193, 7, 0.3);
+}
+
+.footer-nav-link.link-privacy {
+  background: rgba(156, 39, 176, 0.3);
+}
+
+.footer-nav-link.link-terms {
+  background: rgba(255, 87, 34, 0.3);
+}
+
+/* Effets de survol - cohérents avec navbar */
+.footer-nav-link:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.footer-nav-link.link-home:hover {
+  background: rgba(76, 175, 80, 0.5);
+}
+
+.footer-nav-link.link-about:hover {
+  background: rgba(33, 150, 243, 0.5);
+}
+
+.footer-nav-link.link-contact:hover {
+  background: rgba(255, 193, 7, 0.5);
+}
+
+.footer-nav-link.link-privacy:hover {
+  background: rgba(156, 39, 176, 0.5);
+}
+
+.footer-nav-link.link-terms:hover {
+  background: rgba(255, 87, 34, 0.5);
+}
+
+/* Section copyright - style cohérent */
+.footer-copyright-section {
+  color: white;
+  font-size: 0.9rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  position: relative;
+}
+
+.copyright-badge {
+  display: inline-block;
+  background: var(--first-color);
+  color: var(--fourth-color);
+  padding: 0.25rem 0.5rem;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+/* Tooltips - même style que navbar */
+.tooltip {
+  position: absolute;
+  top: -35px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--fourth-color);
+  color: var(--first-color);
+  padding: 0.5rem;
+  border-radius: 5px;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+.footer-nav-link:hover .tooltip {
+  opacity: 1;
+  visibility: visible;
+  top: -40px;
+}
+
+.tooltip::before {
+  content: '';
+  position: absolute;
+  bottom: -5px;
+  left: 50%;
+  transform: translateX(-50%);
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 5px solid var(--fourth-color);
+}
+
+/* Indicateur d'état de connexion */
+.connection-status {
+  position: relative;
+  margin-right: 0.5rem;
+}
+
+.status-dot {
+  display: block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
   transition: all 0.3s ease;
 }
 
-/* Animation keyframes pour le footer */
+.connected .status-dot {
+  background: #4caf50;
+  box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+  animation: pulse 2s infinite;
+}
+
+.disconnected .status-dot {
+  background: #f44336;
+  opacity: 0.6;
+}
+
+@keyframes pulse {
+  0% {
+    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7);
+  }
+  70% {
+    box-shadow: 0 0 0 10px rgba(76, 175, 80, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+  }
+}
+
+/* Animation d'entrée */
 @keyframes footerSlideUp {
   from {
     opacity: 0;
@@ -142,21 +212,18 @@
   }
 }
 
+.site-footer {
+  animation: footerSlideUp 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
 /* Préférence utilisateur pour réduire les animations */
 @media (prefers-reduced-motion: reduce) {
   .footer-nav-link {
     transition: none;
   }
   
-  .footer-nav-link:hover,
-  .footer-nav-link:focus {
+  .footer-nav-link:hover {
     transform: none;
-    /* Garde uniquement les changements de couleur */
-    background: linear-gradient(145deg,
-      rgba(255, 255, 255, 0.18),
-      rgba(26, 42, 51, 0.25)
-    );
-    border-color: rgba(255, 255, 255, 0.35);
   }
   
   .site-footer {
@@ -164,56 +231,47 @@
   }
 }
 
-/* Responsive - Tablette */
-@media (max-width: 968px) {
+/* Responsive design - cohérent avec navbar */
+@media (max-width: 768px) {
   .site-footer {
+    padding: 0.5rem 1rem;
     flex-direction: column;
-    gap: 22px;
-    padding: 22px 40px;
-    text-align: center;
-    font-size: 1.1rem;
+    gap: 1rem;
   }
- 
+  
   .footer-navigation {
-    gap: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
+    gap: 0.5rem;
   }
- 
+  
   .footer-nav-link {
+    padding: 0.5rem;
+    min-width: 40px;
+    min-height: 40px;
     font-size: 1rem;
-    padding: 12px 16px;
   }
- 
-  .footer-copyright-section {
-    font-size: 0.95rem;
-    padding: 9px 15px;
+  
+  .tooltip {
+    display: none; /* Masquer les tooltips sur mobile */
+  }
+  
+  .copyright-badge {
+    display: none; /* Masquer le badge sur mobile */
   }
 }
 
-/* Responsive - Mobile */
 @media (max-width: 480px) {
   .site-footer {
-    padding: 18px 28px;
-    gap: 18px;
-    font-size: 1rem;
-  }
- 
-  .footer-navigation {
-    gap: 15px;
-    flex-direction: column;
-  }
- 
-  .footer-nav-link {
-    font-size: 0.95rem;
-    padding: 10px 14px;
-    width: 100%;
+    gap: 0.75rem;
     text-align: center;
-    max-width: 220px;
   }
- 
+  
+  .footer-menu {
+    gap: 0.25rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  
   .footer-copyright-section {
-    font-size: 0.9rem;
-    padding: 8px 14px;
+    font-size: 0.8rem;
   }
 }

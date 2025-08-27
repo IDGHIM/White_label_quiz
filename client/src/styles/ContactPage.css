@@ -17,14 +17,14 @@
 }
 
 .contact-page-title {
-  color: var(--blue-ice);
+  color: var(--first-color);
   font-size: 3.2rem;
   font-weight: 800;
   margin: 0 0 16px 0;
   letter-spacing: 1px;
-  text-shadow: 0 4px 8px rgba(26, 42, 51, 0.4);
+  text-shadow: 0 4px 8px rgba(11, 11, 13, 0.4);
   
-  background: linear-gradient(135deg, var(--blue-ice), var(--blue-fog));
+  background: linear-gradient(135deg, var(--first-color), var(--third-color));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -40,7 +40,7 @@
   transform: translateX(-50%);
   width: 80px;
   height: 4px;
-  background: linear-gradient(90deg, var(--blue-ocean), var(--blue-fog));
+  background: linear-gradient(90deg, var(--fourth-color), var(--third-color));
   border-radius: 2px;
 }
 
@@ -67,8 +67,8 @@
 /* Style de la carte principale */
 .contact-card {
   background: linear-gradient(145deg, 
-    rgba(26, 42, 51, 0.85), 
-    rgba(74, 107, 122, 0.8)
+    rgba(71, 74, 86, 0.85), 
+    rgba(146, 154, 171, 0.8)
   );
   backdrop-filter: blur(20px) saturate(1.2);
   border: 1px solid rgba(255, 255, 255, 0.25);
@@ -78,8 +78,8 @@
   position: relative;
   overflow: hidden;
   box-shadow: 
-    0 12px 40px rgba(10, 90, 102, 0.3),
-    0 6px 20px rgba(26, 42, 51, 0.25),
+    0 12px 40px rgba(11, 11, 13, 0.3),
+    0 6px 20px rgba(71, 74, 86, 0.25),
     inset 0 1px 0 rgba(255, 255, 255, 0.15);
   
   transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
@@ -96,8 +96,8 @@
   right: 0;
   bottom: 0;
   background: 
-    radial-gradient(circle at 20% 20%, rgba(10, 90, 102, 0.1) 0%, transparent 50%),
-    radial-gradient(circle at 80% 80%, rgba(90, 133, 144, 0.08) 0%, transparent 50%);
+    radial-gradient(circle at 20% 20%, rgba(11, 11, 13, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(146, 154, 171, 0.08) 0%, transparent 50%);
   pointer-events: none;
   opacity: 0;
   transition: opacity 0.4s ease;
@@ -112,9 +112,9 @@
   right: 0;
   height: 4px;
   background: linear-gradient(90deg, 
-    var(--blue-ocean), 
-    var(--blue-fog), 
-    var(--blue-stone)
+    var(--fourth-color), 
+    var(--third-color), 
+    var(--second-color)
   );
   border-radius: 24px 24px 0 0;
 }
@@ -123,11 +123,11 @@
 .contact-card:hover {
   transform: translateY(-12px) scale(1.03);
   box-shadow: 
-    0 20px 60px rgba(10, 90, 102, 0.35),
-    0 10px 30px rgba(26, 42, 51, 0.2),
+    0 20px 60px rgba(11, 11, 13, 0.35),
+    0 10px 30px rgba(71, 74, 86, 0.2),
     inset 0 1px 0 rgba(255, 255, 255, 0.2);
   
-  border-color: rgba(10, 90, 102, 0.4);
+  border-color: rgba(11, 11, 13, 0.4);
 }
 
 .contact-card:hover::before {
@@ -142,14 +142,14 @@
 
 /* Nom de la personne */
 .contact-person-name {
-  color: var(--blue-ice);
+  color: var(--first-color);
   font-size: 2.4rem;
   font-weight: 700;
   margin: 0 0 12px 0;
   letter-spacing: 0.8px;
-  text-shadow: 0 3px 6px rgba(26, 42, 51, 0.3);
+  text-shadow: 0 3px 6px rgba(71, 74, 86, 0.3);
   
-  background: linear-gradient(135deg, var(--blue-ice), var(--blue-fog));
+  background: linear-gradient(135deg, var(--first-color), var(--third-color));
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -164,7 +164,7 @@
 
 /* Rôle de la personne */
 .contact-person-role {
-  color: var(--blue-fog);
+  color: var(--third-color);
   font-size: 1.3rem;
   font-weight: 600;
   margin: 0 0 25px 0;
@@ -172,18 +172,18 @@
   text-transform: uppercase;
   
   padding: 10px 20px;
-  background: rgba(90, 133, 144, 0.15);
+  background: rgba(146, 154, 171, 0.15);
   border-radius: 20px;
-  border: 1px solid rgba(90, 133, 144, 0.2);
+  border: 1px solid rgba(146, 154, 171, 0.2);
   display: inline-block;
   
   transition: all 0.3s ease;
 }
 
 .contact-card:hover .contact-person-role {
-  background: rgba(10, 90, 102, 0.25);
-  border-color: rgba(10, 90, 102, 0.4);
-  color: var(--blue-ice);
+  background: rgba(11, 11, 13, 0.25);
+  border-color: rgba(11, 11, 13, 0.4);
+  color: var(--first-color);
   transform: scale(1.02);
 }
 
@@ -200,7 +200,7 @@
 }
 
 .contact-card:hover .contact-person-description {
-  color: var(--blue-ice);
+  color: var(--first-color);
 }
 
 /* Container des informations de contact */
@@ -227,14 +227,14 @@
 }
 
 .contact-info-icon {
-  color: var(--blue-fog);
+  color: var(--third-color);
   font-size: 1.2rem;
   min-width: 20px;
   transition: all 0.3s ease;
 }
 
 .contact-info-item:hover .contact-info-icon {
-  color: var(--blue-ice);
+  color: var(--first-color);
   transform: scale(1.1);
 }
 
@@ -247,8 +247,8 @@
 }
 
 .contact-info-link:hover {
-  color: var(--blue-ice);
-  border-bottom-color: var(--blue-fog);
+  color: var(--first-color);
+  border-bottom-color: var(--third-color);
 }
 
 .contact-info-text {
@@ -275,11 +275,11 @@
   
   background: linear-gradient(145deg, 
     rgba(255, 255, 255, 0.12), 
-    rgba(26, 42, 51, 0.25)
+    rgba(71, 74, 86, 0.25)
   );
   border: 1px solid rgba(255, 255, 255, 0.2);
   
-  color: var(--blue-ice);
+  color: var(--first-color);
   font-size: 1.5rem;
   text-decoration: none;
   
@@ -299,8 +299,8 @@
   right: 0;
   bottom: 0;
   background: linear-gradient(135deg, 
-    rgba(10, 90, 102, 0.4), 
-    rgba(90, 133, 144, 0.3)
+    rgba(11, 11, 13, 0.4), 
+    rgba(146, 154, 171, 0.3)
   );
   border-radius: 16px;
   opacity: 0;
@@ -311,10 +311,10 @@
 .contact-link-icon:hover {
   transform: translateY(-4px) scale(1.15);
   box-shadow: 
-    0 12px 35px rgba(10, 90, 102, 0.4),
-    0 0 25px rgba(10, 90, 102, 0.3);
+    0 12px 35px rgba(11, 11, 13, 0.4),
+    0 0 25px rgba(11, 11, 13, 0.3);
   
-  border-color: rgba(10, 90, 102, 0.5);
+  border-color: rgba(11, 11, 13, 0.5);
   color: white;
 }
 
@@ -337,7 +337,7 @@
 }
 
 .contact-footer h3 {
-  color: var(--blue-ice);
+  color: var(--first-color);
   font-size: 1.6rem;
   font-weight: 600;
   margin: 0 0 12px 0;
@@ -488,11 +488,11 @@
 /* Effet de focus pour l'accessibilité */
 .contact-link-icon:focus,
 .contact-info-link:focus {
-  outline: 2px solid var(--blue-ocean);
+  outline: 2px solid var(--fourth-color);
   outline-offset: 3px;
   background: linear-gradient(145deg, 
-    rgba(10, 90, 102, 0.25), 
-    rgba(90, 133, 144, 0.2)
+    rgba(11, 11, 13, 0.25), 
+    rgba(146, 154, 171, 0.2)
   );
 }
 
