@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+import '../styles/EmailVerificationPage.css'
 
 const EmailVerificationPage = () => {
   const { token } = useParams();
