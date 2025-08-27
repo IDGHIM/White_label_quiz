@@ -27,7 +27,7 @@ const LoginPage = () => {
 
     setIsLoading(true);
     setMessage('');
-
+    
     console.log('🚀 [LOGIN] Tentative de connexion...');
     console.log('🚀 [LOGIN] Identifier:', identifier);
 
@@ -44,8 +44,22 @@ const LoginPage = () => {
 
       console.log('✅ [LOGIN] Connexion réussie:', response.data);
       
-      setMessage('Connexion réussie ! Redirection en cours...');
+      // ✅ NOUVEAU: Récupérer le rôle de l'utilisateur depuis la réponse
+      const userRole = response.data.user?.role || response.data.data?.user?.role;
+      console.log('👤 [LOGIN] Rôle utilisateur détecté:', userRole);
 
+      // ✅ NOUVEAU: Déterminer la destination selon le rôle
+      let redirectPath = '/profil'; // Par défaut pour les users
+      let redirectMessage = 'Connexion réussie ! Redirection vers votre profil...';
+
+      if (userRole === 'admin') {
+        redirectPath = '/admin';
+        redirectMessage = 'Connexion réussie ! Redirection vers l\'espace admin...';
+      }
+
+      console.log('🎯 [LOGIN] Redirection prévue vers:', redirectPath);
+      setMessage(redirectMessage);
+      
       // ✅ CORRECTION: Rafraîchir la navbar IMMÉDIATEMENT
       if (window.refreshNavbarAuth) {
         console.log('🔄 [LOGIN] Rafraîchissement de la navbar...');
@@ -59,10 +73,10 @@ const LoginPage = () => {
         console.warn('⚠️ [LOGIN] window.refreshNavbarAuth non disponible');
       }
 
-      // Attendre un peu avant la redirection pour laisser le temps à la navbar de se mettre à jour
+      // ✅ NOUVEAU: Redirection conditionnelle selon le rôle
       setTimeout(() => {
-        console.log('🔄 [LOGIN] Redirection vers /profil');
-        navigate('/profil');
+        console.log('🔄 [LOGIN] Redirection vers:', redirectPath);
+        navigate(redirectPath);
       }, 1000);
 
     } catch (error) {
