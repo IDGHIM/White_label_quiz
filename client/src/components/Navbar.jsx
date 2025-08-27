@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../styles/Navbar.css";
 import { Link, useNavigate } from "react-router-dom";
 import { FaUserCircle, FaUserPlus, FaCrown, FaGamepad } from "react-icons/fa";
-import { FiLogIn, FiLogOut, FiHome, FiUser } from "react-icons/fi";
+import { FiLogIn, FiLogOut, FiHome } from "react-icons/fi";
 
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -10,15 +10,15 @@ const Navbar = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-  // Fonction pour vérifier l'état de connexion via l'API
+  // Vérifie l'état de connexion via l'API
   const checkAuthStatus = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/me', {
-        method: 'GET',
-        credentials: 'include',
+      const response = await fetch("http://localhost:3001/api/me", {
+        method: "GET",
+        credentials: "include",
         headers: {
-          'Content-Type': 'application/json'
-        }
+          "Content-Type": "application/json",
+        },
       });
 
       if (response.ok) {
@@ -35,7 +35,7 @@ const Navbar = () => {
         setUserData(null);
       }
     } catch (error) {
-      console.error('Erreur lors de la vérification de l\'authentification:', error);
+      console.error("Erreur lors de la vérification de l'authentification:", error);
       setIsLoggedIn(false);
       setUserData(null);
     } finally {
@@ -51,25 +51,25 @@ const Navbar = () => {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch('http://localhost:3001/api/logout', {
-        method: 'POST',
-        credentials: 'include',
+      const response = await fetch("http://localhost:3001/api/logout", {
+        method: "POST",
+        credentials: "include",
         headers: {
-          'Content-Type': 'application/json'
-        }
+          "Content-Type": "application/json",
+        },
       });
 
       if (response.ok) {
-        console.log('Déconnexion réussie');
+        console.log("Déconnexion réussie");
       } else {
-        console.error('Erreur lors de la déconnexion côté serveur');
+        console.error("Erreur lors de la déconnexion côté serveur");
       }
     } catch (error) {
-      console.error('Erreur lors de la déconnexion:', error);
+      console.error("Erreur lors de la déconnexion:", error);
     } finally {
       setIsLoggedIn(false);
       setUserData(null);
-      navigate('/');
+      navigate("/");
     }
   };
 
@@ -100,16 +100,18 @@ const Navbar = () => {
   }
 
   return (
-    <nav className={`navbar ${isLoggedIn ? 'navbar-authenticated' : 'navbar-guest'}`}>
+    <nav
+      className={`navbar ${isLoggedIn ? "navbar-authenticated" : "navbar-guest"}`}
+    >
       <Link to="/" className="navbar-logo">
         {/* Logo différent selon l'état de connexion */}
-        {isLoggedIn ? '🎯 Quiz Pro' : '📝 Quiz'}
+        {isLoggedIn ? "🎯 Quiz Pro" : "📝 Quiz"}
       </Link>
-      
+
       <div className="navbar-menu">
-        {/* Bouton Accueil - toujours visible avec icône adaptée */}
+        {/* Bouton Accueil - toujours visible */}
         <Link
-          className={`navbar-btn ${isLoggedIn ? 'btn-authenticated' : 'btn-guest'}`}
+          className={`navbar-btn ${isLoggedIn ? "btn-authenticated" : "btn-guest"}`}
           title="Accueil"
           aria-label="Accueil"
           to="/"
@@ -117,8 +119,8 @@ const Navbar = () => {
           <FiHome />
           <span className="tooltip">Accueil</span>
         </Link>
-        
-        {/* Interface pour utilisateurs non connectés */}
+
+        {/* Utilisateurs non connectés */}
         {!isLoggedIn && (
           <div className="guest-menu">
             <Link
@@ -141,32 +143,47 @@ const Navbar = () => {
             </Link>
           </div>
         )}
-        
-        {/* Interface pour utilisateurs connectés */}
+
+        {/* Utilisateurs connectés */}
         {isLoggedIn && userData && (
           <div className="authenticated-menu">
-            {/* Bouton Quiz - uniquement pour les connectés */}
-            <Link
-              className="navbar-btn btn-quiz"
-              title="Mes Quiz"
-              aria-label="Mes Quiz"
-              to="/quiz"
-            >
-              <FaGamepad />
-              <span className="tooltip">Mes Quiz</span>
-            </Link>
+            {/* Espace User */}
+            {userData.role === "user" && (
+              <Link
+                className="navbar-btn btn-quiz"
+                title="Mes Quiz"
+                aria-label="Mes Quiz"
+                to="/quiz"
+              >
+                <FaGamepad />
+                <span className="tooltip">Mes Quiz</span>
+              </Link>
+            )}
 
-            {/* Bouton Profil avec avatar personnalisé */}
+            {/* Espace Admin */}
+            {userData.role === "admin" && (
+              <Link
+                className="navbar-btn btn-admin"
+                title="Espace Admin"
+                aria-label="Espace Admin"
+                to="/admin"
+              >
+                <FaCrown />
+                <span className="tooltip">Admin</span>
+              </Link>
+            )}
+
+            {/* Bouton Profil */}
             <Link
               className="navbar-btn btn-profile"
-              title={`Profil de ${userData.username || 'Utilisateur'}`}
+              title={`Profil de ${userData.username || "Utilisateur"}`}
               aria-label="Profil"
               to="/profil"
             >
               {userData.avatar ? (
-                <img 
-                  src={userData.avatar} 
-                  alt="Avatar" 
+                <img
+                  src={userData.avatar}
+                  alt="Avatar"
                   className="user-avatar"
                 />
               ) : userData.isVIP ? (
@@ -175,24 +192,21 @@ const Navbar = () => {
                 <FaUserCircle />
               )}
               <span className="tooltip">
-                {userData.username ? 
-                  `Profil de ${userData.username}` : 
-                  'Mon Profil'
-                }
-                {userData.isVIP && ' 👑'}
+                {userData.username
+                  ? `Profil de ${userData.username}`
+                  : "Mon Profil"}
+                {userData.isVIP && " 👑"}
               </span>
             </Link>
 
-            {/* Indicateur de score/niveau (optionnel) */}
+            {/* Score / niveau */}
             {userData.score && (
               <div className="score-indicator">
-                <span className="score-badge">
-                  {userData.score}
-                </span>
+                <span className="score-badge">{userData.score}</span>
               </div>
             )}
 
-            {/* Bouton de déconnexion */}
+            {/* Déconnexion */}
             <button
               className="navbar-btn btn-logout"
               title="Se déconnecter"
@@ -206,8 +220,12 @@ const Navbar = () => {
           </div>
         )}
 
-        {/* Indicateur d'état de connexion visuel */}
-        <div className={`connection-status ${isLoggedIn ? 'connected' : 'disconnected'}`}>
+        {/* Indicateur visuel de connexion */}
+        <div
+          className={`connection-status ${
+            isLoggedIn ? "connected" : "disconnected"
+          }`}
+        >
           <span className="status-dot"></span>
         </div>
       </div>
