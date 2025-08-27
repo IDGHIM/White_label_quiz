@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
+import '../styles/ResetPasswordPage.css'
 
 const ResetPasswordPage = () => {
   const { token } = useParams();
