@@ -1,5 +1,4 @@
 /* QuizPage.css - Styles spécifiques au composant Quiz */
-
 /* ===== ANIMATIONS SPÉCIFIQUES AU QUIZ ===== */
 @keyframes questionSlide {
   from {
@@ -69,21 +68,21 @@
 .loading-spinner {
   width: 60px;
   height: 60px;
-  border: 5px solid var(--blue-stone);
-  border-top: 5px solid var(--blue-ocean);
+  border: 5px solid var(--second-color);
+  border-top: 5px solid var(--fourth-color);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin: 0 auto 30px;
 }
 
 .quiz-loading h2 {
-  color: var(--blue-ocean);
+  color: var(--fourth-color);
   margin-bottom: 15px;
   font-size: 1.8rem;
 }
 
 .quiz-loading p {
-  color: var(--blue-fog);
+  color: var(--third-color);
   font-size: 1.1rem;
 }
 
@@ -105,7 +104,7 @@
 }
 
 .quiz-error p {
-  color: var(--blue-fog);
+  color: var(--third-color);
   margin-bottom: 30px;
   font-size: 1.1rem;
 }
@@ -129,22 +128,22 @@
 }
 
 .retry-btn {
-  background: var(--blue-ocean);
+  background: var(--fourth-color);
   color: white;
 }
 
 .retry-btn:hover {
-  background: var(--blue-fog);
+  background: var(--third-color);
   transform: translateY(-2px);
 }
 
 .home-btn {
-  background: var(--blue-stone);
-  color: var(--blue-ocean);
+  background: var(--second-color);
+  color: var(--fourth-color);
 }
 
 .home-btn:hover {
-  background: var(--blue-night);
+  background: var(--first-color);
   transform: translateY(-2px);
 }
 
@@ -161,7 +160,7 @@
 
 .quiz-title {
   font-size: 3rem;
-  background: linear-gradient(135deg, var(--blue-ocean), var(--blue-fog));
+  background: linear-gradient(135deg, var(--fourth-color), var(--third-color));
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -175,14 +174,14 @@
 
 .info-card {
   background: rgba(255, 255, 255, 0.8);
-  border: 2px solid var(--blue-stone);
+  border: 2px solid var(--second-color);
   border-radius: 15px;
   padding: 30px;
   margin: 20px 0;
 }
 
 .info-card h3 {
-  color: var(--blue-ocean);
+  color: var(--fourth-color);
   margin-bottom: 20px;
   font-size: 1.4rem;
 }
@@ -196,9 +195,9 @@
 
 .info-card li {
   padding: 8px 0;
-  color: var(--blue-fog);
+  color: var(--third-color);
   font-size: 1.1rem;
-  border-bottom: 1px solid var(--blue-stone);
+  border-bottom: 1px solid var(--second-color);
 }
 
 .info-card li:last-child {
@@ -226,23 +225,23 @@
 }
 
 .start-quiz-btn {
-  background: linear-gradient(135deg, var(--blue-ocean), var(--blue-fog));
+  background: linear-gradient(135deg, var(--fourth-color), var(--third-color));
   color: white;
-  box-shadow: 0 8px 20px rgba(53, 41, 97, 0.3);
+  box-shadow: 0 8px 20px rgba(11, 11, 13, 0.3);
 }
 
 .start-quiz-btn:hover {
   transform: translateY(-3px);
-  box-shadow: 0 12px 25px rgba(53, 41, 97, 0.4);
+  box-shadow: 0 12px 25px rgba(11, 11, 13, 0.4);
 }
 
 .reload-btn {
-  background: var(--blue-stone);
-  color: var(--blue-ocean);
+  background: var(--second-color);
+  color: var(--fourth-color);
 }
 
 .reload-btn:hover {
-  background: var(--blue-night);
+  background: var(--first-color);
   transform: translateY(-3px);
 }
 
@@ -265,7 +264,7 @@
 
 .question-counter {
   font-weight: 600;
-  color: var(--blue-ocean);
+  color: var(--fourth-color);
   margin-bottom: 10px;
   font-size: 1.1rem;
 }
@@ -273,20 +272,20 @@
 .progress-bar {
   width: 100%;
   height: 8px;
-  background: var(--blue-stone);
+  background: var(--second-color);
   border-radius: 10px;
   overflow: hidden;
 }
 
 .progress-fill {
   height: 100%;
-  background: linear-gradient(90deg, var(--blue-ocean), var(--blue-fog));
+  background: linear-gradient(90deg, var(--fourth-color), var(--third-color));
   border-radius: 10px;
   transition: width 0.6s ease;
 }
 
 .score-display-mini {
-  background: var(--blue-ocean);
+  background: var(--fourth-color);
   color: white;
   padding: 12px 20px;
   border-radius: 25px;
@@ -313,7 +312,7 @@
 
 .question-text {
   font-size: 1.6rem;
-  color: var(--blue-ocean);
+  color: var(--fourth-color);
   margin-bottom: 30px;
   line-height: 1.4;
   text-align: center;
@@ -326,17 +325,17 @@
   padding: 15px;
   border-radius: 10px;
   background: rgba(255, 255, 255, 0.8);
-  border-left: 4px solid var(--blue-fog);
+  border-left: 4px solid var(--third-color);
 }
 
 .multiple-choice-hint, .single-choice-hint {
   margin: 0;
   font-size: 1rem;
-  color: var(--blue-fog);
+  color: var(--third-color);
 }
 
 .multiple-choice-hint strong, .single-choice-hint strong {
-  color: var(--blue-ocean);
+  color: var(--fourth-color);
 }
 
 /* ===== OPTIONS DE RÉPONSE ===== */
@@ -352,7 +351,7 @@
   align-items: center;
   padding: 20px 25px;
   background: rgba(255, 255, 255, 0.9);
-  border: 2px solid var(--blue-stone);
+  border: 2px solid var(--second-color);
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -363,23 +362,23 @@
 }
 
 .option-btn:hover {
-  border-color: var(--blue-fog);
+  border-color: var(--third-color);
   background: rgba(255, 255, 255, 1);
   transform: translateX(5px);
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
 }
 
 .option-btn.selected {
-  background: linear-gradient(135deg, var(--blue-ocean), var(--blue-fog));
+  background: linear-gradient(135deg, var(--fourth-color), var(--third-color));
   color: white;
-  border-color: var(--blue-ocean);
+  border-color: var(--fourth-color);
   transform: translateX(5px);
-  box-shadow: 0 8px 20px rgba(53, 41, 97, 0.3);
+  box-shadow: 0 8px 20px rgba(11, 11, 13, 0.3);
 }
 
 .option-letter {
-  background: var(--blue-stone);
-  color: var(--blue-ocean);
+  background: var(--second-color);
+  color: var(--fourth-color);
   width: 40px;
   height: 40px;
   border-radius: 50%;
@@ -428,12 +427,12 @@
 }
 
 .submit-btn {
-  background: var(--blue-ocean);
+  background: var(--fourth-color);
   color: white;
 }
 
 .submit-btn:hover:not(:disabled) {
-  background: var(--blue-fog);
+  background: var(--third-color);
   transform: translateY(-2px);
 }
 
@@ -443,12 +442,12 @@
 }
 
 .clear-btn {
-  background: var(--blue-stone);
-  color: var(--blue-ocean);
+  background: var(--second-color);
+  color: var(--fourth-color);
 }
 
 .clear-btn:hover {
-  background: var(--blue-night);
+  background: var(--first-color);
   transform: translateY(-2px);
 }
 
@@ -465,7 +464,7 @@
 
 .result-title {
   font-size: 2.5rem;
-  color: var(--blue-ocean);
+  color: var(--fourth-color);
   margin-bottom: 40px;
   font-weight: 700;
 }
@@ -481,7 +480,7 @@
   width: 150px;
   height: 150px;
   border-radius: 50%;
-  background: linear-gradient(135deg, var(--blue-ocean), var(--blue-fog));
+  background: linear-gradient(135deg, var(--fourth-color), var(--third-color));
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -489,7 +488,7 @@
   color: white;
   margin-bottom: 20px;
   animation: scoreReveal 0.8s ease-out;
-  box-shadow: 0 15px 30px rgba(53, 41, 97, 0.3);
+  box-shadow: 0 15px 30px rgba(11, 11, 13, 0.3);
 }
 
 .score-number {
@@ -506,7 +505,7 @@
 .score-percentage {
   font-size: 2rem;
   font-weight: 700;
-  color: var(--blue-ocean);
+  color: var(--fourth-color);
 }
 
 /* ===== RÉSULTATS DÉTAILLÉS ===== */
@@ -517,7 +516,7 @@
 
 .detailed-results h3 {
   font-size: 1.8rem;
-  color: var(--blue-ocean);
+  color: var(--fourth-color);
   margin-bottom: 30px;
   text-align: center;
 }
@@ -527,7 +526,7 @@
   border-radius: 12px;
   padding: 25px;
   margin-bottom: 20px;
-  border-left: 5px solid var(--blue-stone);
+  border-left: 5px solid var(--second-color);
   transition: all 0.3s ease;
 }
 
@@ -555,7 +554,7 @@
 
 .question-number {
   font-weight: 700;
-  color: var(--blue-ocean);
+  color: var(--fourth-color);
   font-size: 1.1rem;
 }
 
@@ -580,11 +579,11 @@
 .result-details p {
   margin-bottom: 10px;
   line-height: 1.5;
-  color: var(--blue-fog);
+  color: var(--third-color);
 }
 
 .result-details strong {
-  color: var(--blue-ocean);
+  color: var(--fourth-color);
 }
 
 /* ===== ACTIONS DE RÉSULTAT ===== */
@@ -610,18 +609,18 @@
 }
 
 .result-actions .retry-btn {
-  background: var(--blue-ocean);
+  background: var(--fourth-color);
   color: white;
 }
 
 .result-actions .reload-btn {
-  background: var(--blue-fog);
+  background: var(--third-color);
   color: white;
 }
 
 .result-actions .home-btn {
-  background: var(--blue-stone);
-  color: var(--blue-ocean);
+  background: var(--second-color);
+  color: var(--fourth-color);
 }
 
 .result-actions button:hover,
@@ -745,7 +744,7 @@
 .submit-btn:focus,
 .clear-btn:focus,
 button:focus {
-  outline: 3px solid var(--blue-fog);
+  outline: 3px solid var(--third-color);
   outline-offset: 2px;
 }
 

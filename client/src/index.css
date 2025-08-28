@@ -1,5 +1,5 @@
-@import "./styles/Accessibility.css";
 @import "./styles/AccessibilityMenu.css";
+@import "./styles/Accessibility.css";
 
 /* Variables CSS globales */
 :root {

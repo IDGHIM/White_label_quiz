@@ -1,31 +1,30 @@
 const express = require("express");
 const router = express.Router();
-const User = require("../models/Users");
 const userController = require("../controllers/userController");
 const { protect, authorize } = require("../middlewares/authMiddleware");
 
-// Protection de toutes les routes
-//router.use(protect);    // Décommenter pour protéger toutes les routes
+// ======================
+// 🔒 Routes protégées
+// ======================
 
-// Route pour récupérer tous les utilisateurs
-router.get("/api/users", userController.index);
+// ✅ Tous les utilisateurs connectés peuvent voir la liste
+router.get("/api/users", protect, userController.index);
 
-// Route pour récupérer un utilisateur par son ID
-router.get("/api/users/:id", userController.show);
+// ✅ Tous les utilisateurs connectés peuvent voir un utilisateur par son ID
+router.get("/api/users/:id", protect, userController.show);
 
-// Route pour créer un nouvel utilisateur
-router.post("/api/users", userController.create);
+// ✅ Uniquement les admins peuvent créer un utilisateur
+router.post("/api/users", protect, authorize("admin"), userController.create);
 
-// Route pour modifier un utilisateur
-router.put("/api/users/:id", userController.update);
+// ✅ Uniquement les admins peuvent modifier un utilisateur
+router.put("/api/users/:id", protect, authorize("admin"), userController.update);
 
-// Route pour supprimer un utilisateur
-router.delete("/api/users/:id", userController.delete);
+// ✅ Uniquement les admins peuvent supprimer un utilisateur
+router.delete("/api/users/:id", protect, authorize("admin"), userController.delete);
 
-// Route uniquement accessible aux admins
+// ✅ Exemple de route spéciale admin
 router.get("/admin", protect, authorize("admin"), (req, res) => {
   res.json({ message: "Bienvenue admin !" });
 });
-
 
 module.exports = router;

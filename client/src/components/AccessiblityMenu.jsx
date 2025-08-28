@@ -1,21 +1,5 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import {
-  Settings,
-  Eye,
-  Type,
-  Palette,
-  Volume2,
-  Keyboard,
-  Contrast,
-  Glasses,
-  Hand,
-  Mouse,
-  Maximize,
-  X,
-  RotateCcw,
-  Sun,
-  Moon,
-  Zap,
+import { Settings, Eye, Type, Palette, Volume2, Keyboard, Contrast, Glasses, Hand, Mouse, Maximize, X, RotateCcw, Sun, Moon,Zap,
   Focus,
   Timer,
   Pause,
@@ -26,6 +10,7 @@ import {
   Target,
   Navigation
 } from "lucide-react";
+import '../styles/AccessibilityMenu.css'
 
 const AccessibilityMenu = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -244,7 +229,7 @@ const AccessibilityMenu = () => {
   // Focus management
   useEffect(() => {
     if (isOpen && menuRef.current) {
-      const firstFocusable = menuRef.current.querySelector('button:not(.close-btn)');
+      const firstFocusable = menuRef.current.querySelector('button:not(.accessibility-close)');
       firstFocusable?.focus();
     }
   }, [isOpen, activeTab]);
@@ -288,29 +273,27 @@ const AccessibilityMenu = () => {
 
   const ToggleButton = ({ active, onClick, children, ariaLabel, ariaPressed, icon: Icon }) => (
     <button
-      className={`w-full px-4 py-3 rounded-lg flex items-center gap-3 transition-all duration-200 text-left ${
-        active 
-          ? 'bg-blue-600 text-white shadow-lg transform scale-105' 
-          : 'bg-gray-100 hover:bg-gray-200 text-gray-700 hover:scale-102'
-      }`}
+      className={`accessibility-toggle-control ${active ? 'active' : ''}`}
       onClick={onClick}
       aria-label={ariaLabel}
       aria-pressed={ariaPressed}
       onMouseEnter={() => settings.audioEnabled && speak(ariaLabel, false)}
     >
-      {Icon && <Icon size={18} />}
-      <span className="flex-1">{children}</span>
-      <span className={`px-2 py-1 text-xs rounded ${active ? 'bg-blue-500' : 'bg-gray-300'}`}>
+      <div className="control-icon">
+        {Icon && <Icon size={18} />}
+      </div>
+      <span className="control-label">{children}</span>
+      <span className="control-status">
         {active ? 'ON' : 'OFF'}
       </span>
     </button>
   );
 
   const SliderControl = ({ label, value, onChange, min = 0, max = 100, step = 1, unit = "", icon: Icon }) => (
-    <div className="space-y-2">
-      <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+    <div className="accessibility-slider-control">
+      <label className="accessibility-slider-label">
         {Icon && <Icon size={16} />}
-        {label}: <span className="font-bold text-blue-600">{value}{unit}</span>
+        {label}: <span className="accessibility-slider-value">{value}{unit}</span>
       </label>
       <input
         type="range"
@@ -323,9 +306,9 @@ const AccessibilityMenu = () => {
           onChange(newValue);
           speak(`${label} ${newValue}${unit}`, false);
         }}
-        className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer focus:outline-none focus:ring-2 focus:ring-blue-500"
+        className="accessibility-slider"
       />
-      <div className="flex justify-between text-xs text-gray-500">
+      <div className="accessibility-slider-range">
         <span>{min}{unit}</span>
         <span>{max}{unit}</span>
       </div>
@@ -336,7 +319,7 @@ const AccessibilityMenu = () => {
     switch (activeTab) {
       case "vision":
         return (
-          <div className="space-y-4">
+          <div className="accessibility-tab-content">
             <ToggleButton
               active={settings.contrast === "high"}
               onClick={() => setSettings(prev => ({ 
@@ -360,8 +343,8 @@ const AccessibilityMenu = () => {
               Mode sombre
             </ToggleButton>
 
-            <div className="space-y-2">
-              <label className="flex items-center gap-2 text-sm font-medium text-gray-700">
+            <div className="accessibility-select-control">
+              <label className="accessibility-slider-label">
                 <Palette size={16} />
                 Mode daltonien
               </label>
@@ -371,7 +354,7 @@ const AccessibilityMenu = () => {
                   setSettings(prev => ({ ...prev, colorBlind: e.target.value }));
                   speak(`Mode daltonien: ${e.target.value === "none" ? "désactivé" : e.target.value}`);
                 }}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="accessibility-select"
               >
                 <option value="none">Aucun</option>
                 <option value="protanopia">Protanopie (rouge-vert)</option>
@@ -417,7 +400,7 @@ const AccessibilityMenu = () => {
 
       case "reading":
         return (
-          <div className="space-y-4">
+          <div className="accessibility-tab-content">
             <ToggleButton
               active={settings.dyslexia}
               onClick={() => setSettings(prev => ({ ...prev, dyslexia: !prev.dyslexia }))}
@@ -452,7 +435,7 @@ const AccessibilityMenu = () => {
 
       case "audio":
         return (
-          <div className="space-y-4">
+          <div className="accessibility-tab-content">
             <ToggleButton
               active={settings.audioEnabled}
               onClick={() => setSettings(prev => ({ ...prev, audioEnabled: !prev.audioEnabled }))}
@@ -514,7 +497,7 @@ const AccessibilityMenu = () => {
 
       case "navigation":
         return (
-          <div className="space-y-4">
+          <div className="accessibility-tab-content">
             <ToggleButton
               active={settings.largeCursor}
               onClick={() => setSettings(prev => ({ ...prev, largeCursor: !prev.largeCursor }))}
@@ -559,7 +542,7 @@ const AccessibilityMenu = () => {
 
       case "interaction":
         return (
-          <div className="space-y-4">
+          <div className="accessibility-tab-content">
             <ToggleButton
               active={settings.tooltipsEnabled}
               onClick={() => setSettings(prev => ({ ...prev, tooltipsEnabled: !prev.tooltipsEnabled }))}
@@ -603,7 +586,7 @@ const AccessibilityMenu = () => {
       {/* Bouton d'ouverture du menu */}
       <button
         ref={toggleButtonRef}
-        className="fixed bottom-6 right-6 w-14 h-14 bg-blue-600 hover:bg-blue-700 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 flex items-center justify-center z-50 group"
+        className="accessibility-toggle"
         onClick={() => {
           setIsOpen(!isOpen);
           speak(isOpen ? "Fermeture du menu" : "Ouverture du menu d'accessibilité");
@@ -612,7 +595,7 @@ const AccessibilityMenu = () => {
         aria-expanded={isOpen}
         title="Ouvrir le menu d'accessibilité (Alt+A)"
       >
-        <Settings size={24} className="group-hover:rotate-90 transition-transform duration-300" />
+        <Settings size={24} />
         <span className="sr-only">Accessibilité</span>
       </button>
 
@@ -620,13 +603,13 @@ const AccessibilityMenu = () => {
       {isOpen && (
         <div
           ref={menuRef}
-          className="fixed top-6 right-6 w-96 bg-white rounded-xl shadow-2xl border border-gray-200 z-50 max-h-[80vh] flex flex-col"
+          className="accessibility-menu"
           role="dialog"
           aria-label="Paramètres d'accessibilité"
         >
           {/* En-tête */}
-          <div className="flex items-center justify-between p-4 border-b border-gray-200">
-            <h2 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+          <div className="accessibility-header">
+            <h2 className="accessibility-title">
               <Settings size={20} />
               Accessibilité
             </h2>
@@ -635,7 +618,7 @@ const AccessibilityMenu = () => {
                 setIsOpen(false);
                 speak("Menu fermé");
               }}
-              className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+              className="accessibility-close"
               aria-label="Fermer le menu"
             >
               <X size={20} />
@@ -643,54 +626,62 @@ const AccessibilityMenu = () => {
           </div>
 
           {/* Onglets */}
-          <div className="flex bg-gray-50 p-1 m-4 rounded-lg">
+          <div className="accessibility-tabs">
             {tabs.map((tab) => {
               const Icon = tab.icon;
               return (
                 <button
                   key={tab.id}
-                  className={`flex-1 flex items-center justify-center gap-1 px-2 py-2 rounded-md text-xs font-medium transition-all ${
-                    activeTab === tab.id
-                      ? 'bg-white text-blue-600 shadow-sm'
-                      : 'text-gray-600 hover:text-gray-800'
-                  }`}
+                  className={`accessibility-tab ${activeTab === tab.id ? 'active' : ''}`}
                   onClick={() => {
                     setActiveTab(tab.id);
                     speak(`Onglet ${tab.label}`);
                   }}
                 >
                   <Icon size={14} />
-                  <span className="hidden sm:inline">{tab.label}</span>
+                  <span>{tab.label}</span>
                 </button>
               );
             })}
           </div>
 
           {/* Contenu des onglets */}
-          <div className="flex-1 overflow-y-auto p-4">
+          <div className="accessibility-content">
             {renderTabContent()}
           </div>
 
           {/* Actions */}
-          <div className="p-4 border-t border-gray-200 space-y-3">
+          <div className="accessibility-actions">
             <button
               onClick={resetSettings}
-              className="w-full flex items-center justify-center gap-2 px-4 py-2 bg-red-50 hover:bg-red-100 text-red-700 rounded-lg transition-colors"
+              className="accessibility-reset-btn"
               aria-label="Réinitialiser tous les paramètres"
             >
               <RotateCcw size={16} />
               Réinitialiser
             </button>
 
-            <div className="bg-blue-50 p-3 rounded-lg">
-              <h4 className="text-sm font-medium text-blue-800 mb-2">Raccourcis clavier :</h4>
-              <div className="grid grid-cols-2 gap-2 text-xs text-blue-700">
-                <div><kbd className="bg-blue-100 px-1 rounded">Alt+A</kbd> Menu</div>
-                <div><kbd className="bg-blue-100 px-1 rounded">Alt+C</kbd> Contraste</div>
-                <div><kbd className="bg-blue-100 px-1 rounded">Alt+D</kbd> Dyslexie</div>
-                <div><kbd className="bg-blue-100 px-1 rounded">Alt+S</kbd> Audio</div>
-                <div><kbd className="bg-blue-100 px-1 rounded">Alt+M</kbd> Sombre</div>
-                <div><kbd className="bg-blue-100 px-1 rounded">Alt±</kbd> Police</div>
+            <div className="accessibility-shortcuts">
+              <h4 className="accessibility-shortcuts-title">Raccourcis clavier :</h4>
+              <div className="accessibility-shortcuts-grid">
+                <div className="accessibility-shortcut">
+                  <kbd>Alt+A</kbd> Menu
+                </div>
+                <div className="accessibility-shortcut">
+                  <kbd>Alt+C</kbd> Contraste
+                </div>
+                <div className="accessibility-shortcut">
+                  <kbd>Alt+D</kbd> Dyslexie
+                </div>
+                <div className="accessibility-shortcut">
+                  <kbd>Alt+S</kbd> Audio
+                </div>
+                <div className="accessibility-shortcut">
+                  <kbd>Alt+M</kbd> Sombre
+                </div>
+                <div className="accessibility-shortcut">
+                  <kbd>Alt±</kbd> Police
+                </div>
               </div>
             </div>
           </div>
