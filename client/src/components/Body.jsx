@@ -19,13 +19,6 @@ const Body = ({ onStartQuiz }) => {
           </p>
         </div>
 
-        <div className="accessibility-section">
-          <h3 className="accessibility-title">Accessibilité :</h3>
-          <p className="accessibility-text">
-            Compatible avec les lecteurs d'écran et les technologies d'assistance.
-            Navigation au clavier disponible.
-          </p>
-        </div>
       </section>
      
       <button className="body-btn" onClick={onStartQuiz}>
