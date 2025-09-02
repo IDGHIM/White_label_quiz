@@ -82,7 +82,7 @@ const Navbar = () => {
     return () => {
       delete window.refreshNavbarAuth;
     };
-  }, []);
+  },);
 
   if (loading) {
     return (

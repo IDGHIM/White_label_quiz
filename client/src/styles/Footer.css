@@ -1,210 +1,27 @@
-/* Footer cohérent avec la navbar */
+/* Footer.css - Styles harmonisés avec Navbar */
+
 .site-footer {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1rem 2rem;
-  background: linear-gradient(135deg, var(--second-color) 0%, var(--third-color) 100%);
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-  transition: all 0.3s ease;
-  color: white;
-  font-size: 1rem;
-  position: relative;
   width: 100%;
+  background: rgba(255, 255, 255, 0.9);
+  backdrop-filter: blur(20px);
+  border-top: 2px solid rgba(71, 74, 86, 0.15);
+  box-shadow: 0 -4px 25px rgba(11, 11, 13, 0.15);
   margin-top: auto;
-  box-sizing: border-box;
-}
-
-/* États différents selon la section */
-.footer-guest {
-  background: linear-gradient(135deg, var(--second-color) 0%, var(--third-color) 100%);
-}
-
-.footer-authenticated {
-  background: linear-gradient(135deg, var(--third-color) 0%, var(--fourth-color) 100%);
-}
-
-/* Navigation container */
-.footer-navigation {
+  padding: 32px 24px;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: 1rem;
+  gap: 20px;
   position: relative;
+  z-index: 100;
+  min-height: 120px;
 }
 
-/* Groupes de menus */
-.footer-menu {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-/* Liens de navigation - même style que navbar */
-.footer-nav-link {
-  position: relative;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 0.75rem;
-  border: none;
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  border-radius: 50%;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  text-decoration: none;
-  font-size: 1.2rem;
-  min-width: 45px;
-  min-height: 45px;
-}
-
-/* Styles spécialisés pour les liens footer */
-.footer-nav-link.link-home {
-  background: rgba(76, 175, 80, 0.3);
-}
-
-.footer-nav-link.link-about {
-  background: rgba(33, 150, 243, 0.3);
-}
-
-.footer-nav-link.link-contact {
-  background: rgba(255, 193, 7, 0.3);
-}
-
-.footer-nav-link.link-privacy {
-  background: rgba(156, 39, 176, 0.3);
-}
-
-.footer-nav-link.link-terms {
-  background: rgba(255, 87, 34, 0.3);
-}
-
-/* Effets de survol - cohérents avec navbar */
-.footer-nav-link:hover {
-  background: rgba(255, 255, 255, 0.3);
-  transform: translateY(-2px) scale(1.05);
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-}
-
-.footer-nav-link.link-home:hover {
-  background: rgba(76, 175, 80, 0.5);
-}
-
-.footer-nav-link.link-about:hover {
-  background: rgba(33, 150, 243, 0.5);
-}
-
-.footer-nav-link.link-contact:hover {
-  background: rgba(255, 193, 7, 0.5);
-}
-
-.footer-nav-link.link-privacy:hover {
-  background: rgba(156, 39, 176, 0.5);
-}
-
-.footer-nav-link.link-terms:hover {
-  background: rgba(255, 87, 34, 0.5);
-}
-
-/* Section copyright - style cohérent */
-.footer-copyright-section {
-  color: white;
-  font-size: 0.9rem;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  position: relative;
-}
-
-.copyright-badge {
-  display: inline-block;
-  background: var(--first-color);
-  color: var(--fourth-color);
-  padding: 0.25rem 0.5rem;
-  border-radius: 15px;
-  font-size: 0.8rem;
-  font-weight: bold;
-  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-}
-
-/* Tooltips - même style que navbar */
-.tooltip {
-  position: absolute;
-  top: -35px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: var(--fourth-color);
-  color: var(--first-color);
-  padding: 0.5rem;
-  border-radius: 5px;
-  font-size: 0.8rem;
-  white-space: nowrap;
-  opacity: 0;
-  visibility: hidden;
-  transition: all 0.3s ease;
-  z-index: 1000;
-}
-
-.footer-nav-link:hover .tooltip {
-  opacity: 1;
-  visibility: visible;
-  top: -40px;
-}
-
-.tooltip::before {
-  content: '';
-  position: absolute;
-  bottom: -5px;
-  left: 50%;
-  transform: translateX(-50%);
-  border-left: 5px solid transparent;
-  border-right: 5px solid transparent;
-  border-top: 5px solid var(--fourth-color);
-}
-
-/* Indicateur d'état de connexion */
-.connection-status {
-  position: relative;
-  margin-right: 0.5rem;
-}
-
-.status-dot {
-  display: block;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  transition: all 0.3s ease;
-}
-
-.connected .status-dot {
-  background: #4caf50;
-  box-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
-  animation: pulse 2s infinite;
-}
-
-.disconnected .status-dot {
-  background: #f44336;
-  opacity: 0.6;
-}
-
-@keyframes pulse {
-  0% {
-    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7);
-  }
-  70% {
-    box-shadow: 0 0 0 10px rgba(76, 175, 80, 0);
-  }
-  100% {
-    box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
-  }
-}
-
-/* Animation d'entrée */
-@keyframes footerSlideUp {
+/* Animation d'entrée cohérente avec la navbar */
+@keyframes slideInFromBottom {
   from {
     opacity: 0;
-    transform: translateY(30px);
+    transform: translateY(100%);
   }
   to {
     opacity: 1;
@@ -212,66 +29,241 @@
   }
 }
 
-.site-footer {
-  animation: footerSlideUp 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+/* Navigation du footer */
+.footer-navigation {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
-/* Préférence utilisateur pour réduire les animations */
-@media (prefers-reduced-motion: reduce) {
-  .footer-nav-link {
-    transition: none;
-  }
-  
-  .footer-nav-link:hover {
-    transform: none;
-  }
-  
-  .site-footer {
-    animation: none;
-  }
+/* Liens de navigation - style plus visible et contrasté */
+.footer-nav-link {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  padding: 14px 24px;
+  border-radius: 30px;
+  background: rgba(71, 74, 86, 0.08);
+  color: var(--fourth-color);
+  font-size: 1rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border: 2px solid transparent;
+  backdrop-filter: blur(10px);
 }
 
-/* Responsive design - cohérent avec navbar */
+.footer-nav-link::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 25px;
+  background: currentColor;
+  opacity: 0;
+  transform: scale(0.8);
+  transition: all 0.3s ease;
+}
+
+.footer-nav-link:hover::before {
+  opacity: 0.1;
+  transform: scale(1);
+}
+
+.footer-nav-link:hover {
+  transform: translateY(-3px) scale(1.05);
+  background: rgba(71, 74, 86, 0.15);
+  color: var(--fourth-color);
+  border-color: rgba(71, 74, 86, 0.2);
+  box-shadow: 0 8px 20px rgba(11, 11, 13, 0.2);
+}
+
+/* Effet de focus pour l'accessibilité */
+.footer-nav-link:focus-visible {
+  outline: 2px solid var(--accent-color);
+  outline-offset: 2px;
+}
+
+/* Section copyright */
+.footer-copyright-section {
+  color: var(--third-color);
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-align: center;
+  padding: 12px 20px;
+  border-radius: 25px;
+  background: rgba(146, 154, 171, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(146, 154, 171, 0.2);
+  transition: all 0.3s ease;
+}
+
+.footer-copyright-section:hover {
+  background: rgba(146, 154, 171, 0.15);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(11, 11, 13, 0.1);
+}
+
+/* Variantes pour différents contextes (si navbar change d'état) */
+body.dark-theme .site-footer,
+.navbar-authenticated ~ * .site-footer {
+  background: rgba(71, 74, 86, 0.95);
+  border-top-color: rgba(211, 213, 253, 0.2);
+}
+
+body.dark-theme .footer-nav-link,
+.navbar-authenticated ~ * .footer-nav-link {
+  color: var(--first-color);
+}
+
+body.dark-theme .footer-nav-link:hover,
+.navbar-authenticated ~ * .footer-nav-link:hover {
+  color: var(--accent-color);
+}
+
+body.dark-theme .footer-copyright-section,
+.navbar-authenticated ~ * .footer-copyright-section {
+  color: var(--first-color);
+  background: rgba(211, 213, 253, 0.1);
+}
+
+/* Effet de séparateur décoratif */
+.footer-navigation::after {
+  content: '';
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--accent-color) 50%,
+    transparent 100%
+  );
+  border-radius: 2px;
+  opacity: 0.6;
+}
+
+/* Responsive Design - harmonisé avec navbar */
 @media (max-width: 768px) {
   .site-footer {
-    padding: 0.5rem 1rem;
-    flex-direction: column;
-    gap: 1rem;
+    padding: 20px 16px;
+    gap: 12px;
   }
-  
+
   .footer-navigation {
-    gap: 0.5rem;
+    gap: 20px;
   }
-  
+
   .footer-nav-link {
-    padding: 0.5rem;
-    min-width: 40px;
-    min-height: 40px;
-    font-size: 1rem;
+    padding: 10px 16px;
+    font-size: 0.9rem;
   }
-  
-  .tooltip {
-    display: none; /* Masquer les tooltips sur mobile */
-  }
-  
-  .copyright-badge {
-    display: none; /* Masquer le badge sur mobile */
+
+  .footer-copyright-section {
+    font-size: 0.8rem;
+    padding: 6px 12px;
   }
 }
 
 @media (max-width: 480px) {
   .site-footer {
-    gap: 0.75rem;
-    text-align: center;
+    padding: 16px 12px;
+    gap: 10px;
   }
-  
-  .footer-menu {
-    gap: 0.25rem;
-    flex-wrap: wrap;
+
+  .footer-navigation {
+    gap: 12px;
+    flex-direction: column;
+  }
+
+  .footer-nav-link {
+    padding: 8px 14px;
+    font-size: 0.85rem;
+    width: 100%;
+    text-align: center;
     justify-content: center;
   }
-  
+
   .footer-copyright-section {
-    font-size: 0.8rem;
+    font-size: 0.75rem;
+    margin-top: 8px;
+  }
+
+  /* Masquer le séparateur décoratif sur mobile */
+  .footer-navigation::after {
+    display: none;
+  }
+}
+
+/* Animation au scroll pour révéler le footer */
+.site-footer {
+  opacity: 0;
+  animation: slideInFromBottom 0.6s ease-out 0.2s forwards;
+}
+
+/* Micro-interactions pour améliorer l'expérience */
+.footer-nav-link {
+  position: relative;
+}
+
+.footer-nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 2px;
+  background: var(--accent-color);
+  border-radius: 2px;
+  transition: width 0.3s ease;
+}
+
+.footer-nav-link:hover::after {
+  width: 70%;
+}
+
+/* États actifs pour navigation (si besoin) */
+.footer-nav-link.active {
+  color: var(--fourth-color);
+  background: rgba(11, 11, 13, 0.1);
+}
+
+.footer-nav-link.active::after {
+  width: 70%;
+  background: var(--fourth-color);
+}
+
+/* Cohérence avec l'effet glassmorphism de la navbar */
+.site-footer::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: inherit;
+  z-index: -1;
+}
+
+/* Animation de pulsation douce pour le copyright (subtile) */
+.footer-copyright-section {
+  animation: gentleFade 4s ease-in-out infinite;
+}
+
+@keyframes gentleFade {
+  0%, 100% {
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 0.9;
   }
 }
