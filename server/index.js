@@ -65,7 +65,7 @@ const globalLimiter = rateLimit({
 // Rate limiting STRICT pour l'authentification - SANS keyGenerator custom
 const authLimiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutes
-  max: 5, // 5 tentatives par IP
+  max: 10, // 10 tentatives par IP
   message: {
     success: false,
     error: 'Trop de tentatives de connexion, réessayez plus tard',
@@ -216,7 +216,7 @@ const apiRouter = express.Router();
 console.log("🧪 Phase de test - Intégration progressive...");
 
 // ================================
-// 🔑 ROUTES D'AUTHENTIFICATION
+// 🔑 ROUTES D'AUTHENTIFICATION AVEC SUPPORT IDENTIFIER
 // ================================
 try {
   console.log("1️⃣ Test authController...");
@@ -251,30 +251,143 @@ try {
     next();
   }, authController.register);
 
+  // ✅ ROUTE LOGIN CORRIGÉE POUR ACCEPTER IDENTIFIER
   apiRouter.post("/login", authLimiter, (req, res, next) => {
-    const { email, password } = req.body;
+    const { email, password, identifier } = req.body;
     
-    if (!email || !password) {
+    // Accepter soit 'email' soit 'identifier'
+    const champConnexion = email || identifier;
+    
+    if (!champConnexion || !password) {
       return res.status(400).json({
         success: false,
-        message: "Email et mot de passe requis"
+        message: "Identifiant (email ou nom d'utilisateur) et mot de passe requis"
       });
     }
+    
+    // Validation basique du format si c'est un email
+    if (champConnexion.includes('@')) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(champConnexion)) {
+        return res.status(400).json({
+          success: false,
+          message: "Format d'email invalide"
+        });
+      }
+    } else {
+      // Validation du nom d'utilisateur (pas d'espaces, longueur min)
+      if (champConnexion.length < 3) {
+        return res.status(400).json({
+          success: false,
+          message: "Le nom d'utilisateur doit contenir au moins 3 caractères"
+        });
+      }
+      
+      if (!/^[a-zA-Z0-9._-]+$/.test(champConnexion)) {
+        return res.status(400).json({
+          success: false,
+          message: "Le nom d'utilisateur ne peut contenir que des lettres, chiffres, points, tirets et underscores"
+        });
+      }
+    }
+    
+    // Validation du mot de passe
+    if (password.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: "Le mot de passe doit contenir au moins 6 caractères"
+      });
+    }
+    
+    // Passer l'identifiant au contrôleur
+    req.body.identifier = champConnexion;
+    req.body.email = champConnexion; // Maintenir la compatibilité si nécessaire
+    
+    console.log(`🔐 [LOGIN] Tentative de connexion avec identifier: ${champConnexion} (type: ${champConnexion.includes('@') ? 'email' : 'username'})`);
     
     next();
   }, authController.login);
 
+  // Autres routes auth inchangées
   apiRouter.post("/logout", authController.logout);
-  apiRouter.post("/password-reset-request", authLimiter, authController.requestPasswordReset);
-  apiRouter.post("/reset-password", authLimiter, authController.resetPassword);
+  apiRouter.post("/password-reset-request", authLimiter, (req, res, next) => {
+    const { email } = req.body;
+    
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Email requis pour la réinitialisation"
+      });
+    }
+    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        success: false,
+        message: "Format d'email invalide"
+      });
+    }
+    
+    next();
+  }, authController.requestPasswordReset);
+
+  apiRouter.post("/reset-password", authLimiter, (req, res, next) => {
+    const { token, newPassword } = req.body;
+    
+    if (!token || !newPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Token et nouveau mot de passe requis"
+      });
+    }
+    
+    if (newPassword.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: "Le nouveau mot de passe doit contenir au moins 6 caractères"
+      });
+    }
+    
+    next();
+  }, authController.resetPassword);
+
   apiRouter.get("/verify/:token", authController.verifyEmail);
-  apiRouter.post("/resend-verification", authLimiter, authController.resendVerificationEmail);
+  
+  apiRouter.post("/resend-verification", authLimiter, (req, res, next) => {
+    const { email } = req.body;
+    
+    if (!email) {
+      return res.status(400).json({
+        success: false,
+        message: "Email requis"
+      });
+    }
+    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        success: false,
+        message: "Format d'email invalide"
+      });
+    }
+    
+    next();
+  }, authController.resendVerificationEmail);
+
   apiRouter.get("/me", protect, authController.me);
 
-  console.log("✅ authController OK");
+  console.log("✅ authController OK - Support identifier activé");
 } catch (error) {
   console.error("❌ ERREUR dans authController:", error.message);
   console.error(error.stack);
+  
+  // Fallback routes en cas d'erreur
+  apiRouter.post("/login", authLimiter, (req, res) => {
+    res.status(500).json({ 
+      success: false, 
+      message: "AuthController non disponible - Service de connexion temporairement indisponible" 
+    });
+  });
   
   apiRouter.get("/me", (req, res) => {
     res.status(500).json({ 
@@ -291,11 +404,84 @@ try {
   console.log("2️⃣ Test userController...");
   const userController = require("./src/controllers/userController");
 
-  apiRouter.get("/users", apiLimiter, userController.index);
-  apiRouter.get("/users/:id", apiLimiter, userController.show);
-  apiRouter.post("/users", apiLimiter, userController.create);
-  apiRouter.put("/users/:id", apiLimiter, userController.update);
-  apiRouter.delete("/users/:id", apiLimiter, userController.delete);
+  apiRouter.get("/users", apiLimiter, (req, res, next) => {
+    const { page, limit, search, role } = req.query;
+    
+    // Validation des paramètres de pagination
+    if (page && (isNaN(page) || page < 1)) {
+      return res.status(400).json({
+        success: false,
+        message: "Paramètre 'page' invalide (doit être >= 1)"
+      });
+    }
+    
+    if (limit && (isNaN(limit) || limit < 1 || limit > 100)) {
+      return res.status(400).json({
+        success: false,
+        message: "Paramètre 'limit' invalide (1-100)"
+      });
+    }
+    
+    // Validation du rôle si fourni
+    if (role && !['user', 'admin'].includes(role)) {
+      return res.status(400).json({
+        success: false,
+        message: "Paramètre 'role' invalide (user, admin)"
+      });
+    }
+    
+    next();
+  }, userController.index);
+
+  apiRouter.get("/users/:id", apiLimiter, (req, res, next) => {
+    if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({
+        success: false,
+        message: "ID utilisateur invalide"
+      });
+    }
+    next();
+  }, userController.show);
+
+  apiRouter.post("/users", apiLimiter, (req, res, next) => {
+    const { email, username, password, role } = req.body;
+    
+    if (!email || !username || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Email, nom d'utilisateur et mot de passe requis"
+      });
+    }
+    
+    if (role && !['user', 'admin'].includes(role)) {
+      return res.status(400).json({
+        success: false,
+        message: "Rôle invalide (user, admin)"
+      });
+    }
+    
+    next();
+  }, userController.create);
+
+  apiRouter.put("/users/:id", apiLimiter, (req, res, next) => {
+    if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({
+        success: false,
+        message: "ID utilisateur invalide"
+      });
+    }
+    next();
+  }, userController.update);
+
+  apiRouter.delete("/users/:id", apiLimiter, (req, res, next) => {
+    if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({
+        success: false,
+        message: "ID utilisateur invalide"
+      });
+    }
+    next();
+  }, userController.delete);
 
   console.log("✅ userController OK");
 } catch (error) {
@@ -305,7 +491,8 @@ try {
   apiRouter.get("/users", (req, res) => {
     res.json({ 
       success: true,
-      message: "Users route OK (fallback)" 
+      message: "Users route OK (fallback)",
+      data: []
     });
   });
 }
@@ -318,7 +505,7 @@ try {
   const questionController = require("./src/controllers/questionController");
 
   apiRouter.get("/questions", apiLimiter, (req, res, next) => {
-    const { category, limit, offset } = req.query;
+    const { category, limit, offset, difficulty, type } = req.query;
     
     if (limit && (isNaN(limit) || limit < 0 || limit > 100)) {
       return res.status(400).json({
@@ -331,6 +518,20 @@ try {
       return res.status(400).json({
         success: false,
         message: "Paramètre 'offset' invalide"
+      });
+    }
+    
+    if (difficulty && !['facile', 'moyen', 'difficile'].includes(difficulty)) {
+      return res.status(400).json({
+        success: false,
+        message: "Paramètre 'difficulty' invalide (facile, moyen, difficile)"
+      });
+    }
+    
+    if (type && !['multiple', 'boolean', 'text'].includes(type)) {
+      return res.status(400).json({
+        success: false,
+        message: "Paramètre 'type' invalide (multiple, boolean, text)"
       });
     }
     
@@ -347,9 +548,52 @@ try {
     next();
   }, questionController.show);
 
-  apiRouter.post("/questions", apiLimiter, questionController.create);
-  apiRouter.put("/questions/:id", apiLimiter, questionController.update);
-  apiRouter.delete("/questions/:id", apiLimiter, questionController.delete);
+  apiRouter.post("/questions", apiLimiter, (req, res, next) => {
+    const { question, options, correctAnswers, category } = req.body;
+    
+    if (!question || !options || !correctAnswers || !category) {
+      return res.status(400).json({
+        success: false,
+        message: "Question, options, bonnes réponses et catégorie requis"
+      });
+    }
+    
+    if (!Array.isArray(options) || options.length < 2) {
+      return res.status(400).json({
+        success: false,
+        message: "Au moins 2 options sont requises"
+      });
+    }
+    
+    if (!Array.isArray(correctAnswers) || correctAnswers.length < 1) {
+      return res.status(400).json({
+        success: false,
+        message: "Au moins une bonne réponse est requise"
+      });
+    }
+    
+    next();
+  }, questionController.create);
+
+  apiRouter.put("/questions/:id", apiLimiter, (req, res, next) => {
+    if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({
+        success: false,
+        message: "ID de question invalide"
+      });
+    }
+    next();
+  }, questionController.update);
+
+  apiRouter.delete("/questions/:id", apiLimiter, (req, res, next) => {
+    if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({
+        success: false,
+        message: "ID de question invalide"
+      });
+    }
+    next();
+  }, questionController.delete);
 
   console.log("✅ questionController OK");
 } catch (error) {
@@ -359,7 +603,8 @@ try {
   apiRouter.get("/questions", (req, res) => {
     res.json({ 
       success: true,
-      message: "Questions route OK (fallback)" 
+      message: "Questions route OK (fallback)",
+      data: []
     });
   });
 }
@@ -371,12 +616,99 @@ try {
   console.log("4️⃣ Test quizController...");
   const quizController = require("./src/controllers/quizController");
 
-  apiRouter.get("/quizzes", apiLimiter, quizController.index);
-  apiRouter.get("/quizzes/:id", apiLimiter, quizController.show);
-  apiRouter.post("/quizzes", apiLimiter, quizController.create);
-  apiRouter.put("/quizzes/:id", apiLimiter, quizController.update);
-  apiRouter.delete("/quizzes/:id", apiLimiter, quizController.delete);
-  apiRouter.post("/quizzes/:id/duplicate", apiLimiter, quizController.duplicate);
+  apiRouter.get("/quizzes", apiLimiter, (req, res, next) => {
+    const { category, difficulty, limit, offset, author } = req.query;
+    
+    if (limit && (isNaN(limit) || limit < 0 || limit > 50)) {
+      return res.status(400).json({
+        success: false,
+        message: "Paramètre 'limit' invalide (0-50)"
+      });
+    }
+    
+    if (offset && (isNaN(offset) || offset < 0)) {
+      return res.status(400).json({
+        success: false,
+        message: "Paramètre 'offset' invalide"
+      });
+    }
+    
+    if (author && !author.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({
+        success: false,
+        message: "ID auteur invalide"
+      });
+    }
+    
+    next();
+  }, quizController.index);
+
+  apiRouter.get("/quizzes/:id", apiLimiter, (req, res, next) => {
+    if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({
+        success: false,
+        message: "ID de quiz invalide"
+      });
+    }
+    next();
+  }, quizController.show);
+
+  apiRouter.post("/quizzes", apiLimiter, (req, res, next) => {
+    const { title, description, questions } = req.body;
+    
+    if (!title || !description || !questions) {
+      return res.status(400).json({
+        success: false,
+        message: "Titre, description et questions requis"
+      });
+    }
+    
+    if (!Array.isArray(questions) || questions.length < 1) {
+      return res.status(400).json({
+        success: false,
+        message: "Au moins une question est requise"
+      });
+    }
+    
+    if (title.length < 3 || title.length > 100) {
+      return res.status(400).json({
+        success: false,
+        message: "Le titre doit contenir entre 3 et 100 caractères"
+      });
+    }
+    
+    next();
+  }, quizController.create);
+
+  apiRouter.put("/quizzes/:id", apiLimiter, (req, res, next) => {
+    if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({
+        success: false,
+        message: "ID de quiz invalide"
+      });
+    }
+    next();
+  }, quizController.update);
+
+  apiRouter.delete("/quizzes/:id", apiLimiter, (req, res, next) => {
+    if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({
+        success: false,
+        message: "ID de quiz invalide"
+      });
+    }
+    next();
+  }, quizController.delete);
+
+  apiRouter.post("/quizzes/:id/duplicate", apiLimiter, (req, res, next) => {
+    if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({
+        success: false,
+        message: "ID de quiz invalide"
+      });
+    }
+    next();
+  }, quizController.duplicate);
 
   console.log("✅ quizController OK");
 } catch (error) {
@@ -604,6 +936,28 @@ app.use((error, req, res, next) => {
     });
   }
   
+  if (error.type === 'entity.too.large') {
+    return res.status(413).json({
+      success: false,
+      error: 'Taille de la requête trop importante'
+    });
+  }
+  
+  if (error.name === 'ValidationError') {
+    return res.status(400).json({
+      success: false,
+      error: 'Données de validation invalides',
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
+  }
+  
+  if (error.name === 'CastError') {
+    return res.status(400).json({
+      success: false,
+      error: 'Format d\'ID invalide'
+    });
+  }
+  
   res.status(500).json({
     success: false,
     error: process.env.NODE_ENV === 'production' 
@@ -612,16 +966,18 @@ app.use((error, req, res, next) => {
   });
 });
 
-// Route 404 sécurisée - CORRECTION ICI
+// Route 404 sécurisée
 app.use((req, res) => {
   console.warn(`🔍 Route non trouvée: ${req.method} ${req.url} depuis ${req.ip}`);
   res.status(404).json({
     success: false,
-    error: 'Route non trouvée'
+    error: 'Route non trouvée',
+    path: req.url,
+    method: req.method
   });
 });
 
-console.log("🎉 Tous les contrôleurs testés avec sécurité renforcée !");
+console.log("🎉 Tous les contrôleurs testés avec sécurité renforcée et support identifier !");
 
 // ================================
 // 🚀 DÉMARRAGE SERVEUR SÉCURISÉ
@@ -632,9 +988,10 @@ app.listen(PORT, "0.0.0.0", () => {
   console.log("  ✓ Headers de sécurité configurés");
   console.log("  ✓ Rate limiting IPv6 compatible");
   console.log("  ✓ Protection CORS configurée");
-  console.log("  ✓ Validation des entrées");
+  console.log("  ✓ Validation des entrées renforcée");
   console.log("  ✓ Protection fichiers sensibles");
-  console.log("  ✓ Gestion d'erreurs sécurisée");
+  console.log("  ✓ Gestion d'erreurs sécurisée avancée");
+  console.log("  ✓ Support identifier (email OU nom d'utilisateur)");
   
   console.log("\n🌐 CORS autorisé pour:");
   console.log("  - http://localhost:5173 (Vite dev)");
@@ -643,13 +1000,13 @@ app.listen(PORT, "0.0.0.0", () => {
   console.log("\n📋 Routes disponibles:");
   
   console.log("\n🔓 Routes publiques (rate limited):");
-  console.log("  POST /api/register (5 req/15min)");
-  console.log("  POST /api/login (5 req/15min)");
+  console.log("  POST /api/register (10 req/15min)");
+  console.log("  POST /api/login (10 req/15min) ✨ SUPPORT IDENTIFIER");
   console.log("  POST /api/logout");
   console.log("  GET  /api/verify/:token");
-  console.log("  POST /api/resend-verification (5 req/15min)");
-  console.log("  POST /api/password-reset-request (5 req/15min)");
-  console.log("  POST /api/reset-password (5 req/15min)");
+  console.log("  POST /api/resend-verification (10 req/15min)");
+  console.log("  POST /api/password-reset-request (10 req/15min)");
+  console.log("  POST /api/reset-password (10 req/15min)");
   
   console.log("\n🔒 Routes protégées (connecté + rate limited):");
   console.log("  GET  /api/me");
@@ -664,12 +1021,36 @@ app.listen(PORT, "0.0.0.0", () => {
   
   console.log("\n📊 Routes API générales (rate limited API):");
   console.log("  GET  /api/users (50 req/15min)");
+  console.log("  POST /api/users (50 req/15min)");
+  console.log("  PUT  /api/users/:id (50 req/15min)");
+  console.log("  DELETE /api/users/:id (50 req/15min)");
   console.log("  GET  /api/questions (50 req/15min)");
+  console.log("  POST /api/questions (50 req/15min)");
+  console.log("  PUT  /api/questions/:id (50 req/15min)");
+  console.log("  DELETE /api/questions/:id (50 req/15min)");
   console.log("  GET  /api/quizzes (50 req/15min)");
+  console.log("  POST /api/quizzes (50 req/15min)");
+  console.log("  PUT  /api/quizzes/:id (50 req/15min)");
+  console.log("  DELETE /api/quizzes/:id (50 req/15min)");
+  console.log("  POST /api/quizzes/:id/duplicate (50 req/15min)");
   
   console.log("\n🚦 Rate Limits configurés:");
   console.log("  - Global: 100 req/15min par IP");
-  console.log("  - Auth: 5 req/15min par IP (IPv6 compatible)");
+  console.log("  - Auth: 10 req/15min par IP (IPv6 compatible)");
   console.log("  - API: 50 req/15min par IP");
   console.log("  - Admin: 200 req/15min par IP");
+  
+  console.log("\n🔐 NOUVELLES FONCTIONNALITÉS LOGIN:");
+  console.log("  ✨ Accepte email OU nom d'utilisateur");
+  console.log("  ✨ Validation automatique du format");
+  console.log("  ✨ Messages d'erreur adaptés");
+  console.log("  ✨ Sécurité renforcée avec validation côté serveur");
+  
+  console.log("\n📝 Format de requête login:");
+  console.log("  POST /api/login");
+  console.log("  Body: { identifier: 'email@test.com' | 'username', password: 'motdepasse' }");
+  console.log("  OU");
+  console.log("  Body: { email: 'email@test.com', password: 'motdepasse' }");
+  
+  console.log("\n🎯 Ready to handle login with identifier support!");
 });
