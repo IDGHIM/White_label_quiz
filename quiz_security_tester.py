@@ -1,0 +1,410 @@
+#!/usr/bin/env python3
+"""
+Script de test de sécurité pour application de quiz
+Tests automatisés des principales vulnérabilités
+"""
+
+import requests
+import json
+import time
+import random
+import string
+from urllib.parse import urljoin, urlparse
+import re
+import hashlib
+from concurrent.futures import ThreadPoolExecutor, as_completed
+import warnings
+warnings.filterwarnings('ignore', message='Unverified HTTPS request')
+
+class QuizSecurityTester:
+    def __init__(self, base_url, session=None):
+        self.base_url = base_url.rstrip('/')
+        self.session = session or requests.Session()
+        self.session.verify = False  # Pour les tests uniquement
+        self.results = []
+        
+    def log_result(self, test_name, status, details=""):
+        """Enregistre le résultat d'un test"""
+        result = {
+            'test': test_name,
+            'status': status,
+            'details': details,
+            'timestamp': time.strftime('%Y-%m-%d %H:%M:%S')
+        }
+        self.results.append(result)
+        print(f"[{status}] {test_name}: {details}")
+        
+    def test_https_redirect(self):
+        """Test si HTTP redirige vers HTTPS"""
+        try:
+            if self.base_url.startswith('https://'):
+                http_url = self.base_url.replace('https://', 'http://')
+                resp = requests.get(http_url, allow_redirects=False, timeout=10, verify=False)
+                if resp.status_code in [301, 302, 308] and 'https://' in resp.headers.get('Location', ''):
+                    self.log_result("HTTPS Redirect", "PASS", "HTTP redirige correctement vers HTTPS")
+                else:
+                    self.log_result("HTTPS Redirect", "FAIL", f"Code: {resp.status_code}, Location: {resp.headers.get('Location', 'None')}")
+            else:
+                self.log_result("HTTPS Redirect", "SKIP", "URL de base n'utilise pas HTTPS")
+        except Exception as e:
+            self.log_result("HTTPS Redirect", "ERROR", str(e))
+            
+    def test_security_headers(self):
+        """Test la présence des headers de sécurité"""
+        try:
+            resp = self.session.get(self.base_url)
+            headers = resp.headers
+            
+            security_headers = {
+                'X-Content-Type-Options': 'nosniff',
+                'X-Frame-Options': ['DENY', 'SAMEORIGIN'],
+                'X-XSS-Protection': '1; mode=block',
+                'Strict-Transport-Security': 'max-age',
+                'Content-Security-Policy': None,
+                'Referrer-Policy': None
+            }
+            
+            for header, expected in security_headers.items():
+                if header in headers:
+                    if isinstance(expected, list):
+                        if any(exp in headers[header] for exp in expected):
+                            self.log_result(f"Header {header}", "PASS", f"Valeur: {headers[header]}")
+                        else:
+                            self.log_result(f"Header {header}", "WARN", f"Valeur inattendue: {headers[header]}")
+                    elif expected and expected not in headers[header]:
+                        self.log_result(f"Header {header}", "WARN", f"Valeur: {headers[header]}")
+                    else:
+                        self.log_result(f"Header {header}", "PASS", f"Présent: {headers[header]}")
+                else:
+                    self.log_result(f"Header {header}", "FAIL", "Header manquant")
+                    
+        except Exception as e:
+            self.log_result("Security Headers", "ERROR", str(e))
+            
+    def test_sql_injection(self, endpoints):
+        """Test d'injection SQL sur différents endpoints"""
+        sql_payloads = [
+            "' OR '1'='1",
+            "'; DROP TABLE users; --",
+            "' UNION SELECT null, username, password FROM users --",
+            "admin'--",
+            "' OR 1=1 --",
+            "'; WAITFOR DELAY '00:00:05' --",
+            "' AND (SELECT COUNT(*) FROM users) > 0 --"
+        ]
+        
+        for endpoint in endpoints:
+            for payload in sql_payloads:
+                try:
+                    # Test en paramètre GET
+                    resp = self.session.get(f"{self.base_url}{endpoint}", 
+                                          params={'id': payload, 'search': payload})
+                    
+                    # Recherche d'indices d'injection SQL
+                    if any(error in resp.text.lower() for error in 
+                          ['sql syntax', 'mysql_fetch', 'ora-', 'postgresql', 'sqlite']):
+                        self.log_result(f"SQL Injection {endpoint}", "FAIL", 
+                                      f"Erreur SQL détectée avec payload: {payload}")
+                        break
+                    elif resp.elapsed.total_seconds() > 5:
+                        self.log_result(f"SQL Injection {endpoint}", "FAIL", 
+                                      f"Délai suspect avec payload: {payload}")
+                        break
+                        
+                except Exception as e:
+                    continue
+            else:
+                self.log_result(f"SQL Injection {endpoint}", "PASS", "Aucune injection détectée")
+                
+    def test_xss_vulnerabilities(self, endpoints):
+        """Test des vulnérabilités XSS"""
+        xss_payloads = [
+            "<script>alert('XSS')</script>",
+            "javascript:alert('XSS')",
+            "<img src=x onerror=alert('XSS')>",
+            "<svg onload=alert('XSS')>",
+            "'\"><script>alert('XSS')</script>",
+            "<iframe src='javascript:alert(\"XSS\")'></iframe>"
+        ]
+        
+        for endpoint in endpoints:
+            for payload in xss_payloads:
+                try:
+                    # Test XSS reflected
+                    resp = self.session.get(f"{self.base_url}{endpoint}", 
+                                          params={'q': payload, 'search': payload})
+                    
+                    if payload in resp.text and 'text/html' in resp.headers.get('content-type', ''):
+                        self.log_result(f"XSS {endpoint}", "FAIL", 
+                                      f"XSS reflected détecté: {payload}")
+                        break
+                        
+                    # Test XSS stored via POST
+                    data = {'comment': payload, 'answer': payload, 'question': payload}
+                    resp = self.session.post(f"{self.base_url}{endpoint}", data=data)
+                    
+                except Exception as e:
+                    continue
+            else:
+                self.log_result(f"XSS {endpoint}", "PASS", "Aucune vulnérabilité XSS détectée")
+                
+    def test_csrf_protection(self, endpoints):
+        """Test de protection CSRF"""
+        for endpoint in endpoints:
+            try:
+                # Tentative de requête POST sans token CSRF
+                data = {'action': 'delete', 'id': '1', 'vote': 'yes'}
+                resp = self.session.post(f"{self.base_url}{endpoint}", data=data)
+                
+                # Vérifier si l'action a été acceptée sans token CSRF
+                if resp.status_code == 200 and 'success' in resp.text.lower():
+                    self.log_result(f"CSRF Protection {endpoint}", "FAIL", 
+                                  "Action acceptée sans token CSRF")
+                elif 'csrf' in resp.text.lower() or resp.status_code == 403:
+                    self.log_result(f"CSRF Protection {endpoint}", "PASS", 
+                                  "Protection CSRF détectée")
+                else:
+                    self.log_result(f"CSRF Protection {endpoint}", "WARN", 
+                                  f"Réponse ambiguë: {resp.status_code}")
+                    
+            except Exception as e:
+                self.log_result(f"CSRF Protection {endpoint}", "ERROR", str(e))
+                
+    def test_rate_limiting(self, endpoint="/api/login"):
+        """Test du rate limiting"""
+        try:
+            # Envoi rapide de multiples requêtes
+            responses = []
+            start_time = time.time()
+            
+            for i in range(20):
+                resp = self.session.post(f"{self.base_url}{endpoint}", 
+                                       data={'username': f'test{i}', 'password': 'password'})
+                responses.append(resp.status_code)
+                
+            end_time = time.time()
+            
+            # Analyser les réponses
+            rate_limited = sum(1 for code in responses if code == 429)
+            
+            if rate_limited > 5:
+                self.log_result("Rate Limiting", "PASS", 
+                              f"{rate_limited}/20 requêtes bloquées")
+            else:
+                self.log_result("Rate Limiting", "FAIL", 
+                              f"Seulement {rate_limited}/20 requêtes bloquées")
+                              
+        except Exception as e:
+            self.log_result("Rate Limiting", "ERROR", str(e))
+            
+    def test_authentication_bypass(self, login_endpoint="/api/login"):
+        """Test de contournement d'authentification"""
+        bypass_payloads = [
+            {'username': 'admin', 'password': 'admin'},
+            {'username': 'administrator', 'password': 'password'},
+            {'username': 'admin', 'password': '123456'},
+            {'username': 'root', 'password': 'root'},
+            {'username': 'test', 'password': 'test'},
+            {'username': "admin' --", 'password': 'anything'},
+            {'username': 'admin', 'password': "' OR '1'='1"}
+        ]
+        
+        for payload in bypass_payloads:
+            try:
+                resp = self.session.post(f"{self.base_url}{login_endpoint}", data=payload)
+                
+                # Chercher des signes de connexion réussie
+                success_indicators = ['welcome', 'dashboard', 'token', 'success', 'logged']
+                if any(indicator in resp.text.lower() for indicator in success_indicators):
+                    self.log_result("Auth Bypass", "FAIL", 
+                                  f"Contournement possible avec: {payload}")
+                    return
+                    
+            except Exception as e:
+                continue
+                
+        self.log_result("Auth Bypass", "PASS", "Aucun contournement d'authentification détecté")
+        
+    def test_information_disclosure(self):
+        """Test de divulgation d'informations"""
+        sensitive_paths = [
+            '/.env',
+            '/config.php',
+            '/wp-config.php',
+            '/database.yml',
+            '/app.config',
+            '/.git/config',
+            '/backup.sql',
+            '/phpinfo.php',
+            '/server-status',
+            '/debug',
+            '/api/debug'
+        ]
+        
+        for path in sensitive_paths:
+            try:
+                resp = self.session.get(f"{self.base_url}{path}")
+                
+                if resp.status_code == 200:
+                    sensitive_content = ['password', 'secret', 'key', 'token', 'database']
+                    if any(content in resp.text.lower() for content in sensitive_content):
+                        self.log_result(f"Info Disclosure {path}", "FAIL", 
+                                      f"Fichier sensible accessible")
+                    else:
+                        self.log_result(f"Info Disclosure {path}", "WARN", 
+                                      f"Fichier accessible mais contenu à vérifier")
+                        
+            except Exception as e:
+                continue
+                
+    def test_quiz_manipulation(self, quiz_endpoints):
+        """Test spécifique à la manipulation de quiz"""
+        manipulation_tests = [
+            # Tentative de modification des réponses
+            {'answer_id': '999', 'correct': 'true'},
+            {'score': '100', 'time': '1'},
+            {'question_id': '-1', 'answer': 'hack'},
+            # Tentative d'accès aux bonnes réponses
+            {'action': 'get_answers', 'quiz_id': '1'},
+            {'debug': 'true', 'show_answers': 'yes'}
+        ]
+        
+        for endpoint in quiz_endpoints:
+            for test_data in manipulation_tests:
+                try:
+                    resp = self.session.post(f"{self.base_url}{endpoint}", data=test_data)
+                    
+                    # Recherche de données sensibles dans la réponse
+                    if any(word in resp.text.lower() for word in 
+                          ['correct_answer', 'solution', 'answer_key', '"correct":true']):
+                        self.log_result(f"Quiz Manipulation {endpoint}", "FAIL", 
+                                      f"Données sensibles exposées: {test_data}")
+                        break
+                        
+                except Exception as e:
+                    continue
+            else:
+                self.log_result(f"Quiz Manipulation {endpoint}", "PASS", 
+                              "Aucune manipulation détectée")
+                
+    def test_file_upload_vulnerabilities(self, upload_endpoints):
+        """Test des vulnérabilités d'upload de fichiers"""
+        malicious_files = {
+            'shell.php': b'<?php system($_GET["cmd"]); ?>',
+            'script.js': b'<script>alert("XSS")</script>',
+            'large_file.txt': b'A' * (10 * 1024 * 1024),  # 10MB
+            'evil.svg': b'<svg onload="alert(1)"><rect width="100" height="100"/></svg>'
+        }
+        
+        for endpoint in upload_endpoints:
+            for filename, content in malicious_files.items():
+                try:
+                    files = {'file': (filename, content)}
+                    resp = self.session.post(f"{self.base_url}{endpoint}", files=files)
+                    
+                    if resp.status_code == 200 and 'success' in resp.text.lower():
+                        self.log_result(f"File Upload {endpoint}", "FAIL", 
+                                      f"Fichier malveillant accepté: {filename}")
+                    else:
+                        self.log_result(f"File Upload {endpoint}", "PASS", 
+                                      f"Fichier rejeté: {filename}")
+                        
+                except Exception as e:
+                    continue
+                    
+    def generate_report(self):
+        """Génère un rapport de sécurité"""
+        report = {
+            'timestamp': time.strftime('%Y-%m-%d %H:%M:%S'),
+            'target': self.base_url,
+            'total_tests': len(self.results),
+            'passed': len([r for r in self.results if r['status'] == 'PASS']),
+            'failed': len([r for r in self.results if r['status'] == 'FAIL']),
+            'warnings': len([r for r in self.results if r['status'] == 'WARN']),
+            'errors': len([r for r in self.results if r['status'] == 'ERROR']),
+            'results': self.results
+        }
+        
+        return report
+        
+    def run_all_tests(self):
+        """Exécute tous les tests de sécurité"""
+        print(f"🔍 Début des tests de sécurité pour: {self.base_url}")
+        print("=" * 60)
+        
+        # Tests généraux
+        self.test_https_redirect()
+        self.test_security_headers()
+        self.test_information_disclosure()
+        
+        # Endpoints communes à tester
+        common_endpoints = ['/api/quiz', '/quiz', '/api/questions', '/login', '/register']
+        quiz_endpoints = ['/api/submit', '/api/quiz', '/quiz/submit']
+        upload_endpoints = ['/upload', '/api/upload', '/quiz/upload']
+        
+        # Tests spécifiques
+        self.test_sql_injection(common_endpoints)
+        self.test_xss_vulnerabilities(common_endpoints)
+        self.test_csrf_protection(common_endpoints)
+        self.test_rate_limiting()
+        self.test_authentication_bypass()
+        self.test_quiz_manipulation(quiz_endpoints)
+        self.test_file_upload_vulnerabilities(upload_endpoints)
+        
+        print("\n" + "=" * 60)
+        print("📊 Génération du rapport...")
+        
+        return self.generate_report()
+
+def main():
+    """Fonction principale"""
+    print("🛡️  Script de Test de Sécurité - Application Quiz")
+    print("⚠️  ATTENTION: Utilisez uniquement sur vos propres applications!")
+    print()
+    
+    target_url = input("Entrez l'URL de l'application à tester: ").strip()
+    
+    if not target_url:
+        print("❌ URL requise")
+        return
+        
+    if not target_url.startswith(('http://', 'https://')):
+        target_url = 'https://' + target_url
+        
+    # Initialisation du testeur
+    tester = QuizSecurityTester(target_url)
+    
+    # Exécution des tests
+    try:
+        report = tester.run_all_tests()
+        
+        # Affichage du résumé
+        print(f"\n📈 RÉSUMÉ DES TESTS:")
+        print(f"✅ Tests réussis: {report['passed']}")
+        print(f"❌ Tests échoués: {report['failed']}")
+        print(f"⚠️  Avertissements: {report['warnings']}")
+        print(f"🔴 Erreurs: {report['errors']}")
+        
+        # Sauvegarde du rapport
+        report_filename = f"security_report_{int(time.time())}.json"
+        with open(report_filename, 'w', encoding='utf-8') as f:
+            json.dump(report, f, indent=2, ensure_ascii=False)
+            
+        print(f"\n💾 Rapport détaillé sauvegardé: {report_filename}")
+        
+        # Recommandations
+        if report['failed'] > 0:
+            print("\n🚨 VULNERABILITÉS CRITIQUES DÉTECTÉES!")
+            print("Corrigez immédiatement les problèmes identifiés.")
+        elif report['warnings'] > 0:
+            print("\n⚠️  Des améliorations de sécurité sont recommandées.")
+        else:
+            print("\n🎉 Aucune vulnérabilité majeure détectée!")
+            
+    except KeyboardInterrupt:
+        print("\n⏹️  Tests interrompus par l'utilisateur")
+    except Exception as e:
+        print(f"\n❌ Erreur lors des tests: {e}")
+
+if __name__ == "__main__":
+    main()

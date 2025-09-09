@@ -3,76 +3,272 @@ const app = express();
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
+const rateLimit = require('express-rate-limit');
 const connectDB = require("./src/database/database");
 const PORT = process.env.PORT || 3001;
 
-// Middleware CORS - Autorise à la fois le développement local ET la production
+// ================================
+// 🛡️ HEADERS DE SÉCURITÉ - PRIORITÉ ABSOLUE
+// ================================
+app.use((req, res, next) => {
+  // Empêche le MIME sniffing
+  res.setHeader('X-Content-Type-Options', 'nosniff');
+  
+  // Empêche l'intégration dans des iframes (protection clickjacking)
+  res.setHeader('X-Frame-Options', 'DENY');
+  
+  // Active la protection XSS du navigateur
+  res.setHeader('X-XSS-Protection', '1; mode=block');
+  
+  // Contrôle les informations referrer
+  res.setHeader('Referrer-Policy', 'strict-origin-when-cross-origin');
+  
+  // Politique de sécurité du contenu (CSP adaptée pour votre app)
+  res.setHeader('Content-Security-Policy', 
+    "default-src 'self'; " +
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval'; " +
+    "style-src 'self' 'unsafe-inline' https:; " +
+    "img-src 'self' data: https:; " +
+    "font-src 'self' https:; " +
+    "connect-src 'self' ws: wss: https://hackathon-quiz-4g3a.onrender.com"
+  );
+  
+  // HSTS uniquement en production HTTPS
+  if (process.env.NODE_ENV === 'production' && req.secure) {
+    res.setHeader('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  }
+  
+  next();
+});
+
+// ================================
+// 🚦 RATE LIMITING - SOLUTION COMPLÈTE IPv6
+// ================================
+
+// Rate limiting global - configuration simple
+const globalLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // 100 requêtes par IP
+  message: {
+    success: false,
+    error: 'Trop de requêtes, réessayez dans 15 minutes',
+    retryAfter: 900
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skip: (req) => {
+    // Exclure certaines routes du rate limiting global
+    return req.url.startsWith('/api/verify/') || req.url === '/';
+  }
+});
+
+// Rate limiting STRICT pour l'authentification - SANS keyGenerator custom
+const authLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 5, // 5 tentatives par IP
+  message: {
+    success: false,
+    error: 'Trop de tentatives de connexion, réessayez plus tard',
+    retryAfter: 900
+  },
+  standardHeaders: true,
+  legacyHeaders: false,
+  skipSuccessfulRequests: true // Ne compte que les échecs
+  // PAS de keyGenerator - express-rate-limit gère IPv6 automatiquement
+});
+
+// Rate limiting API modéré
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 50,
+  message: {
+    success: false,
+    error: 'Limite API atteinte, réessayez plus tard'
+  }
+});
+
+// Rate limiting pour les admins
+const adminLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 200,
+  message: {
+    success: false,
+    error: 'Limite admin atteinte'
+  }
+});
+
+// Appliquer le rate limiting global
+app.use(globalLimiter);
+
+// ================================
+// 🌐 MIDDLEWARE CORS SÉCURISÉ
+// ================================
 app.use(cors({
-  origin: [
-    "http://localhost:5173",  // Frontend Vite en développement
-    "https://localhost:5173", // Si vous utilisez HTTPS en local
-    "https://hackathon-quiz-4g3a.onrender.com" // Production
-  ],
+  origin: function(origin, callback) {
+    const allowedOrigins = [
+      "http://localhost:5173",
+      "https://localhost:5173", 
+      "https://hackathon-quiz-4g3a.onrender.com",
+      "http://localhost:3000",
+    ];
+    
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      console.warn(`🚫 CORS bloqué pour origin: ${origin}`);
+      callback(new Error('Non autorisé par CORS'));
+    }
+  },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization']
+  allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
+  maxAge: 86400
 }));
 
-app.use(express.json());
+// ================================
+// 🔒 MIDDLEWARES DE SÉCURITÉ
+// ================================
+
+// Protection contre l'exposition de fichiers sensibles
+app.use((req, res, next) => {
+  const forbiddenPaths = [
+    '/.env', '/config.php', '/wp-config.php', '/database.yml',
+    '/app.config', '/.git/', '/backup.sql', '/phpinfo.php',
+    '/server-status', '/debug', '/api/debug'
+  ];
+  
+  if (forbiddenPaths.some(path => req.url.startsWith(path))) {
+    console.warn(`🚨 Tentative d'accès à un fichier sensible: ${req.url} depuis ${req.ip}`);
+    return res.status(404).json({ 
+      success: false,
+      error: 'Not Found' 
+    });
+  }
+  next();
+});
+
+// Body parsing avec limites de sécurité
+app.use(express.json({ 
+  limit: '10mb',
+  verify: (req, res, buf) => {
+    if (buf.length > 1024 * 1024) { // > 1MB
+      console.warn(`⚠️ Requête de grande taille: ${buf.length} bytes depuis ${req.ip}`);
+    }
+  }
+}));
+app.use(express.urlencoded({ extended: true, limit: '10mb' }));
 app.use(cookieParser());
+
+// Logging sécurisé des requêtes
+app.use((req, res, next) => {
+  const timestamp = new Date().toISOString();
+  const userAgent = req.get('User-Agent') || 'Unknown';
+  console.log(`${timestamp} - ${req.method} ${req.url} - IP: ${req.ip} - UA: ${userAgent.substring(0, 50)}`);
+  next();
+});
 
 // Connexion DB
 connectDB();
 
-// Route de base
+// ================================
+// 🏠 ROUTE DE BASE
+// ================================
 app.get("/", (req, res) => {
-  res.json({ message: "API fonctionnel!" });
+  res.json({ 
+    message: "API fonctionnel!",
+    security: "Headers et rate limiting activés",
+    timestamp: new Date().toISOString()
+  });
 });
 
-// Créer un routeur pour l'API
-const apiRouter = express.Router();
-
-// ===== ÉTAPE 1: TESTER LES CONTRÔLEURS UN PAR UN =====
-console.log("🧪 Phase de test - Intégration progressive...");
-
-// ✅ CORRECTION: Importer le bon middleware d'authentification
+// ================================
+// 🔐 AUTHENTIFICATION MIDDLEWARE
+// ================================
 let protect = null;
 let authorize = null;
 try {
   console.log("🔐 Test authMiddleware...");
   const authMiddleware = require("./src/middlewares/authMiddleware");
-  protect = authMiddleware.protect; // ✅ CORRECTION: utiliser 'protect' au lieu de 'authenticateToken'
-  authorize = authMiddleware.authorize; // Import du middleware d'autorisation
+  protect = authMiddleware.protect;
+  authorize = authMiddleware.authorize;
   console.log("✅ authMiddleware OK - protect et authorize functions loaded");
 } catch (error) {
   console.error("❌ ERREUR dans authMiddleware:", error.message);
-  // Fallback middleware simple si le fichier n'existe pas
   protect = (req, res, next) => {
-    res.status(501).json({ message: "Middleware d'authentification non disponible" });
+    res.status(501).json({ 
+      success: false,
+      message: "Middleware d'authentification non disponible" 
+    });
   };
   authorize = (...roles) => (req, res, next) => {
-    res.status(501).json({ message: "Middleware d'autorisation non disponible" });
+    res.status(501).json({ 
+      success: false,
+      message: "Middleware d'autorisation non disponible" 
+    });
   };
 }
 
+// ================================
+// 📡 CRÉATION DU ROUTEUR API
+// ================================
+const apiRouter = express.Router();
+
+console.log("🧪 Phase de test - Intégration progressive...");
+
+// ================================
+// 🔑 ROUTES D'AUTHENTIFICATION
+// ================================
 try {
-  // Test 1: AuthController
   console.log("1️⃣ Test authController...");
   const authController = require("./src/controllers/authController");
 
-  // Routes auth avec préfixe /api
-  apiRouter.post("/register", authController.register);
-  apiRouter.post("/login", authController.login);
+  // Routes auth avec validation et rate limiting
+  apiRouter.post("/register", authLimiter, (req, res, next) => {
+    const { email, password, username } = req.body;
+    
+    if (!email || !password || !username) {
+      return res.status(400).json({
+        success: false,
+        message: "Email, mot de passe et nom d'utilisateur requis"
+      });
+    }
+    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return res.status(400).json({
+        success: false,
+        message: "Format d'email invalide"
+      });
+    }
+    
+    if (password.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: "Le mot de passe doit contenir au moins 6 caractères"
+      });
+    }
+    
+    next();
+  }, authController.register);
+
+  apiRouter.post("/login", authLimiter, (req, res, next) => {
+    const { email, password } = req.body;
+    
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Email et mot de passe requis"
+      });
+    }
+    
+    next();
+  }, authController.login);
+
   apiRouter.post("/logout", authController.logout);
-  apiRouter.post(
-    "/password-reset-request",
-    authController.requestPasswordReset
-  );
-  apiRouter.post("/reset-password", authController.resetPassword);
+  apiRouter.post("/password-reset-request", authLimiter, authController.requestPasswordReset);
+  apiRouter.post("/reset-password", authLimiter, authController.resetPassword);
   apiRouter.get("/verify/:token", authController.verifyEmail);
-  apiRouter.post("/resend-verification", authController.resendVerificationEmail);
-  
-  // ✅ CORRECTION: Route /api/me protégée avec le bon middleware
+  apiRouter.post("/resend-verification", authLimiter, authController.resendVerificationEmail);
   apiRouter.get("/me", protect, authController.me);
 
   console.log("✅ authController OK");
@@ -80,7 +276,6 @@ try {
   console.error("❌ ERREUR dans authController:", error.message);
   console.error(error.stack);
   
-  // Fallback route pour /api/me
   apiRouter.get("/me", (req, res) => {
     res.status(500).json({ 
       success: false, 
@@ -89,92 +284,113 @@ try {
   });
 }
 
-// ✅ OPTION ALTERNATIVE: Utiliser directement authRoutes.js
+// ================================
+// 👥 ROUTES UTILISATEURS
+// ================================
 try {
-  console.log("🔄 Tentative d'import des routes d'authentification...");
-  const authRoutes = require("./src/routes/authRoutes");
-  
-  // Utiliser les routes définies dans authRoutes.js
-  app.use("/api", authRoutes);
-  console.log("✅ Routes d'authentification chargées depuis authRoutes.js");
-} catch (error) {
-  console.error("❌ ERREUR lors du chargement d'authRoutes:", error.message);
-  console.log("📝 Utilisation des routes définies manuellement dans index.js");
-}
-
-try {
-  // Test 2: UserController
   console.log("2️⃣ Test userController...");
   const userController = require("./src/controllers/userController");
 
-  apiRouter.get("/users", userController.index);
-  apiRouter.get("/users/:id", userController.show);
-  apiRouter.post("/users", userController.create);
-  apiRouter.put("/users/:id", userController.update);
-  apiRouter.delete("/users/:id", userController.delete);
+  apiRouter.get("/users", apiLimiter, userController.index);
+  apiRouter.get("/users/:id", apiLimiter, userController.show);
+  apiRouter.post("/users", apiLimiter, userController.create);
+  apiRouter.put("/users/:id", apiLimiter, userController.update);
+  apiRouter.delete("/users/:id", apiLimiter, userController.delete);
 
   console.log("✅ userController OK");
 } catch (error) {
   console.error("❌ ERREUR dans userController:", error.message);
   console.error(error.stack);
 
-  // Fallback routes
   apiRouter.get("/users", (req, res) => {
-    res.json({ message: "Users route OK (fallback)" });
+    res.json({ 
+      success: true,
+      message: "Users route OK (fallback)" 
+    });
   });
 }
 
+// ================================
+// ❓ ROUTES QUESTIONS
+// ================================
 try {
-  // Test 3: QuestionController
   console.log("3️⃣ Test questionController...");
   const questionController = require("./src/controllers/questionController");
 
-  apiRouter.get("/questions", questionController.index);
-  apiRouter.get("/questions/:id", questionController.show);
-  apiRouter.post("/questions", questionController.create);
-  apiRouter.put("/questions/:id", questionController.update);
-  apiRouter.delete("/questions/:id", questionController.delete);
+  apiRouter.get("/questions", apiLimiter, (req, res, next) => {
+    const { category, limit, offset } = req.query;
+    
+    if (limit && (isNaN(limit) || limit < 0 || limit > 100)) {
+      return res.status(400).json({
+        success: false,
+        message: "Paramètre 'limit' invalide (0-100)"
+      });
+    }
+    
+    if (offset && (isNaN(offset) || offset < 0)) {
+      return res.status(400).json({
+        success: false,
+        message: "Paramètre 'offset' invalide"
+      });
+    }
+    
+    next();
+  }, questionController.index);
+
+  apiRouter.get("/questions/:id", apiLimiter, (req, res, next) => {
+    if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+      return res.status(400).json({
+        success: false,
+        message: "ID de question invalide"
+      });
+    }
+    next();
+  }, questionController.show);
+
+  apiRouter.post("/questions", apiLimiter, questionController.create);
+  apiRouter.put("/questions/:id", apiLimiter, questionController.update);
+  apiRouter.delete("/questions/:id", apiLimiter, questionController.delete);
 
   console.log("✅ questionController OK");
 } catch (error) {
   console.error("❌ ERREUR dans questionController:", error.message);
   console.error(error.stack);
 
-  // Fallback routes
   apiRouter.get("/questions", (req, res) => {
-    res.json({ message: "Questions route OK (fallback)" });
-  });
-  apiRouter.get("/questions/:id", (req, res) => {
-    res.json({ message: `Question ${req.params.id} OK (fallback)` });
+    res.json({ 
+      success: true,
+      message: "Questions route OK (fallback)" 
+    });
   });
 }
 
+// ================================
+// 📝 ROUTES QUIZ
+// ================================
 try {
-  // Test 4: QuizController
   console.log("4️⃣ Test quizController...");
   const quizController = require("./src/controllers/quizController");
 
-  apiRouter.get("/quizzes", quizController.index);
-  apiRouter.get("/quizzes/:id", quizController.show);
-  apiRouter.post("/quizzes", quizController.create);
-  apiRouter.put("/quizzes/:id", quizController.update);
-  apiRouter.delete("/quizzes/:id", quizController.delete);
-  apiRouter.post("/quizzes/:id/duplicate", quizController.duplicate);
+  apiRouter.get("/quizzes", apiLimiter, quizController.index);
+  apiRouter.get("/quizzes/:id", apiLimiter, quizController.show);
+  apiRouter.post("/quizzes", apiLimiter, quizController.create);
+  apiRouter.put("/quizzes/:id", apiLimiter, quizController.update);
+  apiRouter.delete("/quizzes/:id", apiLimiter, quizController.delete);
+  apiRouter.post("/quizzes/:id/duplicate", apiLimiter, quizController.duplicate);
 
   console.log("✅ quizController OK");
 } catch (error) {
   console.error("❌ ERREUR dans quizController:", error.message);
   console.error(error.stack);
 
-  // Fallback routes pour les quiz
   apiRouter.get("/quizzes", (req, res) => {
     res.json({ 
+      success: true,
       message: "Quizzes route OK (fallback)",
-      // Données de test temporaires pour déboguer votre frontend
       data: [
         {
           id: 1,
-          title: "Quiz Test",
+          title: "Quiz Test Sécurisé",
           questions: [
             {
               id: 1,
@@ -199,13 +415,14 @@ try {
   });
 }
 
-// ===== ROUTES PROTÉGÉES PAR RÔLE =====
+// ================================
+// 👑 ROUTES PROTÉGÉES ET ADMIN
+// ================================
 console.log("🔐 Configuration des routes protégées par rôle...");
 
 try {
-  // ✅ CORRECTION: ROUTE PROFIL avec accessLevel dynamique basé sur le rôle
+  // Route profil
   apiRouter.get("/profil", protect, (req, res) => {
-    // Déterminer le niveau d'accès basé sur le rôle
     let accessLevel;
     switch(req.user.role) {
       case "admin":
@@ -215,77 +432,89 @@ try {
         accessLevel = "user";
         break;
       default:
-        accessLevel = "profil"; // fallback pour les rôles inconnus
+        accessLevel = "profil";
     }
 
     res.json({
       success: true,
       message: "Accès au profil autorisé",
       data: {
-        user: req.user,
-        accessLevel: accessLevel // ✅ Maintenant dynamique !
+        user: {
+          id: req.user.id,
+          email: req.user.email,
+          username: req.user.username,
+          role: req.user.role
+        },
+        accessLevel: accessLevel
       }
     });
   });
 
-  // ROUTE ADMIN - Accessible uniquement aux administrateurs
-  apiRouter.get("/admin", protect, authorize("admin"), (req, res) => {
+  // Routes admin individuelles avec rate limiting
+  apiRouter.get("/admin", adminLimiter, protect, authorize("admin"), (req, res) => {
     res.json({
       success: true,
       message: "Accès admin autorisé",
       data: {
-        user: req.user,
+        user: {
+          id: req.user.id,
+          email: req.user.email,
+          role: req.user.role
+        },
         accessLevel: "admin",
         adminFeatures: [
           "Gestion des utilisateurs",
           "Gestion des quiz",
-          "Statistiques globales"
+          "Statistiques globales",
+          "Logs de sécurité"
         ]
       }
     });
   });
 
-  // ROUTES SUPPLÉMENTAIRES POUR L'ESPACE ADMIN
-  
-  // Dashboard admin
-  apiRouter.get("/admin/dashboard", protect, authorize("admin"), (req, res) => {
+  apiRouter.get("/admin/dashboard", adminLimiter, protect, authorize("admin"), (req, res) => {
     res.json({
       success: true,
       message: "Dashboard admin",
       data: {
         stats: {
-          totalUsers: 0, // À remplacer par de vraies données
+          totalUsers: 0,
           totalQuizzes: 0,
-          totalQuestions: 0
+          totalQuestions: 0,
+          securityAlerts: 0
         }
       }
     });
   });
 
-  // Gestion des utilisateurs pour les admins
-  apiRouter.get("/admin/users", protect, authorize("admin"), (req, res) => {
+  apiRouter.get("/admin/users", adminLimiter, protect, authorize("admin"), (req, res) => {
     res.json({
       success: true,
       message: "Liste des utilisateurs (admin)",
       data: {
-        users: [] // Ici vous pouvez appeler votre userController
+        users: []
       }
     });
   });
 
-  // Modifier le rôle d'un utilisateur (admin seulement)
-  apiRouter.put("/admin/users/:id/role", protect, authorize("admin"), async (req, res) => {
+  apiRouter.put("/admin/users/:id/role", adminLimiter, protect, authorize("admin"), async (req, res) => {
     try {
       const { role } = req.body;
       
       if (!["user", "admin"].includes(role)) {
         return res.status(400).json({
           success: false,
-          message: "Rôle invalide"
+          message: "Rôle invalide. Valeurs acceptées: 'user', 'admin'"
         });
       }
 
-      // Empêcher un admin de se retirer ses propres droits admin
+      if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+        return res.status(400).json({
+          success: false,
+          message: "ID utilisateur invalide"
+        });
+      }
+
       if (req.user.id === req.params.id && role === "user") {
         return res.status(400).json({
           success: false,
@@ -306,11 +535,18 @@ try {
       user.role = role;
       await user.save();
 
+      console.log(`🔧 Admin ${req.user.email} a modifié le rôle de ${user.email} vers ${role}`);
+
       res.json({
         success: true,
-        message: `Rôle modifié avec succès`,
+        message: `Rôle modifié avec succès vers ${role}`,
         data: {
-          user: user.toPublicJSON()
+          user: user.toPublicJSON ? user.toPublicJSON() : {
+            id: user._id,
+            email: user.email,
+            username: user.username,
+            role: user.role
+          }
         }
       });
 
@@ -318,17 +554,17 @@ try {
       console.error("Erreur modification rôle:", error);
       res.status(500).json({
         success: false,
-        message: "Erreur serveur"
+        message: "Erreur serveur lors de la modification du rôle"
       });
     }
   });
 
-  // ROUTE DE VÉRIFICATION DES PERMISSIONS
   apiRouter.get("/check-permissions", protect, (req, res) => {
     const permissions = {
-      canAccessProfil: true, // Tous les utilisateurs connectés
+      canAccessProfil: true,
       canAccessAdmin: req.user.role === "admin",
-      currentRole: req.user.role
+      currentRole: req.user.role,
+      userId: req.user.id
     };
 
     res.json({
@@ -337,52 +573,103 @@ try {
     });
   });
 
-  console.log("✅ Routes protégées configurées :");
-  console.log("  GET  /api/profil (🔒 user + admin)");
-  console.log("  GET  /api/admin (🔒 admin uniquement)");
-  console.log("  GET  /api/admin/dashboard (🔒 admin uniquement)");
-  console.log("  GET  /api/admin/users (🔒 admin uniquement)");
-  console.log("  PUT  /api/admin/users/:id/role (🔒 admin uniquement)");
-  console.log("  GET  /api/check-permissions (🔒 tous connectés)");
+  console.log("✅ Routes protégées configurées avec sécurité renforcée");
 
 } catch (error) {
   console.error("❌ ERREUR dans la configuration des routes protégées:", error.message);
 }
 
-// Appliquer le routeur avec le préfixe /api (si pas déjà fait avec authRoutes)
+// ================================
+// 🔗 APPLICATION DU ROUTEUR
+// ================================
 app.use("/api", apiRouter);
 
-console.log("🎉 Tous les contrôleurs testés !");
+// ================================
+// 🛡️ GESTION GLOBALE DES ERREURS
+// ================================
+app.use((error, req, res, next) => {
+  console.error('🚨 Erreur globale:', error);
+  
+  if (error.message === 'Non autorisé par CORS') {
+    return res.status(403).json({ 
+      success: false,
+      error: 'Accès refusé par CORS' 
+    });
+  }
+  
+  if (error.type === 'entity.parse.failed') {
+    return res.status(400).json({
+      success: false,
+      error: 'Format JSON invalide'
+    });
+  }
+  
+  res.status(500).json({
+    success: false,
+    error: process.env.NODE_ENV === 'production' 
+      ? 'Erreur interne du serveur' 
+      : error.message
+  });
+});
 
+// Route 404 sécurisée - CORRECTION ICI
+app.use((req, res) => {
+  console.warn(`🔍 Route non trouvée: ${req.method} ${req.url} depuis ${req.ip}`);
+  res.status(404).json({
+    success: false,
+    error: 'Route non trouvée'
+  });
+});
+
+console.log("🎉 Tous les contrôleurs testés avec sécurité renforcée !");
+
+// ================================
+// 🚀 DÉMARRAGE SERVEUR SÉCURISÉ
+// ================================
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`✅ Server running on http://localhost:${PORT}`);
-  console.log("🌐 CORS autorisé pour:");
+  console.log("🛡️ SÉCURITÉ ACTIVÉE:");
+  console.log("  ✓ Headers de sécurité configurés");
+  console.log("  ✓ Rate limiting IPv6 compatible");
+  console.log("  ✓ Protection CORS configurée");
+  console.log("  ✓ Validation des entrées");
+  console.log("  ✓ Protection fichiers sensibles");
+  console.log("  ✓ Gestion d'erreurs sécurisée");
+  
+  console.log("\n🌐 CORS autorisé pour:");
   console.log("  - http://localhost:5173 (Vite dev)");
   console.log("  - https://hackathon-quiz-4g3a.onrender.com (Production)");
-  console.log("📋 Routes disponibles:");
   
-  console.log("\n🔓 Routes publiques:");
-  console.log("  POST /api/register");
-  console.log("  POST /api/login");
+  console.log("\n📋 Routes disponibles:");
+  
+  console.log("\n🔓 Routes publiques (rate limited):");
+  console.log("  POST /api/register (5 req/15min)");
+  console.log("  POST /api/login (5 req/15min)");
   console.log("  POST /api/logout");
   console.log("  GET  /api/verify/:token");
-  console.log("  POST /api/resend-verification");
-  console.log("  POST /api/password-reset-request");
-  console.log("  POST /api/reset-password");
+  console.log("  POST /api/resend-verification (5 req/15min)");
+  console.log("  POST /api/password-reset-request (5 req/15min)");
+  console.log("  POST /api/reset-password (5 req/15min)");
   
-  console.log("\n🔒 Routes protégées (connecté):");
+  console.log("\n🔒 Routes protégées (connecté + rate limited):");
   console.log("  GET  /api/me");
-  console.log("  GET  /api/profil (user + admin) ✅ accessLevel dynamique");
+  console.log("  GET  /api/profil (user + admin)");
   console.log("  GET  /api/check-permissions");
   
-  console.log("\n👑 Routes admin uniquement:");
+  console.log("\n👑 Routes admin uniquement (rate limited admin):");
   console.log("  GET  /api/admin");
   console.log("  GET  /api/admin/dashboard");
   console.log("  GET  /api/admin/users");
   console.log("  PUT  /api/admin/users/:id/role");
   
-  console.log("\n📊 Routes API générales:");
-  console.log("  GET  /api/users");
-  console.log("  GET  /api/questions");
-  console.log("  GET  /api/quizzes");
+  console.log("\n📊 Routes API générales (rate limited API):");
+  console.log("  GET  /api/users (50 req/15min)");
+  console.log("  GET  /api/questions (50 req/15min)");
+  console.log("  GET  /api/quizzes (50 req/15min)");
+  
+  console.log("\n🚦 Rate Limits configurés:");
+  console.log("  - Global: 100 req/15min par IP");
+  console.log("  - Auth: 5 req/15min par IP (IPv6 compatible)");
+  console.log("  - API: 50 req/15min par IP");
+  console.log("  - Admin: 200 req/15min par IP");
 });
