@@ -3,7 +3,7 @@ import "../styles/Body.css";
 const Body = ({ onStartQuiz }) => {
   return (
     <main className="body-container">
-      <h1 className="body-title">Bienvenue sur le Quiz !</h1>
+      <h1 className="body-title">Bienvenue sur Aléa !</h1>
      
       <section className="body-info">
         <div className="objective-section">
