@@ -3,6 +3,7 @@ import "../styles/Navbar.css";
 import { Link, useNavigate } from "react-router-dom";
 import { FaUserCircle, FaUserPlus, FaCrown, FaGamepad } from "react-icons/fa";
 import { FiLogIn, FiLogOut, FiHome } from "react-icons/fi";
+import logo from "../assets/alea-logo2.png";
 
 const Navbar = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -88,7 +89,7 @@ const Navbar = () => {
     return (
       <nav className="navbar">
         <Link to="/" className="navbar-logo">
-          Quiz
+          <img src={logo} alt="Quiz Logo" className="logo-image" />
         </Link>
         <div className="navbar-menu">
           <div className="loading-indicator">
@@ -104,8 +105,8 @@ const Navbar = () => {
       className={`navbar ${isLoggedIn ? "navbar-authenticated" : "navbar-guest"}`}
     >
       <Link to="/" className="navbar-logo">
-        {/* Logo différent selon l'état de connexion */}
-        {isLoggedIn ? "🎯 Quiz Pro" : "📝 Quiz"}
+        {/* Logo personnalisé */}
+        <img src={logo} alt="Quiz Logo" className="logo-image" />
       </Link>
 
       <div className="navbar-menu">

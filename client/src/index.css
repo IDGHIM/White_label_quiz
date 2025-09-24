@@ -3,34 +3,46 @@
 
 /* Variables CSS globales */
 :root {
-  /* Neutres / fonds */
-  --color-bg: #F9FAFB;         /* fond principal (clair) */
-  --color-surface: #FFFFFF;    /* surfaces / cartes */
-  --color-muted-surface: #E5E7EB; /* fonds secondaires / séparateurs */
+  /* Couleurs Alea - Palette principale */
+  --alea-yellow: #F5C33B;
+  --alea-yellow-light: #FFD96E;
+  --alea-yellow-dark: #C4972E;
+  --alea-red: #E74C3C;
+  --alea-red-light: #FF7666;
+  --alea-red-dark: #B93528;
+  --alea-dark: #1F2A44;
+  --alea-dark-light: #3C4A66;
+  --alea-dark-dark: #101624;
+  --alea-light: #FAF6EC;
+  --alea-light-dark: #E6E0D2;
+  --alea-light-light: #FFFFFF;
 
-  /* Texte */
-  --color-text: #111827;       /* texte principal */
-  --color-text-secondary: #4B5563; /* texte secondaire / légendes */
+  /* Mapping des couleurs système avec la palette Alea */
+  --color-bg: var(--alea-light);
+  --color-surface: var(--alea-light-light);
+  --color-muted-surface: var(--alea-light-dark);
+  
+  --color-text: var(--alea-dark);
+  --color-text-secondary: var(--alea-dark-light);
+  
+  --color-accent: var(--alea-yellow);
+  --color-accent-hover: var(--alea-yellow-dark);
+  --color-success: #10B981;
+  --color-danger: var(--alea-red);
+  --color-warning: var(--alea-yellow-light);
 
-  /* Accents / actions */
-  --color-accent: #2563EB;     /* accent principal (CTA) */
-  --color-accent-hover: #1E40AF;/* accent hover / actif */
-  --color-success: #10B981;    /* réussite / validation */
-  --color-danger: #EF4444;     /* erreur / alerte */
-  --color-warning: #F59E0B;    /* avertissement / signal */
+  /* Bordures / ombres adaptées */
+  --color-border: var(--alea-light-dark);
+  --shadow-sm: 0 1px 2px rgba(31, 42, 68, 0.06);
+  --shadow-md: 0 6px 20px rgba(31, 42, 68, 0.12);
 
-  /* Bordures / ombres */
-  --color-border: #E6E9EE;
-  --shadow-sm: 0 1px 2px rgba(16,24,40,0.04);
-  --shadow-md: 0 6px 20px rgba(16,24,40,0.08);
-
-  /* Éléments UI (tailles et rayons) */
+  /* Éléments UI */
   --radius-sm: 6px;
   --radius-md: 12px;
   --radius-lg: 20px;
 
-  /* Contraste / accessibilité helpers */
-  --focus-ring: 3px solid rgba(37,99,235,0.18);
+  /* Focus ring avec couleur Alea */
+  --focus-ring: 3px solid rgba(245, 195, 59, 0.25);
 }
 
 /* Reset CSS complet */
@@ -127,14 +139,14 @@ body {
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   background: linear-gradient(
     135deg,
-    #2563EB 0%,
-    #10B981 50%,
-    #25ebd1 100%
+    var(--alea-yellow) 0%,
+    var(--alea-yellow-light) 50%,
+    var(--alea-light) 100%
   );
   background-size: 300% 300%;
   background-attachment: fixed;
   animation: gentleShift 20s ease-in-out infinite;
-  color: #111827;
+  color: var(--color-text);
   position: relative;
   overflow-x: hidden;
 }
@@ -153,7 +165,7 @@ body::after {
 body::before {
   width: 300px;
   height: 300px;
-  background: radial-gradient(circle, var(--third-color) 0%, transparent 70%);
+  background: radial-gradient(circle, var(--alea-red) 0%, transparent 70%);
   top: 10%;
   left: -10%;
   animation: gentleFloat 25s ease-in-out infinite;
@@ -162,7 +174,7 @@ body::before {
 body::after {
   width: 200px;
   height: 200px;
-  background: radial-gradient(circle, var(--fourth-color) 0%, transparent 70%);
+  background: radial-gradient(circle, var(--alea-yellow-dark) 0%, transparent 70%);
   bottom: 15%;
   right: -5%;
   animation: gentleFloat 30s ease-in-out infinite reverse;
@@ -220,7 +232,7 @@ body::after {
 .btn {
   padding: 12px 24px;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   font-size: 1rem;
   font-weight: 600;
   cursor: pointer;
@@ -235,26 +247,45 @@ body::after {
 .btn-primary {
   background: linear-gradient(
     135deg,
-    var(--fourth-color) 0%,
-    var(--third-color) 100%
+    var(--alea-yellow) 0%,
+    var(--alea-yellow-dark) 100%
   );
-  color: white;
+  color: var(--alea-dark);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(
+    135deg,
+    var(--alea-yellow-light) 0%,
+    var(--alea-yellow) 100%
+  );
+  box-shadow: var(--shadow-md);
 }
 
 .btn-secondary {
-  background: var(--second-color);
-  color: white;
+  background: var(--alea-red);
+  color: var(--alea-light-light);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-secondary:hover {
+  background: var(--alea-red-dark);
 }
 
 .btn-outline {
   background: transparent;
-  border: 2px solid var(--fourth-color);
-  color: var(--fourth-color);
+  border: 2px solid var(--alea-yellow);
+  color: var(--alea-yellow-dark);
+}
+
+.btn-outline:hover {
+  background: var(--alea-yellow);
+  color: var(--alea-dark);
 }
 
 .btn:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
 .btn:active {
@@ -269,58 +300,58 @@ body::after {
 
 /* Cards globales */
 .card {
-  background: rgba(255, 255, 255, 0.9);
-  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: var(--radius-md);
   padding: 24px;
-  box-shadow: 0 10px 30px rgba(11, 11, 13, 0.15);
+  box-shadow: var(--shadow-md);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(146, 154, 171, 0.3);
+  border: 1px solid var(--color-border);
   transition: all 0.3s ease;
 }
 
 .card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 15px 40px rgba(11, 11, 13, 0.2);
+  box-shadow: 0 15px 40px rgba(31, 42, 68, 0.15);
 }
 
 /* Messages d'état */
 .alert {
   padding: 16px 20px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   margin: 16px 0;
   font-weight: 500;
 }
 
 .alert-success {
-  background: rgba(72, 187, 120, 0.1);
-  border: 1px solid rgba(72, 187, 120, 0.3);
-  color: #2f855a;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  color: #047857;
 }
 
 .alert-error {
-  background: rgba(245, 101, 101, 0.1);
-  border: 1px solid rgba(245, 101, 101, 0.3);
-  color: #c53030;
+  background: rgba(231, 76, 60, 0.1);
+  border: 1px solid var(--alea-red-light);
+  color: var(--alea-red-dark);
 }
 
 .alert-warning {
-  background: rgba(237, 137, 54, 0.1);
-  border: 1px solid rgba(237, 137, 54, 0.3);
-  color: #c05621;
+  background: rgba(245, 195, 59, 0.1);
+  border: 1px solid var(--alea-yellow-light);
+  color: var(--alea-yellow-dark);
 }
 
 .alert-info {
-  background: rgba(66, 153, 225, 0.1);
-  border: 1px solid rgba(66, 153, 225, 0.3);
-  color: #3182ce;
+  background: rgba(60, 74, 102, 0.1);
+  border: 1px solid var(--alea-dark-light);
+  color: var(--alea-dark);
 }
 
 /* Loading spinner */
 .spinner {
   width: 40px;
   height: 40px;
-  border: 4px solid rgba(0, 0, 0, 0.1);
-  border-left: 4px solid var(--fourth-color);
+  border: 4px solid rgba(31, 42, 68, 0.1);
+  border-left: 4px solid var(--alea-yellow);
   border-radius: 50%;
   animation: spin 1s linear infinite;
 }
@@ -334,21 +365,50 @@ body::after {
   }
 }
 
-/* Classes utilitaires pour les nouvelles couleurs */
-.first-color { 
-  background: var(--first-color);
+/* Classes utilitaires pour les couleurs Alea */
+.alea-yellow { 
+  background: var(--alea-yellow);
 }
 
-.second-color { 
-  background: var(--second-color);
+.alea-yellow-light { 
+  background: var(--alea-yellow-light);
 }
 
-.third-color { 
-  background: var(--third-color);
+.alea-yellow-dark { 
+  background: var(--alea-yellow-dark);
 }
 
-.fourth-color { 
-  background: var(--fourth-color);
+.alea-red { 
+  background: var(--alea-red);
+}
+
+.alea-red-light { 
+  background: var(--alea-red-light);
+}
+
+.alea-red-dark { 
+  background: var(--alea-red-dark);
+}
+
+.alea-dark { 
+  background: var(--alea-dark);
+}
+
+.alea-light { 
+  background: var(--alea-light);
+}
+
+/* Classes de texte avec couleurs Alea */
+.text-alea-yellow { 
+  color: var(--alea-yellow-dark);
+}
+
+.text-alea-red { 
+  color: var(--alea-red);
+}
+
+.text-alea-dark { 
+  color: var(--alea-dark);
 }
 
 /* Responsive breakpoints */
@@ -395,6 +455,6 @@ body::after {
 
   .card {
     padding: 16px;
-    border-radius: 12px;
+    border-radius: var(--radius-sm);
   }
 }
