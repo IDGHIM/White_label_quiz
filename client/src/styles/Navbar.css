@@ -1,0 +1,485 @@
+/* Navbar Component Styles */
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 70px;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(12px);
+  border-bottom: 2px solid var(--alea-yellow-light);
+  box-shadow: var(--shadow-md);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  transition: all 0.3s ease;
+}
+
+.navbar-authenticated {
+  background: rgba(31, 42, 68, 0.95);
+  border-bottom-color: var(--alea-yellow);
+}
+
+.navbar-guest {
+  background: rgba(255, 255, 255, 0.95);
+  border-bottom-color: var(--alea-yellow-light);
+}
+
+/* Logo */
+.navbar-logo {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  transition: transform 0.3s ease;
+}
+
+.navbar-logo:hover {
+  transform: scale(1.05);
+}
+
+.logo-image {
+  height: 45px;
+  width: auto;
+  filter: drop-shadow(2px 2px 4px rgba(31, 42, 68, 0.1));
+  transition: filter 0.3s ease;
+}
+
+.navbar-authenticated .logo-image {
+  filter: drop-shadow(2px 2px 4px rgba(245, 195, 59, 0.3));
+}
+
+/* Menu principal */
+.navbar-menu {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  position: relative;
+}
+
+.guest-menu,
+.authenticated-menu {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Boutons de navigation */
+.navbar-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 1.2rem;
+  text-decoration: none;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+  background: transparent;
+  color: var(--alea-dark);
+}
+
+.navbar-btn:hover {
+  transform: translateY(-2px);
+}
+
+.navbar-btn:active {
+  transform: translateY(0);
+}
+
+.navbar-btn:focus {
+  outline: none;
+  box-shadow: var(--focus-ring);
+}
+
+/* Styles spécifiques par type de bouton */
+.btn-guest {
+  color: var(--alea-dark);
+  border: 2px solid transparent;
+}
+
+.btn-guest:hover {
+  background: var(--alea-yellow-light);
+  border-color: var(--alea-yellow);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-authenticated {
+  color: var(--alea-light);
+  border: 2px solid transparent;
+}
+
+.btn-authenticated:hover {
+  background: var(--alea-yellow);
+  color: var(--alea-dark);
+  border-color: var(--alea-yellow-light);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-register {
+  background: linear-gradient(135deg, var(--alea-yellow) 0%, var(--alea-yellow-light) 100%);
+  color: var(--alea-dark);
+  border: 2px solid var(--alea-yellow-dark);
+}
+
+.btn-register:hover {
+  background: linear-gradient(135deg, var(--alea-yellow-light) 0%, var(--alea-yellow) 100%);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-login {
+  background: linear-gradient(135deg, var(--alea-red) 0%, var(--alea-red-light) 100%);
+  color: var(--alea-light);
+  border: 2px solid var(--alea-red-dark);
+}
+
+.btn-login:hover {
+  background: linear-gradient(135deg, var(--alea-red-dark) 0%, var(--alea-red) 100%);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-quiz {
+  background: var(--alea-yellow);
+  color: var(--alea-dark);
+  border: 2px solid var(--alea-yellow-dark);
+}
+
+.btn-quiz:hover {
+  background: var(--alea-yellow-light);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-admin {
+  background: linear-gradient(135deg, var(--alea-red) 0%, var(--alea-red-dark) 100%);
+  color: var(--alea-light);
+  border: 2px solid var(--alea-red-light);
+}
+
+.btn-admin:hover {
+  background: linear-gradient(135deg, var(--alea-red-light) 0%, var(--alea-red) 100%);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-profile {
+  background: var(--alea-dark-light);
+  color: var(--alea-light);
+  border: 2px solid var(--alea-dark);
+}
+
+.btn-profile:hover {
+  background: var(--alea-dark);
+  box-shadow: var(--shadow-sm);
+}
+
+.btn-logout {
+  background: var(--alea-red);
+  color: var(--alea-light);
+  border: 2px solid var(--alea-red-dark);
+}
+
+.btn-logout:hover {
+  background: var(--alea-red-dark);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Avatar utilisateur */
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--alea-yellow);
+  box-shadow: var(--shadow-sm);
+}
+
+.vip-icon {
+  color: var(--alea-yellow);
+  font-size: 1.4rem;
+  filter: drop-shadow(0 0 8px rgba(245, 195, 59, 0.6));
+}
+
+/* Score indicator */
+.score-indicator {
+  display: flex;
+  align-items: center;
+  margin-left: 8px;
+}
+
+.score-badge {
+  background: linear-gradient(135deg, var(--alea-yellow) 0%, var(--alea-yellow-dark) 100%);
+  color: var(--alea-dark);
+  padding: 6px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  font-weight: 700;
+  box-shadow: var(--shadow-sm);
+  min-width: 40px;
+  text-align: center;
+}
+
+/* Tooltips */
+.tooltip {
+  position: absolute;
+  bottom: -45px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: var(--alea-dark);
+  color: var(--alea-light);
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-size: 0.8rem;
+  font-weight: 500;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  transition: all 0.3s ease;
+  z-index: 1001;
+  box-shadow: var(--shadow-md);
+}
+
+.tooltip::before {
+  content: "";
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  border: 4px solid transparent;
+  border-bottom-color: var(--alea-dark);
+}
+
+.navbar-btn:hover .tooltip {
+  opacity: 1;
+  visibility: visible;
+  bottom: -40px;
+}
+
+/* Indicateur de statut de connexion */
+.connection-status {
+  display: flex;
+  align-items: center;
+  margin-left: 16px;
+}
+
+.status-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.connected .status-dot {
+  background: var(--color-success);
+  box-shadow: 0 0 10px rgba(16, 185, 129, 0.5);
+}
+
+.disconnected .status-dot {
+  background: var(--alea-red);
+  box-shadow: 0 0 10px rgba(231, 76, 60, 0.5);
+}
+
+.status-dot::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: inherit;
+  opacity: 0.3;
+  animation: softPulse 2s ease-in-out infinite;
+}
+
+/* Loading indicator */
+.loading-indicator {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: var(--alea-dark-light);
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.loading-indicator::before {
+  content: "";
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--alea-yellow-light);
+  border-left: 2px solid var(--alea-yellow);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .navbar {
+    padding: 0 20px;
+    height: 65px;
+  }
+
+  .logo-image {
+    height: 40px;
+  }
+
+  .navbar-menu {
+    gap: 12px;
+  }
+
+  .authenticated-menu,
+  .guest-menu {
+    gap: 10px;
+  }
+
+  .navbar-btn {
+    width: 44px;
+    height: 44px;
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 0 16px;
+    height: 60px;
+  }
+
+  .logo-image {
+    height: 36px;
+  }
+
+  .navbar-menu {
+    gap: 8px;
+  }
+
+  .authenticated-menu,
+  .guest-menu {
+    gap: 8px;
+  }
+
+  .navbar-btn {
+    width: 40px;
+    height: 40px;
+    font-size: 1rem;
+  }
+
+  .score-badge {
+    padding: 4px 8px;
+    font-size: 0.8rem;
+    min-width: 32px;
+  }
+
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+  }
+
+  /* Cache les tooltips sur mobile */
+  .tooltip {
+    display: none;
+  }
+
+  /* Réduit l'espacement des éléments */
+  .connection-status {
+    margin-left: 8px;
+  }
+
+  .score-indicator {
+    margin-left: 4px;
+  }
+}
+
+@media (max-width: 480px) {
+  .navbar {
+    padding: 0 12px;
+    height: 56px;
+  }
+
+  .logo-image {
+    height: 32px;
+  }
+
+  .navbar-menu {
+    gap: 6px;
+  }
+
+  .authenticated-menu,
+  .guest-menu {
+    gap: 6px;
+  }
+
+  .navbar-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 0.9rem;
+  }
+
+  .score-badge {
+    padding: 3px 6px;
+    font-size: 0.75rem;
+    min-width: 28px;
+  }
+
+  .user-avatar {
+    width: 28px;
+    height: 28px;
+  }
+
+  .status-dot {
+    width: 10px;
+    height: 10px;
+  }
+
+  .connection-status {
+    margin-left: 6px;
+  }
+
+  .loading-indicator {
+    font-size: 0.8rem;
+  }
+
+  .loading-indicator::before {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+/* Animation d'apparition de la navbar */
+.navbar {
+  animation: slideInFromTop 0.5s ease-out;
+}
+
+@keyframes slideInFromTop {
+  from {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* Effet de survol pour les boutons avec icônes spéciales */
+.btn-register:hover,
+.btn-login:hover,
+.btn-admin:hover {
+  transform: translateY(-2px) scale(1.05);
+}
+
+.btn-profile:hover .vip-icon {
+  transform: rotate(15deg) scale(1.1);
+  filter: drop-shadow(0 0 12px rgba(245, 195, 59, 0.8));
+}
+
+/* États de focus améliorés pour l'accessibilité */
+.navbar-btn:focus-visible {
+  outline: 3px solid var(--alea-yellow);
+  outline-offset: 2px;
+}
