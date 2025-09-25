@@ -33,7 +33,7 @@ const ResetPasswordPage = () => {
     }
 
     try {
-      const response = await axios.post('https://hackathon-quiz-backend.onrender.com/api/reset-password', {
+      const response = await axios.post('http://localhost:3001/api/reset-password', {
         token,
         password: newPassword,
         confirmPassword,
@@ -49,6 +49,7 @@ const ResetPasswordPage = () => {
   };
 
   return (
+    <div className="reset-password-container">
     <form onSubmit={handleSubmit} className="reset-password-form">
       <h2>Réinitialiser le mot de passe</h2>
       <input
@@ -67,6 +68,7 @@ const ResetPasswordPage = () => {
       {message && <p className="success">{message}</p>}
       {error && <p className="error">{error}</p>}
     </form>
+    </div>
   );
 };
 

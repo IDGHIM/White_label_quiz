@@ -18,7 +18,7 @@ const ForgotPasswordPage = () => {
     }
 
     try {
-      await axios.post('https://hackathon-quiz-backend.onrender.com/api/password-reset-request', { email });
+      await axios.post('http://localhost:3001/api/password-reset-request', { email });
       setMessage("Un lien de réinitialisation vous a été envoyé.");
       setEmail('');
     } catch {
@@ -27,6 +27,7 @@ const ForgotPasswordPage = () => {
   };
 
   return (
+    <div className="forgot-password-container">
     <form onSubmit={handleSubmit} className="forgot-password-form">
       <h2>Mot de passe oublié</h2>
       <input
@@ -39,6 +40,7 @@ const ForgotPasswordPage = () => {
       {message && <p className="success">{message}</p>}
       {error && <p className="error">{error}</p>}
     </form>
+    </div>
   );
 };
 
