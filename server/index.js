@@ -995,7 +995,6 @@ app.listen(PORT, "0.0.0.0", () => {
   
   console.log("\n🌐 CORS autorisé pour:");
   console.log("  - http://localhost:5173 (Vite dev)");
-  console.log("  - https://hackathon-quiz-4g3a.onrender.com (Production)");
   
   console.log("\n📋 Routes disponibles:");
   

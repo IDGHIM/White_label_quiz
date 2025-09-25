@@ -10,7 +10,7 @@ const EmailVerificationPage = () => {
   useEffect(() => {
     const verifyEmail = async () => {
       try {
-        const res = await axios.get(`http://localhost:3001/api/verify/${token}`);
+        const res = await axios.get(`http://localhost:5173/api/verify/${token}`);
         console.log(res.data);
         setStatus("success");
       } catch (err) {
@@ -26,13 +26,22 @@ const EmailVerificationPage = () => {
     }
   }, [token]);
 
-  return (
-    <div style={{ textAlign: "center", marginTop: "3rem" }}>
-    {status === "pending" && <p>Vérification en cours...</p>}
-    {status === "success" && <p>Votre email a été vérifié avec succès !</p>}
-    {status === "error" && <p>Le lien de vérification est invalide ou expiré.</p>}
+return (
+  <div className="email-verification-container">
+    <div className="email-verification-content">
+      <h1 className="verification-title">Vérification Email</h1>
+      {status === "pending" && (
+        <p className="verification-pending">Vérification en cours...</p>
+      )}
+      {status === "success" && (
+        <p className="verification-success">Votre email a été vérifié avec succès !</p>
+      )}
+      {status === "error" && (
+        <p className="verification-error">Le lien de vérification est invalide ou expiré.</p>
+      )}
+    </div>
   </div>
-  )
+);
 }
 
 export default EmailVerificationPage;

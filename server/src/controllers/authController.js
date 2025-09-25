@@ -56,7 +56,7 @@ async function register(req, res) {
     });
 
     // ✅ CORRECTION: Utiliser SERVER_URL pour l'URL de vérification
-    const verificationUrl = `${process.env.SERVER_URL}/api/verify/${verificationToken}`;
+    const verificationUrl = `http:localhost:5173/api/verify/${verificationToken}`;
 
     await sendMail({
       to: newUser.email,
@@ -363,7 +363,7 @@ async function resendVerificationEmail(req, res) {
     });
 
     // ✅ CORRECTION: Utiliser SERVER_URL pour l'URL de vérification
-    const verificationUrl = `${process.env.SERVER_URL}/api/verify/${verificationToken}`;
+    const verificationUrl = `http:/localhost:5173/api/verify/${verificationToken}`;
 
     await sendMail({
       to: user.email,
