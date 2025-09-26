@@ -55,7 +55,7 @@ export default defineConfig({
   plugins: [react()],
   server: {
     // 🌐 Configuration existante conservée
-    allowedHosts: ["hackathon-quiz-qif7.onrender.com"],
+    allowedHosts: ["http://localhost:5173", "localhost"],
     
     // 🛡️ Middleware personnalisé pour rate limiting et sécurité
     middlewares: [
@@ -158,7 +158,7 @@ export default defineConfig({
         "img-src 'self' data: https:",
         "font-src 'self' https:",
         // Connexions autorisées vers vos backends
-        "connect-src 'self' ws: wss: https://hackathon-quiz-backend.onrender.com https://hackathon-quiz-qif7.onrender.com http://localhost:3001"
+        "connect-src 'self' ws: wss: http://localhost:5173 http://localhost:3001"
       ].join('; '),
       // Désactive les fonctionnalités du navigateur potentiellement dangereuses
       'Permissions-Policy': 'camera=(), microphone=(), geolocation=()',
@@ -174,13 +174,13 @@ export default defineConfig({
     // 🔄 Configuration proxy existante conservée
     proxy: {
       "/api": {
-        target: "https://hackathon-quiz-backend.onrender.com/",
+        target: "http://localhost:3001",
         changeOrigin: true,
         secure: false,
         // 📝 Log optionnel pour debug (vous pouvez le retirer)
         configure: (proxy, _options) => {
           proxy.on('proxyReq', (proxyReq, req, _res) => {
-            console.log(`🔄 Proxy API: ${req.method} ${req.url} -> hackathon-quiz-backend.onrender.com${req.url}`);
+            console.log(`🔄 Proxy API: ${req.method} ${req.url} -> localhost${req.url}`);
           });
           
           // Log des erreurs de proxy

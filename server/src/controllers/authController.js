@@ -26,7 +26,7 @@ async function register(req, res) {
         .json({ message: `Les mots de passe doivent être identiques` });
     }
 
-    // ✅ AMÉLIORATION: Vérifier aussi si le username existe
+    // Vérifier aussi si le username existe
     const emailExists = await User.findOne({ email });
     if (emailExists) {
       return res.status(400).json({ message: `Email est déjà utilisé` });
@@ -37,13 +37,13 @@ async function register(req, res) {
       return res.status(400).json({ message: `Nom d'utilisateur est déjà utilisé` });
     }
 
-    // ✅ CORRECTION: Hasher le mot de passe
-    const hashedPassword = await bcrypt.hash(password, 10);
+    // Hasher le mot de passe
+    const hashedPassword = await bcrypt.hash(password, 12);
 
     const newUser = new User({
       username,
       email,
-      password: hashedPassword, // ✅ Utiliser le mot de passe hashé
+      password: hashedPassword,
       role: "user",
       isVerified: false,
     });
@@ -55,8 +55,7 @@ async function register(req, res) {
       expiresIn: "1h",
     });
 
-    // ✅ CORRECTION: Utiliser SERVER_URL pour l'URL de vérification
-    const verificationUrl = `http:localhost:5173/api/verify/${verificationToken}`;
+    const verificationUrl = `http://localhost:5173/api/verify/${verificationToken}`;
 
     await sendMail({
       to: newUser.email,
@@ -75,51 +74,50 @@ async function register(req, res) {
 
 // Connexion au compte
 async function login(req, res) {
-  console.log("✅ Requête login reçue:", req.body);
+  console.log("Requête login reçue:", req.body);
   try {
     const { identifier, password } = req.body;
     if (!identifier || !password) {
-      console.log("❌ Champs manquants");
+      console.log("Champs manquants");
       return res.status(400).json({ message: `Tous les champs sont requis` });
     }
 
-    // ✅ CORRECTION: Recherche améliorée par email OU username
+    // Recherche améliorée par email OU username
     let user = await User.findOne({
       $or: [{ email: identifier }, { username: identifier }]
     });
     
-    console.log("🔍 Utilisateur trouvé :", user ? 'OUI' : 'NON');
+    console.log("Utilisateur trouvé :", user ? 'OUI' : 'NON');
 
     if (!user) {
-      console.log("❌ Utilisateur introuvable");
+      console.log("Utilisateur introuvable");
       return res.status(401).json({ message: `Identifiants incorrects` });
     }
 
     if (!user.password) {
-      console.log("❌ Mot de passe manquant en DB");
+      console.log("Mot de passe manquant en DB");
       return res.status(400).json({ message: "Mot de passe manquant." });
     }
 
     if (!user.isVerified) {
-      console.log("❌ Compte non vérifié");
+      console.log("Compte non vérifié");
       return res
         .status(401)
         .json({ message: `Veuillez confirmer votre compte` });
     }
 
-    console.log("🔍 Vérification du mot de passe...");
-    // ✅ CORRECTION: Décommenter et utiliser bcrypt.compare
+    console.log("Vérification du mot de passe...");
     const isMatch = await bcrypt.compare(password, user.password);
-    console.log("🔍 Mot de passe valide :", isMatch);
+    console.log("Mot de passe valide :", isMatch);
 
     if (!isMatch) {
-      console.log("❌ Mot de passe incorrect");
+      console.log("Mot de passe incorrect");
       return res
-        .status(401) // ✅ CORRECTION: 401 au lieu de 400
+        .status(401)
         .json({ message: `Identifiants incorrects` });
     }
 
-    console.log("✅ Connexion réussie pour:", user.username);
+    console.log("Connexion réussie pour:", user.username);
 
     // Création du token. Expiration de la session au bout d'une heure
     const token = jwt.sign(
@@ -130,7 +128,7 @@ async function login(req, res) {
 
     // Envoi du token dans les cookies
     res.cookie("token", token, {
-      httpOnly: true, // ✅ CORRECTION: Casse corrigée
+      httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 jours
@@ -147,16 +145,15 @@ async function login(req, res) {
       token,
     });
   } catch (error) {
-    console.error("💥 Erreur login:", error);
+    console.error("Erreur login:", error);
     res.status(500).json({ message: `Erreur serveur` });
   }
 }
 
-// ✅ CORRECTION: Fonction me déplacée hors de login et corrigée
+// Fonction me
 const me = async (req, res) => {
   try {
     // Récupérer l'utilisateur depuis la base de données
-    // req.user contient les infos décodées du token
     const user = await User.findById(req.user.id).select('-password -resetToken -resetTokenExpiration');
     
     if (!user) {
@@ -191,7 +188,7 @@ const me = async (req, res) => {
   }
 };
 
-// Fonction de reset du password
+// Fonction de reset du password - DEMANDE
 async function requestPasswordReset(req, res) {
   const { email } = req.body;
 
@@ -203,22 +200,33 @@ async function requestPasswordReset(req, res) {
     const user = await User.findOne({ email });
 
     if (!user) {
-      // ✅ SÉCURITÉ: Ne pas révéler si l'email existe ou non
+      // SÉCURITÉ: Ne pas révéler si l'email existe ou non
       return res.json({ message: `Si cet email existe, un lien de réinitialisation a été envoyé` });
     }
 
+    console.log('Génération du token de réinitialisation pour:', email);
+    
+    // Génération du token original (celui qui sera dans l'URL/email)
     const resetToken = crypto.randomBytes(32).toString("hex");
-
+    console.log('Token original généré:', resetToken);
+    
+    // Hash du token (celui qui sera stocké en DB)
     const resetTokenHash = crypto
       .createHash("sha256")
       .update(resetToken)
       .digest("hex");
+    console.log('Token hashé (pour DB):', resetTokenHash);
 
+    // Stockage en DB
     user.resetToken = resetTokenHash;
     user.resetTokenExpiration = Date.now() + 3600000; // 1h
     await user.save();
+    
+    console.log('Token hashé sauvegardé en DB pour:', user.email);
 
+    // URL avec le token ORIGINAL (non hashé)
     const resetUrl = `${CLIENT_URL}/reset-password/${resetToken}`;
+    console.log('URL générée:', resetUrl);
 
     await sendMail({
       to: user.email,
@@ -226,62 +234,110 @@ async function requestPasswordReset(req, res) {
       html: `Bonjour ${user.username},<br><br>Vous avez demandé une réinitialisation de votre mot de passe.<br><br>Cliquez sur ce lien pour créer un nouveau mot de passe : <a href="${resetUrl}">Réinitialiser mon mot de passe</a><br><br>Ce lien expire dans 1 heure.<br><br>Si vous n'avez pas demandé cette réinitialisation, ignorez ce message.`,
     });
 
+    console.log('Email envoyé avec succès');
+    
     res.json({ message: `Si cet email existe, un lien de réinitialisation a été envoyé` });
   } catch (error) {
-    console.error(error);
+    console.error('Erreur lors de la génération du token:', error);
     res.status(500).json({ message: `Erreur lors de l'envoi de l'email` });
   }
 }
 
+// Fonction de reset du password - EXECUTION
 async function resetPassword(req, res) {
-  const { token, password, confirmPassword } = req.body;
+  console.log('===== DEBUG RESET PASSWORD =====');
+  console.log('Params reçus:', req.params);
+  console.log('Body reçu:', req.body);
+  
+  // CORRECTION: Récupérer le token depuis req.params (URL) au lieu de req.body
+  const { token } = req.params;
+  const { password, newPassword, confirmPassword } = req.body;
+  
+  console.log('Token depuis URL:', token ? token.substring(0, 20) + '...' : 'Absent');
+  console.log('Password:', password ? 'Présent' : 'Absent');
+  console.log('NewPassword:', newPassword ? 'Présent' : 'Absent');
+  console.log('ConfirmPassword:', confirmPassword ? 'Présent' : 'Absent');
 
-  if (!password || !confirmPassword)
-    return res
-      .status(400)
-      .json({ message: `Tous les champs sont obligatoires` });
+  // Utiliser soit 'password' soit 'newPassword' (compatibilité)
+  const actualPassword = password || newPassword;
 
-  if (password !== confirmPassword)
-    return res
-      .status(400)
-      .json({ message: `Les mots de passe ne sont pas identiques` });
+  if (!token) {
+    console.log('Token manquant dans l\'URL');
+    return res.status(400).json({ message: `Token requis` });
+  }
 
-  // ✅ AMÉLIORATION: Validation de la force du mot de passe
-  if (password.length < 6) {
-    return res
-      .status(400)
-      .json({ message: `Le mot de passe doit contenir au moins 6 caractères` });
+  if (!actualPassword || !confirmPassword) {
+    console.log('Mot de passe ou confirmation manquant');
+    return res.status(400).json({ message: `Tous les champs sont obligatoires` });
+  }
+
+  if (actualPassword !== confirmPassword) {
+    console.log('Mots de passe ne correspondent pas');
+    return res.status(400).json({ message: `Les mots de passe ne sont pas identiques` });
+  }
+
+  // Validation de la force du mot de passe
+  if (actualPassword.length < 6) {
+    console.log('Mot de passe trop court');
+    return res.status(400).json({ message: `Le mot de passe doit contenir au moins 6 caractères` });
   }
 
   try {
+    console.log('Hashage du token reçu depuis l\'URL...');
     const resetTokenHash = crypto
       .createHash("sha256")
       .update(token)
       .digest("hex");
+    
+    console.log('Token original:', token.substring(0, 20) + '...');
+    console.log('Token hashé pour recherche:', resetTokenHash.substring(0, 20) + '...');
 
+    console.log('Recherche utilisateur avec token hashé...');
     const user = await User.findOne({
       resetToken: resetTokenHash,
       resetTokenExpiration: { $gt: Date.now() },
     });
 
-    if (!user)
+    if (!user) {
+      console.log('Aucun utilisateur trouvé avec ce token ou token expiré');
+      
+      // Debug: chercher si le token existe même s'il est expiré
+      const expiredUser = await User.findOne({ resetToken: resetTokenHash });
+      if (expiredUser) {
+        console.log('Token trouvé mais expiré pour:', expiredUser.email);
+        console.log('Expiration:', new Date(expiredUser.resetTokenExpiration));
+        console.log('Maintenant:', new Date());
+        return res.status(400).json({ message: `Token expiré` });
+      } else {
+        console.log('Token totalement introuvable en DB');
+      }
+      
       return res.status(400).json({ message: `Token invalide ou expiré` });
+    }
 
-    // ✅ CORRECTION: Hasher le nouveau mot de passe
-    const hashedPassword = await bcrypt.hash(password, 10);
+    console.log('Utilisateur trouvé:', user.email);
+    console.log('Token valide, mise à jour du mot de passe...');
+
+    // Hasher le nouveau mot de passe
+    const hashedPassword = await bcrypt.hash(actualPassword, 12);
     user.password = hashedPassword;
     user.resetToken = undefined;
     user.resetTokenExpiration = undefined;
 
     await user.save();
     
-    // ✅ AMÉLIORATION: Log pour le suivi
-    console.log(`✅ Mot de passe réinitialisé pour: ${user.email}`);
+    console.log(`Mot de passe réinitialisé avec succès pour: ${user.email}`);
     
-    res.json({ message: `Mot de passe réinitialisé avec succès` });
+    res.json({ 
+      success: true,
+      message: `Mot de passe réinitialisé avec succès` 
+    });
   } catch (error) {
     console.error("Erreur lors de la réinitialisation:", error);
-    res.status(500).json({ message: `Erreur lors de la réinitialisation` });
+    res.status(500).json({ 
+      success: false,
+      message: `Erreur lors de la réinitialisation` 
+    });
   }
 }
 
@@ -299,9 +355,6 @@ async function logout(req, res) {
     res.status(500).json({ message: `Erreur lors de la déconnexion` });
   }
 }
-
-// ----------------------------------------------------------------- //
-// ----------------------------------------------------------------- //
 
 // Vérification du compte via un token envoyé par mail
 async function verifyEmail(req, res) {
@@ -326,12 +379,12 @@ async function verifyEmail(req, res) {
     user.isVerified = true;
     await user.save();
     
-    console.log(`✅ Compte vérifié pour: ${user.email}`);
+    console.log(`Compte vérifié pour: ${user.email}`);
     res.json({ message: `Compte vérifié avec succès` });
   } catch (error) {
     console.error(`Erreur vérification email:`, error);
     
-    // ✅ AMÉLIORATION: Messages d'erreur plus spécifiques
+    // Messages d'erreur plus spécifiques
     if (error.name === 'TokenExpiredError') {
       return res.status(400).json({ message: `Lien de vérification expiré` });
     }
@@ -362,8 +415,7 @@ async function resendVerificationEmail(req, res) {
       expiresIn: "1d",
     });
 
-    // ✅ CORRECTION: Utiliser SERVER_URL pour l'URL de vérification
-    const verificationUrl = `http:/localhost:5173/api/verify/${verificationToken}`;
+    const verificationUrl = `http://localhost:5173/api/verify/${verificationToken}`;
 
     await sendMail({
       to: user.email,
@@ -382,12 +434,11 @@ async function resendVerificationEmail(req, res) {
   }
 }
 
-// ✅ CORRECTION: Ajouter la fonction me dans les exports
 module.exports = {
   register,
   login,
   logout,
-  me, // ✅ Fonction me ajoutée
+  me,
   requestPasswordReset,
   resetPassword,
   verifyEmail,

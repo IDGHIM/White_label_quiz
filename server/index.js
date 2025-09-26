@@ -308,8 +308,9 @@ try {
     next();
   }, authController.login);
 
-  // Autres routes auth inchangées
+  // Autres routes auth
   apiRouter.post("/logout", authController.logout);
+  
   apiRouter.post("/password-reset-request", authLimiter, (req, res, next) => {
     const { email } = req.body;
     
@@ -331,6 +332,7 @@ try {
     next();
   }, authController.requestPasswordReset);
 
+  // ROUTE EXISTANTE - Token dans le body
   apiRouter.post("/reset-password", authLimiter, (req, res, next) => {
     const { token, newPassword } = req.body;
     
@@ -347,6 +349,51 @@ try {
         message: "Le nouveau mot de passe doit contenir au moins 6 caractères"
       });
     }
+    
+    next();
+  }, authController.resetPassword);
+
+  // 🆕 NOUVELLE ROUTE - Token dans l'URL (pour votre frontend)
+  apiRouter.post("/reset-password/:token", authLimiter, (req, res, next) => {
+    const { token } = req.params;  // Token depuis l'URL
+    const { password, confirmPassword } = req.body;  // Données depuis le body
+    
+    console.log('🔑 Token reçu dans l\'URL:', token);
+    console.log('📦 Body reçu:', { password: password ? '***' : 'missing', confirmPassword: confirmPassword ? '***' : 'missing' });
+    
+    if (!token) {
+      return res.status(400).json({
+        success: false,
+        message: "Token requis dans l'URL"
+      });
+    }
+    
+    if (!password) {
+      return res.status(400).json({
+        success: false,
+        message: "Nouveau mot de passe requis"
+      });
+    }
+    
+    if (password.length < 6) {
+      return res.status(400).json({
+        success: false,
+        message: "Le nouveau mot de passe doit contenir au moins 6 caractères"
+      });
+    }
+    
+    if (password !== confirmPassword) {
+      return res.status(400).json({
+        success: false,
+        message: "Les mots de passe ne correspondent pas"
+      });
+    }
+    
+    // Passer le token au body pour que le contrôleur le trouve
+    req.body.token = token;
+    req.body.newPassword = password;  // Le contrôleur attend "newPassword"
+    
+    console.log('✅ Token et mot de passe validés, passage au contrôleur');
     
     next();
   }, authController.resetPassword);
@@ -376,7 +423,7 @@ try {
 
   apiRouter.get("/me", protect, authController.me);
 
-  console.log("✅ authController OK - Support identifier activé");
+  console.log("✅ authController OK - Support identifier activé + Route reset-password/:token ajoutée");
 } catch (error) {
   console.error("❌ ERREUR dans authController:", error.message);
   console.error(error.stack);
@@ -1005,7 +1052,8 @@ app.listen(PORT, "0.0.0.0", () => {
   console.log("  GET  /api/verify/:token");
   console.log("  POST /api/resend-verification (10 req/15min)");
   console.log("  POST /api/password-reset-request (10 req/15min)");
-  console.log("  POST /api/reset-password (10 req/15min)");
+  console.log("  POST /api/reset-password (10 req/15min) - Token dans body");
+  console.log("  POST /api/reset-password/:token (10 req/15min) - 🆕 Token dans URL");
   
   console.log("\n🔒 Routes protégées (connecté + rate limited):");
   console.log("  GET  /api/me");
@@ -1045,11 +1093,13 @@ app.listen(PORT, "0.0.0.0", () => {
   console.log("  ✨ Messages d'erreur adaptés");
   console.log("  ✨ Sécurité renforcée avec validation côté serveur");
   
-  console.log("\n📝 Format de requête login:");
-  console.log("  POST /api/login");
-  console.log("  Body: { identifier: 'email@test.com' | 'username', password: 'motdepasse' }");
-  console.log("  OU");
-  console.log("  Body: { email: 'email@test.com', password: 'motdepasse' }");
+  console.log("\n🔑 RESET PASSWORD - DEUX OPTIONS:");
+  console.log("  1️⃣ POST /api/reset-password (token dans body) - Ancienne version");
+  console.log("  2️⃣ POST /api/reset-password/:token - 🆕 Nouvelle version pour frontend");
   
-  console.log("\n🎯 Ready to handle login with identifier support!");
+  console.log("\n📝 Format de requête reset password (nouvelle route):");
+  console.log("  POST /api/reset-password/{TOKEN_FROM_EMAIL}");
+  console.log("  Body: { password: 'nouveaumotdepasse', confirmPassword: 'nouveaumotdepasse' }");
+  
+  console.log("\n🎯 Ready to handle reset password with token in URL!");
 });
